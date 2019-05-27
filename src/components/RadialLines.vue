@@ -9,9 +9,9 @@
 <script>
 export default {
   name: "RadialLines",
-  props: {
-    msg: String
-  },
+  props: [
+    'startColor', 'setH','setS','setL','setA','i'
+  ],
   methods: {
     setLineAnonymous(startX, endX, startY, endY, strokeColor, strokeWidth, lineCap) {
       let svg = document.querySelector('.radial-lines')
