@@ -1,11 +1,12 @@
 <template>
 <div class="about">
-  <div class="heading">
+
+  <div class="experiment">
+ <form class="radial-lines-settings-form heading">
+     <div class="heading">
     <h1>Radial SVG Line Generator</h1>
     <p>By Mike Peiman</p>
   </div>
-  <div class="experiment">
- <form class="radial-lines-settings-form heading">
     <figure class="line-size-group">
       <label for="numLines">
           <input type="number" id="numLines" placeholder="10" v-on:keyup.enter="submitProps">Number of lines
@@ -128,9 +129,10 @@ export default {
 
 .hsla-group,
 .line-size-group {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   // flex-direction: column;
-  justify-content: space-around;
+  // justify-content: space-around;
   margin: 1em 0 0 0;
   font-size: .75em;
   background: rgba(0, 0, 0, 0.25);
@@ -140,6 +142,10 @@ export default {
     display: flex;
     flex-direction: column;
     width: 7ch;
+    text-align: left;
+  }
+  & label {
+    text-align: left;
   }
 }
 </style>

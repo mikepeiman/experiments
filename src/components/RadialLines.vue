@@ -341,8 +341,8 @@ p {
 
 svg {
   background: rgba(50, 75, 100, 0.15);
-  height: 80vh;
-  width: 80vw;
+  height: 100%;
+  // width: 80vw;
   // margin: 10vh 10vw;
 
   transition: all 0.25s;
@@ -355,6 +355,10 @@ svg {
 
 svg:hover .radial-lines {
   transform: rotate(720deg);
+  opacity: 0.5;
+}
+.block-container:hover .radial-lines {
+    transform: rotate(720deg);
   opacity: 0.5;
 }
 </style>
