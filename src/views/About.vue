@@ -10,17 +10,17 @@
         v-on:keyup.enter="submitProps"
       >Starting Color (hex)
       <input-group class="input-group">
-        <label for="xH">
-          <input type="number" id="xH" v-on:keyup.enter="submitProps">Modify Hue
+        <label for="H">
+          <input type="number" id="H" v-on:keyup.enter="submitProps">Modify Hue
         </label>
-        <label for="xS">
-          <input type="number" id="xS" v-on:keyup.enter="submitProps">Modify Saturation
+        <label for="S">
+          <input type="number" id="S" v-on:keyup.enter="submitProps">Modify Saturation
         </label>
-        <label for="xL">
-          <input type="number" id="xL" v-on:keyup.enter="submitProps">Modify Lightness
+        <label for="L">
+          <input type="number" id="L" v-on:keyup.enter="submitProps">Modify Lightness
         </label>
-        <label for="xA">
-          <input type="number" id="xA" v-on:keyup.enter="submitProps">Modify Opacity
+        <label for="A">
+          <input type="number" id="A" v-on:keyup.enter="submitProps">Modify Opacity
         </label>
       </input-group>
       <button class="button" @click="submitProps">Apply</button>
@@ -28,10 +28,10 @@
     <RadialLines
       :numLines="numLines"
       :startColor="startColor"
-      :xH="xH"
-      :xS="xS"
-      :xL="xL"
-      :xA="xA"
+      :H="H"
+      :S="S"
+      :L="L"
+      :A="A"
       :renderSvg="renderSvg"
     />
   </div>
@@ -51,10 +51,10 @@ export default {
     return {
       numLines: "",
       startColor: "#00aaff",
-      xH: 0,
-      xS: 0,
-      xL: 0,
-      xA: 0,
+      H: 0,
+      S: 0,
+      L: 0,
+      A: 0,
       renderSvg: false
     };
   },
@@ -62,10 +62,10 @@ export default {
     submitProps() {
       this.startColor = document.querySelector("#startColor").value;
       this.numLines = document.querySelector("#numLines").value;
-      this.xH = document.querySelector("#xH").value;
-      this.xS = document.querySelector("#xS").value;
-      this.xL = document.querySelector("#xL").value;
-      this.xA = document.querySelector("#xA").value;
+      this.H = document.querySelector("#H").value;
+      this.S = document.querySelector("#S").value;
+      this.L = document.querySelector("#L").value;
+      this.A = document.querySelector("#A").value;
       this.renderSvg = !this.renderSvg;
       console.log(
         "About.vue submitProps(): ",
