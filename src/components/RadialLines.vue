@@ -15,7 +15,8 @@ export default {
   data() {
     return {
       render: this.renderSvg,
-      tempColor: ""
+      tempColor: "",
+      colorsArray: []
     };
   },
   watch: {
@@ -55,8 +56,8 @@ export default {
       strokeWidth,
       lineCap
     ) {
-      console.log("makeRadiatingLines called - colors object:");
-      console.log(colors);
+      // console.log("makeRadiatingLines called - colors object:");
+      // console.log(colors);
       console.log(`makeRadiatingLines startColor: ${colors.startColor}`);
       let lineArray = [];
       let x1,
@@ -65,14 +66,18 @@ export default {
         y2,
         increase = (Math.PI * 2) / numberOfLines,
         angle = 0;
-
+      let x = numberOfLines % 2;
+      let y = Math.floor(numberOfLines / 2);
+      this.generateColors(numberOfLines, colors, x, y);
       for (let i = 0; i <= numberOfLines; i++) {
-        // console.log(i)
+        console.log(i);
         let line = {};
-        let x = numberOfLines % 2;
-        console.log(`x = i % 2: `);
-        console.log(x);
-        x ? console.log('x is true (non-zero)') : console.log('x is false (zero)')
+        // console.log(`x = i % 2: `);
+        // console.log(y, x);
+
+        // x
+        //   ? console.log("x is true (non-zero)")
+        //   : console.log("x is false (zero)");
         x1 = radiusStart * Math.cos(angle);
         y1 = radiusStart * Math.sin(angle);
         x2 = radiusEnd * Math.cos(angle);
@@ -87,7 +92,9 @@ export default {
           colors.S,
           colors.L,
           colors.A,
-          i
+          i,
+          x,
+          y
         );
         line.strokeWidth = strokeWidth;
         line.lineCap = lineCap;
@@ -108,18 +115,41 @@ export default {
         );
       });
     },
-    setColor(startColor, H, S, L, A, i) {
-      if (i === 1) {
+    generateColors(numberOfLines, colors, x, y) {
+      this.colorsArray = [];
+      for (let i = 0; i <= numberOfLines; i++) {
+        if (i === 0) {
+          this.tempColor = colors.startColor;
+          this.colorsArray.push(this.tempColor);
+        }
+        let hslColor = Color(this.tempColor).hsl();
+        console.log("hslColor as HSL: " + hslColor);
+        let oldHue = hslColor.hue();
+        console.log("hslColor.hue(): " + oldHue);
+        console.log("H: ");
+        console.log(colors.H);
+
+        let newHue = oldHue + colors.H;
+        console.log("newHue: " + newHue);
+        this.tempColor = hslColor.hue(newHue);
+        console.log("new this.tempColor: " + this.tempColor);
+        this.colorsArray.push(hslColor);
+      }
+      console.log("colorsArray: ", this.colorsArray);
+      // return this.colorsArray
+    },
+    setColor(startColor, H, S, L, A, i, x, y) {
+      if (i === 0) {
         this.tempColor = this.startColor;
+        return this.startColor;
       }
 
       // console.log('RadialLines.vue startColor: ' + this.startColor)
       let newColor = Color(this.tempColor).hsl();
-      console.log("color in HSL: " + newColor);
       let oldHue = newColor.hue();
       let newHue = oldHue + H;
-      console.log("newHue: " + newColor.hue(newHue));
-      console.log(`HSLA variables: H: ${H} S: ${S} L: ${L} A: ${A}, i: ${i}`);
+      // console.log("newHue: " + newColor.hue(newHue));
+      // console.log(`HSLA variables: H: ${H} S: ${S} L: ${L} A: ${A}, i: ${i}`);
       this.tempColor = newColor.hue(newHue);
 
       return newColor;

@@ -10,17 +10,17 @@
         v-on:keyup.enter="submitProps"
       >Starting Color (hex)
       <input-group class="input-group">
-        <label for="H">
-          <input type="number" id="H" v-on:keyup.enter="submitProps">Modify Hue
+        <label for="hue">
+          <input type="number" id="hue" v-on:keyup.enter="submitProps">Modify Hue
         </label>
-        <label for="S">
-          <input type="number" id="S" v-on:keyup.enter="submitProps">Modify Saturation
+        <label for="saturation">
+          <input type="number" id="saturation" v-on:keyup.enter="submitProps">Modify Saturation
         </label>
-        <label for="L">
-          <input type="number" id="L" v-on:keyup.enter="submitProps">Modify Lightness
+        <label for="lightness">
+          <input type="number" id="lightness" v-on:keyup.enter="submitProps">Modify Lightness
         </label>
-        <label for="A">
-          <input type="number" id="A" v-on:keyup.enter="submitProps">Modify Opacity
+        <label for="alpha">
+          <input type="number" id="alpha" v-on:keyup.enter="submitProps">Modify Opacity
         </label>
       </input-group>
       <button class="button" @click="submitProps">Apply</button>
@@ -62,10 +62,10 @@ export default {
     submitProps() {
       this.startColor = document.querySelector("#startColor").value;
       this.numLines = document.querySelector("#numLines").value;
-      this.H = document.querySelector("#H").value;
-      this.S = document.querySelector("#S").value;
-      this.L = document.querySelector("#L").value;
-      this.A = document.querySelector("#A").value;
+      this.H = document.querySelector("#hue").value;
+      this.S = document.querySelector("#saturation").value;
+      this.L = document.querySelector("#lightness").value;
+      this.A = document.querySelector("#alpha").value;
       this.renderSvg = !this.renderSvg;
       console.log(
         "About.vue submitProps(): ",
