@@ -343,14 +343,15 @@ svg {
   background: rgba(50, 75, 100, 0.15);
   height: 80vh;
   width: 80vw;
-  margin: 10vh 10vw;
+  // margin: 10vh 10vw;
+
   transition: all 0.25s;
 }
 
 .radial-lines {
   opacity: 1;
   transition: opacity 0.25s, transform 0.75s;
-}
+}10
 
 svg:hover .radial-lines {
   transform: rotate(720deg);
