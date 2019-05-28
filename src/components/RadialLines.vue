@@ -7,14 +7,17 @@
 </template>
 
 <script>
+import Color from 'color';
+
 export default {
   name: "RadialLines",
   props: [
-    'numLines', 'startColor', 'renderSvg', 'setH', 'setS', 'setL', 'setA'
+    'numLines', 'startColor', 'renderSvg', 'xH', 'xS', 'xL', 'xA'
   ],
   data() {
     return {
-      render: this.renderSvg
+      render: this.renderSvg,
+      tempColor: ''
     }
   },
   watch: {
@@ -24,7 +27,7 @@ export default {
   },
   methods: {
     setLineAnonymous(startX, endX, startY, endY, strokeColor, strokeWidth, lineCap) {
-      let svg = document.querySelector('.radial-lines')
+      let svgGroup = document.querySelector('.radial-lines')
       let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
       line.setAttribute('x1', startX);
       line.setAttribute('x2', endX);
@@ -34,17 +37,13 @@ export default {
       line.setAttribute('stroke-width', strokeWidth);
       line.setAttribute('stroke-linecap', lineCap);
       // add in a class and id attribute, which will be added with variables in the makeRadiatingLines funtion below
-      svg.appendChild(line)
+      svgGroup.appendChild(line)
     },
     makeRadiatingLines(numberOfLines, radiusStart, radiusEnd, colors, strokeWidth, lineCap) {
       console.log('makeRadiatingLines called - colors object:')
       console.log(colors)
       console.log(`makeRadiatingLines startColor: ${colors.startColor}`)
       let lineArray = []
-      // function setColor(colors) {
-      //   // return colors
-      //   line.setAttribute('stroke', "#ffff00");
-      // }
       let x1, x2,
         y1, y2,
         increase = Math.PI * 2 / numberOfLines,
@@ -61,54 +60,61 @@ export default {
         line.endX = x2
         line.startY = y1
         line.endY = y2
-        line.strokeColor = this.setColor(colors.startColor, colors.setH, colors.setS, colors.setL, colors.setA, i)
+        line.strokeColor = this.setColor(colors.startColor, colors.xH, colors.xS, colors.xL, colors.xA, i)
         line.strokeWidth = strokeWidth
         line.lineCap = lineCap
-        // console.log(line)
         lineArray.push(line)
         angle += increase
       }
 
       lineArray.forEach(line => {
         console.log(`inside lineArray.forEach`)
-        // console.log(line)
         this.setLineAnonymous(line.startX, line.endX, line.startY, line.endY, line.strokeColor, line.strokeWidth, line.lineCap)
       })
     },
-    setColor(startColor, setH, setS, setL, setA, i) {
-      // console.log('startColor: ' + startColor)
-      // let newColor = Color(startColor)
-      // console.log('newColor: ' + newColor)
-      return startColor
+    setColor(startColor, xH, xS, xL, xA, i) {
+      if(i === 1) {
+        this.tempColor = this.startColor
+      }
+      // console.log('RadialLines.vue startColor: ' + this.startColor)
+      let newColor = Color(this.tempColor).hsl()
+      console.log('color in HSL: ' + newColor)
+      let oldHue = newColor.hue()
+      let newHue = oldHue + xH
+      console.log('newHue: ' + newColor.hue(newHue))
+      console.log(`HSLA variables: H: ${xH} S: ${xS} L: ${xL} A: ${xA}, i: ${i}`)
+      this.tempColor = newColor.hue(newHue)
+      
+      return newColor
+    },
+    generateLines() {
+        this.makeRadiatingLines(this.numLines, 150, 175, {
+        startColor: this.startColor,
+        xH: parseInt(this.xH),
+        xS: parseInt(this.xS),
+        xL: parseInt(this.xL),
+        xA: parseInt(this.xA)
+      }, "15px", "round")
+    },
+    clearLines() {
+      let svgGroup = document.querySelector('.radial-lines')
+      while(svgGroup.hasChildNodes()) {
+        svgGroup.removeChild(svgGroup.firstChild)
+      }
     }
   },
   mounted() {
-    this.makeRadiatingLines(this.numLines ? this.numLines : 12, 150, 175, {
-      startColor: this.startColor ? this.startColor : "#aa00ff",
-      setH: '',
-      setS: '',
-      setL: '',
-      setA: ''
-    }, "15px", "round")
+    this.tempColor = this.startColor ? this.startColor : "#00aaff"
+    this.generateLines()
   },
   watch: {
     numLines() {
-      this.makeRadiatingLines(this.numLines, 150, 175, {
-        startColor: this.startColor,
-        setH: '',
-        setS: '',
-        setL: '',
-        setA: ''
-      }, "15px", "round")
+      this.clearLines()
+      this.generateLines()
     },
     startColor() {
-      this.makeRadiatingLines(this.numLines, 150, 175, {
-        startColor: this.startColor,
-        setH: '',
-        setS: '',
-        setL: '',
-        setA: ''
-      }, "15px", "round")
+      this.clearLines()
+      this.generateLines()
     }
   }
 };
@@ -225,12 +231,12 @@ svg {
 }
 
 .radial-lines {
-  opacity: 0.1;
+  opacity: 1;
   transition: opacity .25s, transform .75s;
 }
 
 svg:hover .radial-lines {
   transform: rotate(720deg);
-  opacity: 1;
+  opacity: .5;
 }
 </style>
