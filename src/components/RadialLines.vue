@@ -10,8 +10,18 @@
 export default {
   name: "RadialLines",
   props: [
-    'startColor', 'setH','setS','setL','setA','i'
+    'numLines', 'startColor', 'renderSvg', 'setH', 'setS', 'setL', 'setA'
   ],
+  data() {
+    return {
+      render: this.renderSvg
+    }
+  },
+  watch: {
+    renderSvg() {
+      console.log(`From RadialLines.vue component: renderSvg prop: ${renderSvg}`)
+    }
+  },
   methods: {
     setLineAnonymous(startX, endX, startY, endY, strokeColor, strokeWidth, lineCap) {
       let svg = document.querySelector('.radial-lines')
@@ -73,20 +83,41 @@ export default {
     }
   },
   mounted() {
-    this.makeRadiatingLines(25, 150, 175, {
-      startColor: "#123456",
+    this.makeRadiatingLines(this.numLines ? this.numLines : 12, 150, 175, {
+      startColor: this.startColor ? this.startColor : "#aa00ff",
       setH: '',
       setS: '',
       setL: '',
       setA: ''
     }, "15px", "round")
+  },
+  watch: {
+    numLines() {
+      this.makeRadiatingLines(this.numLines, 150, 175, {
+        startColor: this.startColor,
+        setH: '',
+        setS: '',
+        setL: '',
+        setA: ''
+      }, "15px", "round")
+    },
+    startColor() {
+      this.makeRadiatingLines(this.numLines, 150, 175, {
+        startColor: this.startColor,
+        setH: '',
+        setS: '',
+        setL: '',
+        setA: ''
+      }, "15px", "round")
+    }
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
-<style lang="scss" scoped>body {
+<style lang="scss" scoped>
+body {
   background: #f5f5f5;
   display: flex;
   justify-content: center;
@@ -96,33 +127,38 @@ export default {
 
 .block-container {
   position: relative;
-  overflow: hidden; 
+  overflow: hidden;
   width: 80vw;
   height: 80vh;
   justify-content: center;
   display: flex;
+  flex-direction: column;
   align-items: center;
   transition: all .5s;
   padding: 0;
   margin: 0;
 }
+
 .caption {
   position: absolute;
   bottom: 0;
   height: 30%;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.75);
   color: white;
-  text-shadow: 1px 1px rgba(0,0,0,1);
+  text-shadow: 1px 1px rgba(0, 0, 0, 1);
   opacity: 1;
   transition: all .5s;
   transform: translateY(100%);
 }
+
 h2 {
   font-size: 2em;
 }
+
 p {
   font-size: 1.25em;
 }
+
 .block-container img {
   width: 100%;
   transition: all .5s;
@@ -131,37 +167,44 @@ p {
   max-height: 100%;
   opacity: 0.65;
 }
+
 .image-figure {
   position: relative;
   height: 100%;
-  background: rgba(0,0,0,1);
+  background: rgba(0, 0, 0, 1);
   transition: all .5s;
 }
+
 .image-figure .caption {
   width: calc(100% - 1em);
-    padding: 0 0 0 1em;
+  padding: 0 0 0 1em;
 }
-.block-container:hover {
 
-}
+.block-container:hover {}
+
 .block-container:hover .caption {
   transform: translateY(0%);
 }
+
 .block-container:hover img {
   transform: translateY(-30%);
   opacity: 1;
   transition: all .5s;
 }
+
 .block-container:hover .image-figure {
-  background: rgba(0,0,0,.25);
+  background: rgba(0, 0, 0, .25);
 }
+
 .caption:hover {
   opacity: 1;
 }
+
 .caption:hover:nth-child(n) {
   padding: 0 2em;
   width: calc(100% - 2em);
 }
+
 /* // **************************************
 // If I just want it to fade in directly, use this below.
 // I prefer the fade in + slide in with the above, because the padding and width are
@@ -174,16 +217,18 @@ p {
 // ************************************** */
 
 svg {
-  background: rgba(50,75,100,0.15);
+  background: rgba(50, 75, 100, 0.15);
   height: 80vh;
   width: 80vw;
   margin: 10vh 10vw;
   transition: all .25s;
 }
+
 .radial-lines {
   opacity: 0.1;
   transition: opacity .25s, transform .75s;
 }
+
 svg:hover .radial-lines {
   transform: rotate(720deg);
   opacity: 1;
