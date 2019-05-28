@@ -14,19 +14,21 @@ export default {
   props: [
     "numLines",
     "startColor",
-    "startRadius",
+    "radiusStart",
     "lineLength",
     "H",
     "S",
     "L",
     "A",
-    "renderSvg",
+    "renderSvg"
   ],
   data() {
     return {
       render: this.renderSvg,
       tempColor: "",
-      colorsArray: []
+      colorsArray: [],
+      radiusStart: 50,
+      radiusEnd: 100
     };
   },
   watch: {
@@ -66,9 +68,9 @@ export default {
       strokeWidth,
       lineCap
     ) {
-      // console.log("makeRadiatingLines called - colors object:");
-      // console.log(colors);
-      console.log(`makeRadiatingLines startColor: ${colors.startColor}`);
+      console.log(`makeRadiatingLines()`);
+      console.log(`makeRadiatingLines() radiusStart ${radiusStart}`);
+      console.log(`makeRadiatingLines() radiusEnd ${radiusEnd}`);
       let lineArray = [];
       let x1,
         x2,
@@ -78,18 +80,12 @@ export default {
         angle = 0;
       let x = numberOfLines % 2;
       let y = Math.floor(numberOfLines / 2);
-      console.log(`colors object before calling generateColors()`)
-      console.log(colors)
+      // console.log(`colors object before calling generateColors()`);
+      // console.log(colors);
       this.generateColors(numberOfLines, colors, x, y);
       for (let i = 0; i <= numberOfLines; i++) {
         console.log(i);
         let line = {};
-        // console.log(`x = i % 2: `);
-        // console.log(y, x);
-
-        // x
-        //   ? console.log("x is true (non-zero)")
-        //   : console.log("x is false (zero)");
         x1 = radiusStart * Math.cos(angle);
         y1 = radiusStart * Math.sin(angle);
         x2 = radiusEnd * Math.cos(angle);
@@ -106,7 +102,7 @@ export default {
       }
 
       lineArray.forEach(line => {
-        console.log(`inside lineArray.forEach`);
+        // console.log(`inside lineArray.forEach`);
         this.setLineAnonymous(
           line.startX,
           line.endX,
@@ -119,11 +115,11 @@ export default {
       });
     },
     generateColors(numberOfLines, colors, x, y) {
-            console.log(`colors object after calling generateColors()`)
-      console.log(colors)
+      // console.log(`colors object after calling generateColors()`);
+      console.log(colors);
       this.colorsArray = [];
       for (let i = 0; i < numberOfLines; i++) {
-        console.log(`${i}: iteration in generateColors()`);
+        // console.log(`${i}: iteration in generateColors()`);
         if (i === 0) {
           let hslStartColor = Color(colors.startColor).hsl();
           this.tempColor = hslStartColor;
@@ -131,25 +127,47 @@ export default {
           continue;
         }
         let hslColor = Color(this.tempColor).hsl();
-        console.log("hslColor as HSL: " + hslColor);
+        // console.log("hslColor as HSL: " + hslColor);
         let hue = hslColor.hue();
-        console.log("hslColor.hue(): " + hue);
+        // console.log("hslColor.hue(): " + hue);
         hue = hue + colors.H;
-        console.log("newHue: " + hue);
+        // console.log("newHue: " + hue);
         this.tempColor = hslColor.hue(hue);
-        console.log("new this.tempColor: " + this.tempColor);
+        // console.log("new this.tempColor: " + this.tempColor);
         this.colorsArray.push(this.tempColor);
       }
-      console.log("colorsArray: ", this.colorsArray);
+      // console.log("colorsArray: ", this.colorsArray);
+    },
+    setRadiusEnd() {
+      this.radiusEnd = parseInt(this.radiusStart) + parseInt(this.lineLength);
+      console.log(`setRadiusEnd: ${this.radiusEnd}`);
+      console.log(`radiusStart: ${this.radiusStart}`);
+      console.log(`lineLength: ${this.lineLength}`);
     },
     generateLines() {
-      console.log('checking inside generateLines for color object issue')
-      console.log(`parseInt(this.H): ${parseInt(this.H)}`)
-      console.log(`this.H: ${this.H}`)
+      this.H = this.H ? this.H : 0;
+      this.S = this.S ? this.S : 0;
+      this.L = this.L ? this.L : 0;
+      this.A = this.A ? this.A : 0;
+      this.startColor = this.startColor ? this.startColor : "#00aaff";
+      this.numLines = this.numLines ? this.numLines : 5;
+      this.radiusStart = this.radiusStart ? this.radiusStart : 50;
+      this.lineLength = this.lineLength ? this.lineLength : 100;
+      this.setRadiusEnd();
+      this.radiusStart = this.radiusStart ? this.radiusStart : 50;
+      console.log("RadialLines generateLines() values:");
+      // console.log(`H: ${this.H}`);
+      // console.log(`S: ${this.S}`);
+      // console.log(`L: ${this.L}`);
+      // console.log(`A: ${this.A}`);
+      // console.log(`startColor: ${this.startColor}`);
+      console.log(`numLines: ${this.numLines}`);
+      console.log(`lineLength: ${this.lineLength}`);
+      console.log(`radiusStart: ${this.radiusStart}`);
       this.makeRadiatingLines(
-        this.numLines,
-        150,
-        175,
+        parseInt(this.numLines),
+        this.radiusStart,
+        this.radiusEnd,
         {
           startColor: this.startColor,
           H: parseInt(this.H),
@@ -171,6 +189,15 @@ export default {
   mounted() {
     this.tempColor = this.startColor ? this.startColor : "#00aaff";
     this.generateLines();
+    // console.log("RadialLines mounted() values:");
+    // console.log(this.H);
+    // console.log(this.S);
+    // console.log(this.L);
+    // console.log(this.A);
+    // console.log(this.startColor);
+    // console.log(this.numLines);
+    // console.log(this.lineLength);
+    // console.log(this.radiusStart);
   },
   watch: {
     numLines() {
@@ -181,7 +208,7 @@ export default {
       this.clearLines();
       this.generateLines();
     },
-    startRadius() {
+    radiusStart() {
       this.clearLines();
       this.generateLines();
     },

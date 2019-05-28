@@ -24,8 +24,8 @@
         </label>
       </figure>
             <figure class="line-size-group">
-        <label for="startRadius">
-          <input type="number" id="startRadius" v-on:keyup.enter="submitProps">Starting Radius
+        <label for="radiusStart">
+          <input type="number" id="radiusStart" v-on:keyup.enter="submitProps">Starting Radius
         </label>
         <label for="lineLength">
           <input type="number" id="lineLength" v-on:keyup.enter="submitProps">Line Length
@@ -36,7 +36,7 @@
     <RadialLines
       :numLines="numLines"
       :startColor="startColor"
-      :startRadius="startRadius"
+      :radiusStart="radiusStart"
       :lineLength="lineLength"
       :H="H"
       :S="S"
@@ -61,7 +61,7 @@ export default {
     return {
       numLines: 5,
       startColor: "#00aaff",
-      startRadius: 100,
+      radiusStart: 100,
       lineLength: 100,
       H: 0,
       S: 0,
@@ -72,23 +72,33 @@ export default {
   },
   methods: {
     submitProps() {
-      let startColor = document.querySelector("#startColor").value;
-      let numLines = document.querySelector("#numLines").value;
-      let startRadius = document.querySelector("#startRadius").value;
-      let lineLength = document.querySelector("#lineLength").value;
-      let H = document.querySelector("#hue").value;
-      let S = document.querySelector("#saturation").value;
-      let L = document.querySelector("#lightness").value;
-      let A = document.querySelector("#alpha").value;
+      let startColor = parseInt(document.querySelector("#startColor").value);
+      let numLines = parseInt(document.querySelector("#numLines").value);
+      let radiusStart = parseInt(document.querySelector("#radiusStart").value);
+      let lineLength = parseInt(document.querySelector("#lineLength").value);
+      let H = parseInt(document.querySelector("#hue").value);
+      let S = parseInt(document.querySelector("#saturation").value);
+      let L = parseInt(document.querySelector("#lightness").value);
+      let A = parseInt(document.querySelector("#alpha").value);
       this.H = H ? H : 0
       this.S = S ? S : 0
       this.L = L ? L : 0
       this.A = A ? A : 0
       this.startColor = startColor ? startColor : "#00aaff"
       this.numLines = numLines ? numLines : 5
-      this.startRadius = startRadius ? startRadius : 50
+      this.radiusStart = radiusStart ? radiusStart : 50
       this.lineLength = lineLength ? lineLength : 100
       this.renderSvg = !this.renderSvg;
+      console.log('submitProps() values:')
+      console.log(this.H)
+      console.log(this.S)
+      console.log(this.L)
+      console.log(this.A)
+      console.log(this.startColor)
+      console.log(this.numLines)
+      console.log(this.lineLength)
+      console.log(this.radiusStart)
+      
     }
   }
 };
