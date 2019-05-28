@@ -86,16 +86,7 @@ export default {
         line.endX = x2;
         line.startY = y1;
         line.endY = y2;
-        line.strokeColor = this.setColor(
-          colors.startColor,
-          colors.H,
-          colors.S,
-          colors.L,
-          colors.A,
-          i,
-          x,
-          y
-        );
+        line.strokeColor = this.colorsArray[i]
         line.strokeWidth = strokeWidth;
         line.lineCap = lineCap;
         lineArray.push(line);
@@ -117,42 +108,25 @@ export default {
     },
     generateColors(numberOfLines, colors, x, y) {
       this.colorsArray = [];
-      for (let i = 0; i <= numberOfLines; i++) {
+      for (let i = 0; i < numberOfLines; i++) {
+        console.log(`${i}: iteration in generateColors()`);
         if (i === 0) {
-          this.tempColor = colors.startColor;
-          this.colorsArray.push(this.tempColor);
+          let hslStartColor = Color(colors.startColor).hsl();
+          this.tempColor = hslStartColor;
+          this.colorsArray.push(hslStartColor);
+          continue;
         }
         let hslColor = Color(this.tempColor).hsl();
         console.log("hslColor as HSL: " + hslColor);
-        let oldHue = hslColor.hue();
-        console.log("hslColor.hue(): " + oldHue);
-        console.log("H: ");
-        console.log(colors.H);
-
-        let newHue = oldHue + colors.H;
-        console.log("newHue: " + newHue);
-        this.tempColor = hslColor.hue(newHue);
+        let hue = hslColor.hue();
+        console.log("hslColor.hue(): " + hue);
+        hue = hue + colors.H;
+        console.log("newHue: " + hue);
+        this.tempColor = hslColor.hue(hue);
         console.log("new this.tempColor: " + this.tempColor);
-        this.colorsArray.push(hslColor);
+        this.colorsArray.push(this.tempColor);
       }
       console.log("colorsArray: ", this.colorsArray);
-      // return this.colorsArray
-    },
-    setColor(startColor, H, S, L, A, i, x, y) {
-      if (i === 0) {
-        this.tempColor = this.startColor;
-        return this.startColor;
-      }
-
-      // console.log('RadialLines.vue startColor: ' + this.startColor)
-      let newColor = Color(this.tempColor).hsl();
-      let oldHue = newColor.hue();
-      let newHue = oldHue + H;
-      // console.log("newHue: " + newColor.hue(newHue));
-      // console.log(`HSLA variables: H: ${H} S: ${S} L: ${L} A: ${A}, i: ${i}`);
-      this.tempColor = newColor.hue(newHue);
-
-      return newColor;
     },
     generateLines() {
       this.makeRadiatingLines(
@@ -187,6 +161,22 @@ export default {
       this.generateLines();
     },
     startColor() {
+      this.clearLines();
+      this.generateLines();
+    },
+    H() {
+      this.clearLines();
+      this.generateLines();
+    },
+    S() {
+      this.clearLines();
+      this.generateLines();
+    },
+    L() {
+      this.clearLines();
+      this.generateLines();
+    },
+    A() {
       this.clearLines();
       this.generateLines();
     }

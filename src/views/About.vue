@@ -67,18 +67,6 @@ export default {
       this.L = document.querySelector("#lightness").value;
       this.A = document.querySelector("#alpha").value;
       this.renderSvg = !this.renderSvg;
-      console.log(
-        "About.vue submitProps(): ",
-        this.renderSvg,
-        this.numLines,
-        this.startColor
-      );
-    // let color = Color(startColor)
-    // console.log('color object')
-    // console.log(startColor)
-    //     console.log('color value')
-    // console.log(startColor.value)
-    // console.log(Color(startColor.value).hsl())
     }
   }
 };
