@@ -2,14 +2,14 @@
   <div class="about">
     <h1>This is an about page test</h1>
     <form class="radial-lines-settings-form">
-      <input type="text" id="numLines" v-on:keyup.enter="submitProps">Number of lines
+      <input type="number" id="numLines" placeholder="10" v-on:keyup.enter="submitProps">Number of lines
       <input
         type="color"
         value="#2468ff"
         id="startColor"
         v-on:keyup.enter="submitProps"
       >Starting Color (hex)
-      <input-group class="input-group">
+      <figure class="hsla-group">
         <label for="hue">
           <input type="number" id="hue" v-on:keyup.enter="submitProps">Modify Hue
         </label>
@@ -22,12 +22,22 @@
         <label for="alpha">
           <input type="number" id="alpha" v-on:keyup.enter="submitProps">Modify Opacity
         </label>
-      </input-group>
+      </figure>
+            <figure class="line-size-group">
+        <label for="startRadius">
+          <input type="number" id="startRadius" v-on:keyup.enter="submitProps">Starting Radius
+        </label>
+        <label for="lineLength">
+          <input type="number" id="lineLength" v-on:keyup.enter="submitProps">Line Length
+        </label>
+      </figure>
       <button class="button" @click="submitProps">Apply</button>
     </form>
     <RadialLines
       :numLines="numLines"
       :startColor="startColor"
+      :startRadius="startRadius"
+      :lineLength="lineLength"
       :H="H"
       :S="S"
       :L="L"
@@ -49,8 +59,10 @@ export default {
   },
   data() {
     return {
-      numLines: "",
+      numLines: 5,
       startColor: "#00aaff",
+      startRadius: 100,
+      lineLength: 100,
       H: 0,
       S: 0,
       L: 0,
@@ -60,12 +72,22 @@ export default {
   },
   methods: {
     submitProps() {
-      this.startColor = document.querySelector("#startColor").value;
-      this.numLines = document.querySelector("#numLines").value;
-      this.H = document.querySelector("#hue").value;
-      this.S = document.querySelector("#saturation").value;
-      this.L = document.querySelector("#lightness").value;
-      this.A = document.querySelector("#alpha").value;
+      let startColor = document.querySelector("#startColor").value;
+      let numLines = document.querySelector("#numLines").value;
+      let startRadius = document.querySelector("#startRadius").value;
+      let lineLength = document.querySelector("#lineLength").value;
+      let H = document.querySelector("#hue").value;
+      let S = document.querySelector("#saturation").value;
+      let L = document.querySelector("#lightness").value;
+      let A = document.querySelector("#alpha").value;
+      this.H = H ? H : 0
+      this.S = S ? S : 0
+      this.L = L ? L : 0
+      this.A = A ? A : 0
+      this.startColor = startColor ? startColor : "#00aaff"
+      this.numLines = numLines ? numLines : 5
+      this.startRadius = startRadius ? startRadius : 50
+      this.lineLength = lineLength ? lineLength : 100
       this.renderSvg = !this.renderSvg;
     }
   }
@@ -73,7 +95,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.input-group {
+.hsla-group, .line-size-group {
   display: flex;
   justify-content: space-around;
   margin: 1em 0 0 0;

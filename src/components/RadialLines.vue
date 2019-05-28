@@ -11,7 +11,17 @@ import Color from "color";
 
 export default {
   name: "RadialLines",
-  props: ["numLines", "startColor", "renderSvg", "H", "S", "L", "A"],
+  props: [
+    "numLines",
+    "startColor",
+    "startRadius",
+    "lineLength",
+    "H",
+    "S",
+    "L",
+    "A",
+    "renderSvg",
+  ],
   data() {
     return {
       render: this.renderSvg,
@@ -68,6 +78,8 @@ export default {
         angle = 0;
       let x = numberOfLines % 2;
       let y = Math.floor(numberOfLines / 2);
+      console.log(`colors object before calling generateColors()`)
+      console.log(colors)
       this.generateColors(numberOfLines, colors, x, y);
       for (let i = 0; i <= numberOfLines; i++) {
         console.log(i);
@@ -86,7 +98,7 @@ export default {
         line.endX = x2;
         line.startY = y1;
         line.endY = y2;
-        line.strokeColor = this.colorsArray[i]
+        line.strokeColor = this.colorsArray[i];
         line.strokeWidth = strokeWidth;
         line.lineCap = lineCap;
         lineArray.push(line);
@@ -107,6 +119,8 @@ export default {
       });
     },
     generateColors(numberOfLines, colors, x, y) {
+            console.log(`colors object after calling generateColors()`)
+      console.log(colors)
       this.colorsArray = [];
       for (let i = 0; i < numberOfLines; i++) {
         console.log(`${i}: iteration in generateColors()`);
@@ -129,6 +143,9 @@ export default {
       console.log("colorsArray: ", this.colorsArray);
     },
     generateLines() {
+      console.log('checking inside generateLines for color object issue')
+      console.log(`parseInt(this.H): ${parseInt(this.H)}`)
+      console.log(`this.H: ${this.H}`)
       this.makeRadiatingLines(
         this.numLines,
         150,
@@ -161,6 +178,14 @@ export default {
       this.generateLines();
     },
     startColor() {
+      this.clearLines();
+      this.generateLines();
+    },
+    startRadius() {
+      this.clearLines();
+      this.generateLines();
+    },
+    lineLength() {
       this.clearLines();
       this.generateLines();
     },
