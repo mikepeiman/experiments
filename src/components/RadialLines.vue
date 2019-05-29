@@ -16,6 +16,7 @@ export default {
     "startColor",
     "radiusStart",
     "lineLength",
+    "strokeWidth",
     "H",
     "S",
     "L",
@@ -150,7 +151,7 @@ export default {
       this.L = this.L ? this.L : 0;
       this.A = this.A ? this.A : 0;
       this.startColor = this.startColor ? this.startColor : "#00aaff";
-      this.numLines = this.numLines ? this.numLines : 5;
+      this.numLines = this.numLines ? this.numLines : 6;
       this.radiusStart = this.radiusStart ? this.radiusStart : 50;
       this.lineLength = this.lineLength ? this.lineLength : 100;
       this.setRadiusEnd();
@@ -164,6 +165,7 @@ export default {
       console.log(`numLines: ${this.numLines}`);
       console.log(`lineLength: ${this.lineLength}`);
       console.log(`radiusStart: ${this.radiusStart}`);
+      console.log(`strokeWidth: ${this.strokeWidth}`);
       this.makeRadiatingLines(
         parseInt(this.numLines),
         this.radiusStart,
@@ -175,7 +177,7 @@ export default {
           L: parseInt(this.L),
           A: parseInt(this.A)
         },
-        "15px",
+        this.strokeWidth,
         "round"
       );
     },
@@ -189,15 +191,6 @@ export default {
   mounted() {
     this.tempColor = this.startColor ? this.startColor : "#00aaff";
     this.generateLines();
-    // console.log("RadialLines mounted() values:");
-    // console.log(this.H);
-    // console.log(this.S);
-    // console.log(this.L);
-    // console.log(this.A);
-    // console.log(this.startColor);
-    // console.log(this.numLines);
-    // console.log(this.lineLength);
-    // console.log(this.radiusStart);
   },
   watch: {
     numLines() {
@@ -213,6 +206,10 @@ export default {
       this.generateLines();
     },
     lineLength() {
+      this.clearLines();
+      this.generateLines();
+    },
+    strokeWidth() {
       this.clearLines();
       this.generateLines();
     },
