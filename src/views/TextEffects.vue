@@ -1,6 +1,6 @@
 <template>
 <div class="about">
-<h1>Hello!</h1>
+<h1>CSS Text Effects</h1>
 </div>
 </template>
 
@@ -8,7 +8,7 @@
 import Color from "color";
 
 export default {
-  name: "about",
+  name: "home",
 
   data() {
     return {

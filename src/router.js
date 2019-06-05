@@ -19,6 +19,24 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () =>
         import(/* webpackChunkName: "about" */ "./views/About.vue")
+    },
+    {
+      path: "/experiments",
+      name: "experiments",
+      component: () =>
+        import(/* webpackChunkName: "experiments" */ "./views/Experiments.vue")
+    },
+    {
+      path: "/radialSVG",
+      name: "radialSVG",
+      component: () =>
+        import(/* webpackChunkName: "experiments" */ "./views/RadialSVG.vue")
+    },
+    {
+      path: "/text-effects",
+      name: "text-effects",
+      component: () =>
+        import("./views/TextEffects.vue")
     }
   ]
 });
