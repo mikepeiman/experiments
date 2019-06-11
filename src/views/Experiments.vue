@@ -3,8 +3,8 @@
   <h1>Experiments, Learning Projects and Fun Stuff</h1>
   <div class="nav-container">
     <nav class="experiments-nav">
-      <router-link to="/radialSVG">Radial SVG Generator</router-link>
-      <router-link to="/text-effects">CSS Text Effects</router-link>
+      <router-link to="/experiments/radialSVG">Radial SVG Generator</router-link>
+      <router-link to="/experiments/text-effects">CSS Text Effects</router-link>
     </nav>
   </div>
 </div>

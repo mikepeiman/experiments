@@ -21,19 +21,25 @@ export default new Router({
         import(/* webpackChunkName: "about" */ "./views/About.vue")
     },
     {
+      path: "/blog",
+      name: "blog",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "./views/Blog.vue")
+    },
+    {
       path: "/experiments",
       name: "experiments",
       component: () =>
         import(/* webpackChunkName: "experiments" */ "./views/Experiments.vue")
     },
     {
-      path: "/radialSVG",
+      path: "/experiments/radialSVG",
       name: "radialSVG",
       component: () =>
         import(/* webpackChunkName: "experiments" */ "./views/RadialSVG.vue")
     },
     {
-      path: "/text-effects",
+      path: "/experiments/text-effects",
       name: "text-effects",
       component: () =>
         import("./views/TextEffects.vue")

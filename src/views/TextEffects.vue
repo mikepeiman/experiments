@@ -3,7 +3,7 @@
   <h1>CSS Text Effects</h1>
 
   <div class="text-effects-container">
-    <p id="textToTransform">Malakaya</p>
+    <p id="textToTransform">Any Word or phrase</p>
   </div>
   <button @click="gettext">Get Text</button>
   <button @click="convertLettersToList">String to array</button>
@@ -38,10 +38,18 @@ export default {
     convertLettersToList() {
       this.textArray = this.oldInnerText.split("");
       console.log(`array from string: ${this.textArray}`);
+      this.textArray = this.textArray.map(letter => {
+        return letter === " " ? letter = "-" : letter
+      })
+      console.log(`array from string: ${this.textArray}`);
     },
     convertArrayToListItems() {
       this.lettersAsListItems = this.textArray.map(
-        (x, i) => `<li style="transition-delay: ${i / 10}s">${x}</li>`
+        (x, i) => {
+          return x === "-" 
+          ? `<li style="transition-delay: ${i / 10}s; opacity: 0;">${x}</li>`
+          : `<li style="transition-delay: ${i / 10}s;">${x}</li>`
+        }
       );
       console.log(`new HTML: ${this.lettersAsListItems}`);
     },
@@ -51,7 +59,6 @@ export default {
       ul.setAttribute("class", "animated-text");
 
       this.lettersAsListItems.forEach((li, i) => {
-        // li.setAttribute('style', `transition-duration: ${i}`)
         ul.innerHTML += li;
         console.log(`li: ${i}: ${li}`);
       });
@@ -63,6 +70,7 @@ export default {
 
 <style lang="scss">
 .text-effects-container {
+  font-size: 2em;
   display: flex;
   justify-content: center;
   padding: 2em;
@@ -77,7 +85,7 @@ ul.animated-text {
 
 ul.animated-text li {
   font-size: 2em;
-  letter-spacing: 1ch;
+  letter-spacing: .5ch;
   transform: rotate(0deg) translateY(0px);
   filter: blur(0px);
   transition: all 2s;
