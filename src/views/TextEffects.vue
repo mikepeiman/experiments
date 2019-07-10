@@ -16,7 +16,7 @@
 import Color from "color";
 
 export default {
-  name: "home",
+  name: "textEffects",
 
   data() {
     return {

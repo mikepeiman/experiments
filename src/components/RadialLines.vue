@@ -236,13 +236,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style lang="scss" scoped>
-body {
-  background: #f5f5f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-}
+// body {
+//   background: #f5f5f5;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 16px;
+// }
 
 .block-container {
   position: relative;
@@ -348,7 +348,7 @@ svg {
 .radial-lines {
   opacity: 1;
   transition: opacity 0.25s, transform 0.75s;
-}10
+}
 
 svg:hover .radial-lines {
   transform: rotate(720deg);
@@ -357,5 +357,14 @@ svg:hover .radial-lines {
 .block-container:hover .radial-lines {
     transform: rotate(720deg);
   opacity: 0.5;
+}
+
+input {
+    border: none;
+    padding: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,.25);
+    color: white;
+    margin-bottom: .25rem;
 }
 </style>
