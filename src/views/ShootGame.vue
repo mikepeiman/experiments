@@ -1,10 +1,11 @@
 <template>
   <div class="about">
     <div class="experiment">
+<!--       
       <form class="radial-lines-settings-form heading">
         <div class="heading">
-          <h1>Radial SVG Line Generator</h1>
-          <p>By Mike Peiman</p>
+          <h1>Shoot</h1>
+          <p>A game by Mike Peiman</p>
         </div>
         <figure class="line-size-group">
           <label for="numLines">
@@ -94,19 +95,10 @@
         </figure>
 
         <button class="button" :style="`background: ${startColor}`" @click="submitProps">Apply</button>
-      </form>
-      <Shoot
-        :numLines="numLines"
-        :startColor="startColor"
-        :radiusStart="radiusStart"
-        :lineLength="lineLength"
-        :strokeWidth="strokeWidth"
-        :H="H"
-        :S="S"
-        :L="L"
-        :A="A"
-        :renderSvg="renderSvg"
-      />
+      </form> -->
+
+      <Shoot />
+
     </div>
   </div>
 </template>
@@ -123,48 +115,10 @@ export default {
   },
   data() {
     return {
-      numLines: 6,
-      startColor: "#00aaff",
-      radiusStart: 50,
-      lineLength: 100,
-      strokeWidth: 15,
-      H: 40,
-      S: 100,
-      L: 50,
-      A: 1,
-      renderSvg: false
     };
   },
   methods: {
     submitProps() {
-      let startColor = document.querySelector("#startColor").value;
-      let numLines = parseInt(document.querySelector("#numLines").value);
-      let radiusStart = parseInt(document.querySelector("#radiusStart").value);
-      let lineLength = parseInt(document.querySelector("#lineLength").value);
-      let strokeWidth = parseInt(document.querySelector("#strokeWidth").value);
-      let H = parseInt(document.querySelector("#hue").value);
-      let S = parseInt(document.querySelector("#saturation").value);
-      let L = parseInt(document.querySelector("#lightness").value);
-      let A = parseInt(document.querySelector("#alpha").value);
-      this.H = H; //? H : 0;
-      this.S = S; //? S : 0;
-      this.L = L; //? L : 0;
-      this.A = A; //? A : 0;
-      this.startColor = startColor; //? startColor : "#00aaff";
-      this.numLines = numLines; //? numLines : 5;
-      this.radiusStart = radiusStart; //? radiusStart : 50;
-      this.lineLength = lineLength; //? lineLength : 100;
-      this.strokeWidth = strokeWidth;
-      this.renderSvg = !this.renderSvg;
-      console.log("submitProps() values:");
-      console.log(this.H);
-      console.log(this.S);
-      console.log(this.L);
-      console.log(this.A);
-      console.log(this.startColor);
-      console.log(this.numLines);
-      console.log(this.lineLength);
-      console.log(this.radiusStart);
     }
   }
 };
