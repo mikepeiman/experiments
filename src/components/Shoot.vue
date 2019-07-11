@@ -39,7 +39,7 @@ export default {
 
         // create renderer
         var render = Render.create({
-          element: document.body,
+          element: document.querySelector('#shoot'),
           engine: engine,
           options: {
             width: window.innerWidth,
@@ -153,6 +153,7 @@ export default {
   transition: all 0.5s;
   padding: 0;
   margin: 0;
+  background-image: black;
   z-index: 99;
 }
 
