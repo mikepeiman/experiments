@@ -4,6 +4,7 @@
   <div class="nav-container">
     <nav class="experiments-nav">
       <router-link to="/experiments/radialSVG">Radial SVG Generator</router-link>
+      <router-link to="/experiments/shoot">Shoot Game</router-link>
       <router-link to="/experiments/text-effects">CSS Text Effects</router-link>
     </nav>
   </div>

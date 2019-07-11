@@ -350,13 +350,14 @@ svg {
   transition: opacity 0.25s, transform 0.75s;
 }
 
-svg:hover .radial-lines {
-  transform: rotate(720deg);
-  opacity: 0.5;
-}
+// svg:hover .radial-lines {
+//   transform: rotate(720deg);
+//   opacity: 0.5;
+// }
+
 .block-container:hover .radial-lines {
-    transform: rotate(720deg);
-  opacity: 0.5;
+    transform: rotate(720deg) scale(1.2);
+  opacity: 1;
 }
 
 input {

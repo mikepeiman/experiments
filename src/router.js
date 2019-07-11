@@ -39,6 +39,12 @@ export default new Router({
         import(/* webpackChunkName: "experiments" */ "./views/RadialSVG.vue")
     },
     {
+      path: "/experiments/shoot",
+      name: "Shoot",
+      component: () =>
+        import(/* webpackChunkName: "experiments" */ "./views/ShootGame.vue")
+    },
+    {
       path: "/experiments/text-effects",
       name: "text-effects",
       component: () =>
