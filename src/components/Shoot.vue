@@ -1,9 +1,12 @@
 <template>
-  <div id="shoot" class="block-container">
-    <!-- <svg id="svgLines" width="100%" height="100%" viewBox="-256 -256 512 512">
-      <g class="radial-lines"></g>
-    </svg>-->
-  </div>
+
+<div class="shoot block-container">
+      <button id="refresh" @click="refresh()">Refresh</button>
+    <div id="shoot" @click="bg()">
+    </div>
+
+</div>
+      
 </template>
 
 <script>
@@ -15,9 +18,25 @@ export default {
     this.runSlingshot();
     // Matter-js module loading and simple demo
     // module aliases
-
   },
   methods: {
+    bg() {
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "blue";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    },
+    rect(x, y, width, height, color) {
+      return Matter.Bodies.rectangle(x, y, width, height, {
+        isStatic: true,
+        restitution: 1,
+        render: { fillStyle: color }
+      });
+    },
+    refresh() {
+      this.runSlingshot();
+      this.runSlingshot();
+    },
     runSlingshot() {
       var Example = Example || {};
 
@@ -39,7 +58,7 @@ export default {
 
         // create renderer
         var render = Render.create({
-          element: document.querySelector('#shoot'),
+          element: document.querySelector("#shoot"),
           engine: engine,
           options: {
             width: window.innerWidth,
@@ -55,21 +74,21 @@ export default {
         Runner.run(runner, engine);
 
         // add bodies
-        var ground = Bodies.rectangle(395, 600, 815, 50, { isStatic: true }),
+        var ground = Bodies.rectangle(395, 525, 815, 5, { isStatic: true }),
           rockOptions = { density: 0.004 },
-          rock = Bodies.polygon(170, 450, 8, 20, rockOptions),
-          anchor = { x: 170, y: 450 },
+          rock = Bodies.polygon(170, 400, 8, 20, rockOptions),
+          anchor = { x: 170, y: 400 },
           elastic = Constraint.create({
             pointA: anchor,
             bodyB: rock,
             stiffness: 0.05
           });
 
-        var pyramid = Composites.pyramid(500, 300, 9, 10, 0, 0, function(x, y) {
-          return Bodies.rectangle(x, y, 25, 40);
+        var pyramid = Composites.pyramid(500, 350, 9, 10, 0, 0, function(x, y) {
+          return Bodies.rectangle(x, y, 25, 25);
         });
 
-        var ground2 = Bodies.rectangle(610, 250, 200, 20, { isStatic: true });
+        var ground2 = Bodies.rectangle(610, 220, 200, 20, { isStatic: true });
 
         var pyramid2 = Composites.pyramid(550, 0, 5, 10, 0, 0, function(x, y) {
           return Bodies.rectangle(x, y, 25, 40);
@@ -87,9 +106,9 @@ export default {
         Events.on(engine, "afterUpdate", function() {
           if (
             mouseConstraint.mouse.button === -1 &&
-            (rock.position.x > 190 || rock.position.y < 430)
+            (rock.position.x > 190 || rock.position.y < 350)
           ) {
-            rock = Bodies.polygon(170, 450, 7, 20, rockOptions);
+            rock = Bodies.polygon(170, 400, 7, 20, rockOptions);
             World.add(engine.world, rock);
             elastic.bodyB = rock;
           }
@@ -130,8 +149,8 @@ export default {
           }
         };
       };
-      console.log('example')
-      console.log(Example)
+      console.log("example");
+      console.log(Example);
       Example.slingshot();
     }
   }
@@ -141,6 +160,23 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style lang="scss" scoped>
+
+#refresh {
+  z-index: 100;
+  background: #005599;
+  color: white;
+  padding: 1rem;
+  border: 1px solid #00aaff;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  box-shadow: 0px 0px 0px 2px #005599;
+  transition: all .25s;
+  &:hover {
+    background: white;
+    color: #00aaff;
+  }
+}
 .block-container {
   position: relative;
   overflow: hidden;
@@ -153,7 +189,7 @@ export default {
   transition: all 0.5s;
   padding: 0;
   margin: 0;
-  background-image: black;
+  background: rgba(white, 0.25);
   z-index: 99;
 }
 
