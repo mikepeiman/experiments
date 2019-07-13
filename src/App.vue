@@ -22,7 +22,7 @@ body {
   margin: 0;
   padding: 0;
   background-image:url('./assets/leather-nunchuck.png');
-  color: white;
+  color: #aaccee;
 }
 
 #app {
@@ -32,7 +32,7 @@ body {
   text-align: center;
   height: 100vh;
   width: 100vw;
-  color: #2c3e50;
+  color: #aaccee;
   // background: rgba(100, 200, 255, 0.5);
   display: grid;
   grid-template-rows: [nav] 80px [main] calc(100vh - 80px);
@@ -55,7 +55,7 @@ body {
 .content {
   grid-column: content;
   grid-row-start: 1;
-  color: white;
+  color: #eeefff;
   // grid-row: main;
   // background: rgba(0, 200, 0, 0.5);
 }

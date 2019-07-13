@@ -24,9 +24,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1 {
-  color: black;
-}
+
 .nav-container {
   display: grid;
   grid-template-columns: 40% 1fr 40%;

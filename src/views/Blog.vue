@@ -47,7 +47,4 @@ export default {
   max-height: 100%;
 }
 
-h1 {
-  color: black;
-}
 </style>  
