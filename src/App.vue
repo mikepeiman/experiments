@@ -77,12 +77,12 @@ body {
 .left {
   grid-column: left;
   // grid-row: main;
-  background: rgba(255, 0, 0, 0.5);
+  // background: rgba(255, 0, 0, 0.5);
 }
 
 .right {
   grid-column: right;
   // grid-row: main;
-  background: rgba(0, 0, 255, 0.5);
+  // background: rgba(0, 0, 255, 0.5);
 }
 </style>
