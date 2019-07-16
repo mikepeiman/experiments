@@ -109,7 +109,7 @@ import Shoot from "@/components/Shoot.vue";
 import Color from "color";
 
 export default {
-  name: "ShootGame",
+  name: "shootgame",
   components: {
     Shoot
   },

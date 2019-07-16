@@ -36,7 +36,7 @@ import axios from "axios";
 import Airtable from "airtable";
 
 export default {
-  name: "graphcms",
+  name: "airtable",
 
   data() {
     return {

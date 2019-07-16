@@ -117,7 +117,7 @@ import RadialLines from "@/components/RadialLines.vue";
 import Color from "color";
 
 export default {
-  name: "radialSvg",
+  name: "radialsvg",
   components: {
     RadialLines
   },

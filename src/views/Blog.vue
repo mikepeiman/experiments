@@ -1,32 +1,27 @@
 <template>
-  <div class="blog">
-    <h1 class="title clear">Blog!</h1>
-    <h2 class="subtitle clear">Subtitle</h2>
-    <div class="article clear">
-      <div class="products-wrapper">
-        <div class="product-details" v-for="record in records">
-          <div class="single-product-detail">{{ record.fields.make }}</div>
-          <div class="single-product-detail">{{ record.fields.model }}</div>
-          <div class="single-product-detail">{{ record.fields.version}}</div>
-        </div>
-      </div>
-    </div>
-    <form class="product-form">
-      <label for="productName">
-        Product name
-        <input type="text" name="productName" id="productName" />
-      </label>
-      <label for="productModel">
-        Product model
-        <input type="text" name="productModel" id="productModel" />
-      </label>
-      <label for="productVersion">
-        Product version
-        <input type="text" name="productVersion" id="productVersion" />
-      </label>
-      <button @click.prevent="postData()">Add New Record</button>
-      <button @click.prevent="getData()">Refresh Records View</button>
-    </form>
+  <div>
+    <h1>BLOG</h1>
+    <section v-if="allPosts">
+      <ul>
+        <li v-for="post in allPosts" :key="post.id">
+          <router-link :to="`/post/${post.slug}`" class="link">
+            <div class="placeholder">
+              <img
+                :alt="post.title"
+                :src="`https://media.graphcms.com/resize=w:100,h:100,fit:crop/${post.coverImage.handle}`"
+              />
+            </div>
+            <h3>{{post.title}}</h3>
+          </router-link>
+        </li>
+      </ul>
+      <button v-if="postCount && postCount > allPosts.length" @click="loadMorePosts">
+        {{loading ? 'Loading...' : 'Show more'}}
+      </button>
+    </section>
+    <h2 v-else>
+      Loading...
+    </h2>
   </div>
 </template>
 
@@ -36,62 +31,8 @@ import axios from "axios";
 import Airtable from "airtable";
 
 export default {
-  name: "about",
-
-  data() {
-    return {
-      records: [],
-      API_URL: process.env.VUE_APP_AIRTABLE_URI,
-      API_KEY: process.env.VUE_APP_AIRTABLE_API_KEY,
-      BASE: "appP3Ar7WtMKMd6Hu/",
-      TABLE: "Test%20Table/"
-    };
-  },
-  created() {
-    // let airtable = new Airtable({ apiKey: this.API_KEY, endpointUrl: this.API_URL });
-    this.getData();
-  },
-  methods: {
-    getData() {
-      // const API_URL = process.env.VUE_APP_AIRTABLE_URI;
-      // const API_KEY = process.env.VUE_APP_AIRTABLE_API_KEY;
-      // const BASE = process.env.VUE_APP_AIRTABLE_BASE;
-      axios({
-        method: "get",
-        url: this.API_URL + this.BASE + this.TABLE,
-        headers: {
-          Authorization: `Bearer ${this.API_KEY}`
-        }
-      }).then(res => {
-        this.records = res.data.records;
-      });
-    },
-    postData() {
-      let productName = document.querySelector("#productName").value;
-      let productVersion = document.querySelector("#productVersion").value;
-      let productModel = document.querySelector("#productModel").value;
-      console.log(`postData function called with ${productName}`);
-      console.log(`postData function called with ${productModel}`);
-      console.log(`postData function called with ${productVersion}`);
-      axios({
-        method: "post",
-        url: this.API_URL + this.BASE + this.TABLE,
-        headers: {
-          Authorization: `Bearer ${this.API_KEY}`
-        },
-        data: {
-          fields: {
-            make: productName,
-            model: productModel,
-            version: productVersion
-          }
-        }
-      }).then(res => {
-        this.records = res.data.records;
-      });
-    }
-  }
-};
+  name: "blog",
+}
 </script>
 
 <style lang="scss" scoped>

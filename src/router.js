@@ -1,6 +1,14 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
+import About from "./views/About.vue";
+import Blog from "./views/Blog.vue";
+import GraphCMS from "./views/GraphCMS.vue";
+import Experiments from "./views/Experiments.vue";
+import RadialSVG from "./views/RadialSVG.vue";
+import ShootGame from "./views/ShootGame.vue";
+import TextEffects from "./views/TextEffects.vue";
+import Airtable from "./views/Airtable.vue";
 
 Vue.use(Router);
 
@@ -18,35 +26,47 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
+        import("./views/About.vue")
     },
     {
       path: "/blog",
       name: "blog",
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/Blog.vue")
+        import("./views/Blog.vue")
+    },
+    {
+      path: "/graphcms",
+      name: "graphcms",
+      component: () =>
+        import("./views/GraphCMS.vue")
+    },
+    {
+      path: "/airtable",
+      name: "airtable",
+      component: () =>
+        import("./views/Airtable.vue")
     },
     {
       path: "/experiments",
       name: "experiments",
       component: () =>
-        import(/* webpackChunkName: "experiments" */ "./views/Experiments.vue")
+        import( "./views/Experiments.vue")
     },
     {
       path: "/experiments/radialSVG",
-      name: "radialSVG",
+      name: "radialsvg",
       component: () =>
-        import(/* webpackChunkName: "experiments" */ "./views/RadialSVG.vue")
+        import( "./views/RadialSVG.vue")
     },
     {
       path: "/experiments/shoot",
-      name: "Shoot",
+      name: "shoot",
       component: () =>
-        import(/* webpackChunkName: "experiments" */ "./views/ShootGame.vue")
+        import( "./views/ShootGame.vue")
     },
     {
       path: "/experiments/text-effects",
-      name: "text-effects",
+      name: "texteffects",
       component: () =>
         import("./views/TextEffects.vue")
     }

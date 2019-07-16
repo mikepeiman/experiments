@@ -149,8 +149,6 @@ export default {
           }
         };
       };
-      console.log("example");
-      console.log(Example);
       Example.slingshot();
     }
   }
