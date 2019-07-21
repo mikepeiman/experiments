@@ -1,58 +1,47 @@
 <template>
-  <div class="workouts">
-    <form action class="form-container">
-      <h1>5-3-1!</h1>
-      <section class="biometrics">
-        <label for="height">
-          Height
-          <input type="text" class="biometrics" name="height" placeholder="(inches)" />
-        </label>
-        <label for="weight">
-          Weight
-          <input type="text" class="biometrics" name="weight" placeholder="(pounds)" />
-        </label>
-        <label :for="exerciseCombos[currentCombo].exercise1.name">
-          {{ exerciseCombos[currentCombo].exercise1.name}}
-          <input
-            type="text"
-            :class="exerciseCombos[currentCombo].exercise1.name"
-            :name="exerciseCombos[currentCombo].exercise1.name"
-            v-model="exerciseCombos[currentCombo].exercise1.max"
-            placeholder="(pounds)"
-          />
-        </label>
-        <label :for="exerciseCombos[currentCombo].exercise2.name">
-          {{ exerciseCombos[currentCombo].exercise2.name}}
-          <input
-            type="text"
-            :class="exerciseCombos[currentCombo].exercise2.name"
-            :name="exerciseCombos[currentCombo].exercise2.name"
-            v-model="exerciseCombos[currentCombo].exercise2.max"
-            placeholder="(pounds)"
-          />
-        </label>
-      </section>
-      <section class="training-program">
-        <section class="exercise-container" v-for="exercise in exercises">
-          <div>
-            <div class="exercise-headings">
-              <h2>{{ exerciseCombos[currentCombo][Object.keys(exerciseCombos[currentCombo])[exercise-1]].name }}</h2>
-              <h3>1RM: {{ exerciseCombos[currentCombo][Object.keys(exerciseCombos[currentCombo])[exercise-1]].max }}</h3>
+<div class="workouts">
+  <form action class="form-container">
+    <h1>5-3-1!</h1>
+    <section class="biometrics">
+      <label for="height">
+        Height
+        <input type="text" class="biometrics" name="height" placeholder="(inches)" />
+      </label>
+      <label for="weight">
+        Weight
+        <input type="text" class="biometrics" name="weight" placeholder="(pounds)" />
+      </label>
+      <label :for="exerciseCombos[currentCombo].exercise1.name">
+        {{ exerciseCombos[currentCombo].exercise1.name}}
+        <input type="text" :class="exerciseCombos[currentCombo].exercise1.name" :name="exerciseCombos[currentCombo].exercise1.name" v-model="exerciseCombos[currentCombo].exercise1.max" placeholder="(pounds)" />
+      </label>
+      <label :for="exerciseCombos[currentCombo].exercise2.name">
+        {{ exerciseCombos[currentCombo].exercise2.name}}
+        <input type="text" :class="exerciseCombos[currentCombo].exercise2.name" :name="exerciseCombos[currentCombo].exercise2.name" v-model="exerciseCombos[currentCombo].exercise2.max" placeholder="(pounds)" />
+      </label>
+    </section>
+    <section class="training-program">
+      <section class="exercise-container" v-for="exercise in exercises">
+        <div>
+          <div class="exercise-headings">
+            <h2>{{ exerciseCombos[currentCombo][Object.keys(exerciseCombos[currentCombo])[exercise-1]].name }}</h2>
+            <h3>1RM: {{ exerciseCombos[currentCombo][Object.keys(exerciseCombos[currentCombo])[exercise-1]].max }}</h3>
+          </div>
+          <div class="week-container" v-for="week in weeks">
+            <h2 class="week-title">Week {{ week.week }}</h2>
+            <div class="column-headings">
+              <div v-for="column in columns" :style="`width: ${column.width}`">{{ column.name }}</div>
             </div>
-            <div class="week-container" v-for="week in weeks">
-              <h2 class="week-title">Week {{ week }}</h2>
-              <div class="sets">
-                <div class="columns" v-for="column in columns" :style="`width: ${column.width}`">
-                  {{ column.name }}
-                  <div class="subset" v-for="subset in subsets">0</div>
-                </div>
-              </div>
+
+            <div class="sets">
+              <div class="subset" v-for="set in week.sets">{{ Object.values(set) }}</div>
             </div>
           </div>
-        </section>
+        </div>
       </section>
-    </form>
-  </div>
+    </section>
+  </form>
+</div>
 </template>
 
 <script>
@@ -63,8 +52,7 @@ export default {
 
   data() {
     return {
-      exerciseCombos: [
-        {
+      exerciseCombos: [{
           exercise1: {
             name: "Deadlift",
             max: null
@@ -99,15 +87,115 @@ export default {
       exercises: 2,
       weeks: 4,
       sets: 3,
-      columns: [
-        { name: "Reps", width: "10ch" },
-        { name: "Load", width: "10ch" },
-        { name: "%", width: "5ch" },
-        { name: "Volume", width: "10ch" }
+      columns: [{
+          name: "Reps",
+          width: "10ch"
+        },
+        {
+          name: "Load",
+          width: "10ch"
+        },
+        {
+          name: "%",
+          width: "5ch"
+        },
+        {
+          name: "Volume",
+          width: "10ch"
+        }
       ],
       subsets: 3,
       max1: 0,
-      max2: 0
+      max2: 0,
+      weeks: [{
+          week: 1,
+          sets: [{
+              reps: 5,
+              percentage: 65,
+              load: null,
+              volume: null
+            },
+            {
+              reps: 5,
+              percentage: 75,
+              load: null,
+              volume: null
+            },
+            {
+              reps: 5,
+              percentage: 85,
+              load: null,
+              volume: null
+            }
+          ]
+        },
+        {
+          week: 2,
+          sets: [{
+              reps: 3,
+              percentage: 70,
+              load: null,
+              volume: null
+            },
+            {
+              reps: 3,
+              percentage: 80,
+              load: null,
+              volume: null
+            },
+            {
+              reps: 3,
+              percentage: 90,
+              load: null,
+              volume: null
+            }
+          ]
+        },
+        {
+          week: 3,
+          sets: [{
+              reps: 1,
+              percentage: 75,
+              load: null,
+              volume: null
+            },
+            {
+              reps: 1,
+              percentage: 85,
+              load: null,
+              volume: null
+            },
+            {
+              reps: 1,
+              percentage: 95,
+              load: null,
+              volume: null
+            }
+          ]
+        },
+        {
+          week: 4,
+          sets: [{
+              reps: 5,
+              percentage: 40,
+              load: null,
+              volume: null
+            },
+            {
+              reps: 5,
+              percentage: 50,
+              load: null,
+              volume: null
+            },
+            {
+              reps: 5,
+              percentage: 60,
+              load: null,
+              volume: null
+            }
+          ]
+        }
+      ]
     };
   },
   beforeCreate() {
@@ -125,9 +213,7 @@ export default {
       ).value;
     }
   },
-  watch: {
-
-  }
+  watch: {}
 };
 </script>
 
@@ -154,9 +240,11 @@ body.workouts {
   // height: 100%;
   // background: rgba(255, 200, 175, 0.25);
 }
+
 nav.exercises {
   display: flex;
   justify-content: space-around;
+
   & li {
     list-style: none;
     font-weight: 300;
@@ -166,19 +254,23 @@ nav.exercises {
     background: rgba(150, 200, 255, 0.25);
     margin: 0.25rem;
     transition: all 0.25s;
+
     &:hover {
       background: rgba(100, 220, 255, 0.65);
     }
+
     &:active {
       background: rgba(100, 220, 255, 0.65);
     }
   }
+
   & a {
     text-decoration: none;
     font-weight: 300;
     font-family: "Montserrat";
   }
 }
+
 section.biometrics {
   // background: green;
   border-bottom: 2px solid rgba(150, 200, 255, 0.65);
@@ -191,6 +283,7 @@ section.training-program {
   align-items: center;
   justify-content: center;
 }
+
 input {
   background: black;
   font-family: "Montserrat";
@@ -199,8 +292,8 @@ input {
   padding: 0.25rem;
   margin: 0 0.5rem;
 }
-input.biometrics {
-}
+
+input.biometrics {}
 
 .exercise-container {
   display: flex;
@@ -212,6 +305,7 @@ h2.week-title {
   margin: 0 0 1rem 0;
   border-bottom: 1px solid rgba(150, 200, 255, 0.65);
 }
+
 .week-container {
   height: auto;
   // width: calc(100% - 4rem);
@@ -221,10 +315,16 @@ h2.week-title {
   border: 1px solid white;
   display: flex;
   flex-direction: column;
+  // grid-template-columns: repeat(4, 1fr);
   align-items: center;
-  & .sets {
+  & .column-headings {
     display: flex;
     flex-direction: row;
+  }
+
+  & .sets {
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>
