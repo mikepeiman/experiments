@@ -37,11 +37,12 @@ body {
   display: grid;
   grid-template-rows: [nav] 80px [main] calc(100vh - 80px);
   // background-image: linear-gradient(rgb(0, 0, 0), rgb(243, 243, 243));
-  background-image: linear-gradient(rgba(0, 0, 0, .85), rgba(243, 243, 243, .5));
+  // background-image: linear-gradient(rgba(0, 0, 0, .85), rgba(243, 243, 243, .5));
   position: fixed;
   background-size: 100%;
   background-position: fixed;
   background-repeat: repeat;
+  overflow: auto;
 }
 
 .wrapper {

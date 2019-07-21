@@ -8,6 +8,7 @@ module.exports = {
         data: `
         @import "@/styles/_backgrounds.scss";
         @import "@/styles/_colors.scss";
+        @import "@/styles/_typography.scss";
       `
       }
     }

@@ -9,7 +9,7 @@ import RadialSVG from "./views/RadialSVG.vue";
 import ShootGame from "./views/ShootGame.vue";
 import TextEffects from "./views/TextEffects.vue";
 import Airtable from "./views/Airtable.vue";
-import Workouts531 from "./views/5-3-1-workouts.vue";
+import Workouts531 from "./views/workouts531.vue";
 
 Vue.use(Router);
 
@@ -50,6 +50,7 @@ export default new Router({
     {
       path: "/experiments",
       name: "experiments",
+      meta: { bodyClass: 'experiments' },
       component: () =>
         import( "./views/Experiments.vue")
     },
@@ -72,10 +73,10 @@ export default new Router({
         import("./views/TextEffects.vue")
     },
     {
-      path: "/experiments/5-3-1-workouts",
-      name: "5-3-1-workouts",
+      path: "/experiments/workouts531",
+      name: "workouts531",
       component: () =>
-        import("./views/5-3-1-workouts.vue")
+        import("./views/workouts531.vue")
     }
   ]
 });

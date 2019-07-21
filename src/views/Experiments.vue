@@ -6,7 +6,7 @@
       <router-link to="/experiments/radialSVG">Radial SVG Generator</router-link>
       <router-link to="/experiments/shoot">Shoot Game</router-link>
       <router-link to="/experiments/text-effects">CSS Text Effects</router-link>
-      <router-link to="/experiments/5-3-1-workouts">5-3-1 Workouts</router-link>
+      <router-link to="/experiments/workouts531">5-3-1 Workouts</router-link>
     </nav>
   </div>
 </div>
