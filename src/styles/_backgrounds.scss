@@ -1,0 +1,14 @@
+body {
+  background: none;
+}
+
+body.home #app {
+  background-image:url('/assets/leather-nunchuck.png');
+  color: #aaccee;
+}
+
+body.workouts {
+  background-image: url('/assets/tactile_noise.png');
+  background-repeat: repeat;
+  background: #333;
+}

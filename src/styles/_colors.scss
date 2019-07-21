@@ -1,0 +1,18 @@
+$blue: #81BBFF;
+$gold:#FAD414;
+$green: #76D311;
+$tulip: #CE3C4D;
+$graphite: #252525;
+
+$opacity: 0.25;
+
+$blue-bg: change-color($blue, $lightness: 25%, $alpha: .5);
+$green-bg: change-color($green, $lightness: 25%, $alpha: .5);
+$gold-bg: change-color($gold, $lightness: 25%, $alpha: .5);
+$tulip-bg: change-color($tulip, $lightness: 25%, $alpha: .5);
+$graphite-bg: change-color($graphite, $lightness: 25%, $alpha: .5);
+$blue-faint: change-color($blue, $alpha: .15);
+$green-faint: change-color($green, $alpha: .15);
+$gold-faint: change-color($gold, $alpha: .15);
+$tulip-faint: change-color($tulip, $alpha: .15);
+$graphite-faint: change-color($graphite, $alpha: .15);

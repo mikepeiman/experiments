@@ -13,6 +13,9 @@ export default {
   name: "home",
   components: {
     HelloWorld
+  },
+  beforeCreate() {
+    document.body.className = 'home'
   }
 };
 </script>

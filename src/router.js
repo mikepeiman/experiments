@@ -9,6 +9,7 @@ import RadialSVG from "./views/RadialSVG.vue";
 import ShootGame from "./views/ShootGame.vue";
 import TextEffects from "./views/TextEffects.vue";
 import Airtable from "./views/Airtable.vue";
+import Workouts531 from "./views/5-3-1-workouts.vue";
 
 Vue.use(Router);
 
@@ -69,6 +70,12 @@ export default new Router({
       name: "texteffects",
       component: () =>
         import("./views/TextEffects.vue")
+    },
+    {
+      path: "/experiments/5-3-1-workouts",
+      name: "5-3-1-workouts",
+      component: () =>
+        import("./views/5-3-1-workouts.vue")
     }
   ]
 });
