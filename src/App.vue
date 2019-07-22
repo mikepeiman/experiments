@@ -21,6 +21,7 @@ body {
   height: 100vh;
   margin: 0;
   padding: 0;
+  background: #333;
   background-image:url('./assets/leather-nunchuck.png');
   color: #aaccee;
 }

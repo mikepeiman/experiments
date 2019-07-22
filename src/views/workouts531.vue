@@ -29,13 +29,25 @@
           </div>
           <div class="week-container" v-for="week in weeks">
             <h2 class="week-title">Week {{ week.week }}</h2>
-            <div class="column-headings">
-              <div v-for="column in columns" :style="`width: ${column.width}`">{{ column.name }}</div>
+
+            <div class="week-sets-grid">
+              <!-- <div class="column-headings">
+                <div v-for="column in columns" :style="`width: ${column.width}`">{{ column.name }}</div>
+              </div> -->
+              <div class="reps">REPS</div>
+              <div class="load">LOAD</div>
+              <div class="percentage">%</div>
+              <div class="setVolume">Volume</div>
+              <div v-for="(set, index) in week.sets" :class="[`${set[index]}`, 'sets-grid']">
+                <!-- {{Object.keys(set)[index]}} -->
+                <!-- </div> -->
+                <div v-for="(s, i) in set" :class="`${i}`">
+                  {{s}}
+                  <!-- {{ set.reps}}{{ set.percentage }}{{ set.load }}{{ set.volume}} -->
+                </div>
+              </div>
             </div>
 
-            <div class="sets">
-              <div class="subset" v-for="set in week.sets">{{ Object.values(set) }}</div>
-            </div>
           </div>
         </div>
       </section>
@@ -111,20 +123,20 @@ export default {
           week: 1,
           sets: [{
               reps: 5,
+              load: null,
               percentage: 65,
-              load: null,
               volume: null
             },
             {
               reps: 5,
+              load: null,
               percentage: 75,
-              load: null,
               volume: null
             },
             {
               reps: 5,
-              percentage: 85,
               load: null,
+              percentage: 85,
               volume: null
             }
           ]
@@ -133,20 +145,20 @@ export default {
           week: 2,
           sets: [{
               reps: 3,
+              load: null,
               percentage: 70,
-              load: null,
               volume: null
             },
             {
               reps: 3,
+              load: null,
               percentage: 80,
-              load: null,
               volume: null
             },
             {
               reps: 3,
-              percentage: 90,
               load: null,
+              percentage: 90,
               volume: null
             }
           ]
@@ -155,20 +167,20 @@ export default {
           week: 3,
           sets: [{
               reps: 1,
+              load: null,
               percentage: 75,
-              load: null,
               volume: null
             },
             {
               reps: 1,
+              load: null,
               percentage: 85,
-              load: null,
               volume: null
             },
             {
               reps: 1,
-              percentage: 95,
               load: null,
+              percentage: 95,
               volume: null
             }
           ]
@@ -177,20 +189,20 @@ export default {
           week: 4,
           sets: [{
               reps: 5,
+              load: null,
               percentage: 40,
-              load: null,
               volume: null
             },
             {
               reps: 5,
+              load: null,
               percentage: 50,
-              load: null,
               volume: null
             },
             {
               reps: 5,
-              percentage: 60,
               load: null,
+              percentage: 60,
               volume: null
             }
           ]
@@ -317,6 +329,7 @@ h2.week-title {
   flex-direction: column;
   // grid-template-columns: repeat(4, 1fr);
   align-items: center;
+
   & .column-headings {
     display: flex;
     flex-direction: row;
@@ -326,5 +339,43 @@ h2.week-title {
     display: flex;
     flex-direction: column;
   }
+
+  & .subset {
+    display: flex;
+  }
+}
+
+.week-sets-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  grid-template-areas: "reps load percentage setVolume";
+  grid-auto-rows: auto;
+
+  & .reps {
+    grid-area: reps;
+    grid-column: 1 / 2;
+  }
+
+  & .load {
+    grid-area: load;
+    grid-column: 2 /3;
+  }
+
+  & .percentage {
+    grid-area: percentage;
+  }
+
+  & .volume {
+    grid-area: setVolume;
+  }
+}
+
+.sets-grid {
+  display: flex;
+  flex-direction: column;
+  // grid-template-columns: [reps] 1fr [load] 1fr [percentage] 1fr [setVolume] 1fr;
+  // grid-template-areas: "reps load percentage setVolume";
+  // grid-auto-rows: auto;
 }
 </style>
