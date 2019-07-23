@@ -214,10 +214,16 @@ export default {
   color: rgba(150, 200, 255, 0.85);
   border: 1px solid rgba(50, 200, 255, 0.15);
   // border-radius: 5px;
-  padding: 0.25rem;
+  padding: 0.125rem;
   display: grid;
   grid-auto-columns: auto;
   grid-auto-rows: auto;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
 
 .workouts {
