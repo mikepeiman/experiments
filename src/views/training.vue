@@ -103,7 +103,8 @@ export default {
       ],
       trainingMaxPercentage: 0.9,
       scaleLoadByPercentage: .65,
-      loadIncrement: 5
+      loadIncrement: 5,
+      currentLoad: 0
     };
   },
   methods: {
@@ -119,6 +120,7 @@ export default {
       }
       if (d.name === "Load") {
         console.log(`this data is named "Load"`)
+        this.currentLoad = Math.round((w.percentages[x-1] * this.trainingMax / 100)/5)*this.loadIncrement
         return Math.round((w.percentages[x-1] * this.trainingMax / 100)/5)*this.loadIncrement
       }
       if (d.name === "Percentage") {
@@ -127,7 +129,7 @@ export default {
       }
       if (d.name === "Volume") {
         console.log(`this data is named "Volume"`)
-        return w.volume
+        return this.currentLoad * w.reps
       }
       return w
       // return (this.trainingMax * this.scaleLoadByPercentage)
