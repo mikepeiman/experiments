@@ -119,7 +119,7 @@ export default {
       }
       if (d.name === "Load") {
         console.log(`this data is named "Load"`)
-        return w.load
+        return Math.round((w.percentages[x-1] * this.trainingMax / 100)/5)*this.loadIncrement
       }
       if (d.name === "Percentage") {
         console.log(`this data is named "Percentage"`)
