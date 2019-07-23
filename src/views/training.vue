@@ -15,9 +15,9 @@
         <div class="workout-header box">
           <h2 class="workout-header-week-title box">{{workout.name }}</h2>
 
-          <div v-for="(row, i) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
+          <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
             <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'header'">{{ data.name }}</div>
-            <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc(workout, data, i) }}</div>
+            <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc(workout, data, i, x) }}</div>
           </div>
 
         </div>
@@ -107,11 +107,12 @@ export default {
     };
   },
   methods: {
-    dataCalc(w, d, i) {
+    dataCalc(w, d, i, x) {
       // return this.oneRepMax;
-      console.log(`This is dataCalc workout = ${i}`)
+      console.log(`This is dataCalc workout i = ${i}, x = ${x}`)
       console.log(w)
       console.log(d)
+      
       if (d.name === "Reps") {
         console.log(`this data is named "Reps"`)
         return w.reps
@@ -122,7 +123,7 @@ export default {
       }
       if (d.name === "Percentage") {
         console.log(`this data is named "Percentage"`)
-        return w.percentages
+        return w.percentages[x-1]
       }
       if (d.name === "Volume") {
         console.log(`this data is named "Volume"`)
