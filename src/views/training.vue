@@ -18,7 +18,7 @@
       </div>
       <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
         <div class="workout-header box">
-          <h2 class="workout-header-week-title box">{{workout.name }}</h2>
+          <h2 class="workout-header-week-title box">{{workout.name }} || Total Volume: {{ workoutVolume(exercise, workout) }}</h2>
 
           <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
             <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'header'">{{ data.name }}</div>
@@ -55,22 +55,26 @@ export default {
       exerciseWorkouts: [{
           name: "Week One",
           reps: 5,
-          percentages: [65, 75, 85]
+          percentages: [65, 75, 85],
+          volume: null
         },
         {
           name: "Week Two",
           reps: 3,
-          percentages: [70, 80, 90]
+          percentages: [70, 80, 90],
+          volume: null
         },
         {
           name: "Week Three",
           reps: 1,
-          percentages: [75, 85, 95]
+          percentages: [75, 85, 95],
+          volume: null
         },
         {
           name: "Week Four - Recovery",
           reps: 5,
-          percentages: [40, 50, 60]
+          percentages: [40, 50, 60],
+          volume: null
         }
       ],
       workoutDataRows: [{
@@ -122,6 +126,19 @@ export default {
   //   }
   // },
   methods: {
+    workoutVolume(exercise, workout) {
+      console.log(`workoutVolume`)
+
+      let reps = workout.reps
+      let workoutVolume = 0
+      let max = exercise.trainingMaxLoad
+      workout.percentages.forEach(perc => {
+        console.log(perc)
+        workoutVolume = workoutVolume + (Math.round(perc/100 * max * reps / this.loadIncrement) * this.loadIncrement)
+        console.log(`reps ${reps}, max ${max}, workoutVolume ${workoutVolume}`)
+      })
+      return workoutVolume
+    },
     setTrainingMaxLoad(exercise, i) {
       console.log(`setTrainingMaxLoad called with ${i}`);
       console.log(this.exerciseList[i]);
@@ -130,21 +147,21 @@ export default {
         this.exerciseList[i].trainingMaxPercentage *
         this.exerciseList[i].oneRepMax;
     },
-    dataCalc(exercise, workout, setData, i, x) {
+    dataCalc(exercise, workout, data, i, x) {
       // return this.oneRepMax;
       // console.log(`This is dataCalc workout i = ${i}, x = ${x}`)
       // console.log('exercise')
       // console.log(exercise)
       // console.log('workout')
       // console.log(workout)
-      // console.log('setData')
-      // console.log(setData)
+      // console.log('data')
+      // console.log(data)
 
-      if (setData.name === "Reps") {
+      if (data.name === "Reps") {
         // console.log(`this data is named "Reps"`)
         return workout.reps;
       }
-      if (setData.name === "Load") {
+      if (data.name === "Load") {
         // console.log(`this data is named "Load"`)
         // console.log(this.setTrainingMaxLoad(exercise, i))
         return (
@@ -155,35 +172,40 @@ export default {
           ) * this.loadIncrement
         );
       }
-      if (setData.name === "Percentage") {
+      if (data.name === "Percentage") {
         // console.log(`this data is named "Percentage"`)
         return workout.percentages[x - 1];
       }
-      if (setData.name === "Volume") {
+      if (data.name === "Volume") {
         // console.log(`this data is named "Volume"`)
-        return this.currentLoad * workout.reps;
-      } else {
-        return workout;
+        return Math.round(
+          ((exercise.trainingMaxLoad * workout.percentages[x - 1]) /
+              100) /
+            this.loadIncrement) *
+          this.loadIncrement * workout.reps;
+        }
+        else {
+          return workout;
+        }
+        // return (this.trainingMaxLoad * this.scaleLoadByPercentage)
       }
-      // return (this.trainingMaxLoad * this.scaleLoadByPercentage)
+    },
+    computed: {
+      // setOneRepMax() {
+      //   console.log(this.oneRepMax);
+      //   this.oneRepMax = document.querySelector(".oneRepMax").value;
+      //   console.log(`Second time ${this.oneRepMax}`);
+      // },
+
+      // trainingMaxLoad() {
+      //   return this.oneRepMax * this.trainingMaxPercentage
+      // },
+      // oneRepMax() {
+      //   return 385
+      // },
+
     }
-  },
-  computed: {
-    // setOneRepMax() {
-    //   console.log(this.oneRepMax);
-    //   this.oneRepMax = document.querySelector(".oneRepMax").value;
-    //   console.log(`Second time ${this.oneRepMax}`);
-    // },
-
-    // trainingMaxLoad() {
-    //   return this.oneRepMax * this.trainingMaxPercentage
-    // },
-    // oneRepMax() {
-    //   return 385
-    // },
-
-  }
-};
+  };
 </script>
 
 <style lang="scss" scoped>
