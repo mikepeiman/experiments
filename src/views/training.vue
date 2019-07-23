@@ -2,7 +2,7 @@
 <div class="about">
   <h1>Layout Construction For 5-3-1 Template</h1>
   <div class="workouts box">
-        <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.name}`]"></div>
+    <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.name}`]"></div>
     <div v-for="exercise in exerciseList">
       <h2>{{ exercise.name }}</h2>
       <div class="training-cycle-header box">
@@ -17,7 +17,7 @@
 
           <div v-for="(row, i) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
             <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'header'">{{ data.name }}</div>
-            <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc }}</div>
+            <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc(workout, data, i) }}</div>
           </div>
 
         </div>
@@ -106,11 +106,34 @@ export default {
       loadIncrement: 5
     };
   },
-  computed: {
-    dataCalc() {
+  methods: {
+    dataCalc(w, d, i) {
       // return this.oneRepMax;
-      return (this.trainingMax * this.scaleLoadByPercentage)
+      console.log(`This is dataCalc workout = ${i}`)
+      console.log(w)
+      console.log(d)
+      if (d.name === "Reps") {
+        console.log(`this data is named "Reps"`)
+        return w.reps
+      }
+      if (d.name === "Load") {
+        console.log(`this data is named "Load"`)
+        return w.load
+      }
+      if (d.name === "Percentage") {
+        console.log(`this data is named "Percentage"`)
+        return w.percentages
+      }
+      if (d.name === "Volume") {
+        console.log(`this data is named "Volume"`)
+        return w.volume
+      }
+      return w
+      // return (this.trainingMax * this.scaleLoadByPercentage)
     },
+  },
+  computed: {
+
     trainingMax() {
       return this.oneRepMax * this.trainingMaxPercentage
     },
