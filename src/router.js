@@ -10,6 +10,7 @@ import ShootGame from "./views/ShootGame.vue";
 import TextEffects from "./views/TextEffects.vue";
 import Airtable from "./views/Airtable.vue";
 import Workouts531 from "./views/workouts531.vue";
+import Training from "./views/training.vue";
 
 Vue.use(Router);
 
@@ -77,6 +78,12 @@ export default new Router({
       name: "workouts531",
       component: () =>
         import("./views/workouts531.vue")
+    },
+    {
+      path: "/experiments/training",
+      name: "training",
+      component: () =>
+        import("./views/training.vue")
     }
   ]
 });
