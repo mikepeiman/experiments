@@ -2,13 +2,18 @@
 <div class="about">
   <h1>Layout Construction For 5-3-1 Template</h1>
   <div class="workouts box">
-    <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.name}`]"></div>
-    <div v-for="exercise in exerciseList">
+    <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.name}`]"></div> -->
+    <div v-for="(exercise, i) in exerciseList">
       <h2>{{ exercise.name }}</h2>
       <div class="training-cycle-header box">
-        <label>1RM:<input type="number" class="oneRepMax"></label>
-        1RM: {{ oneRepMax }}
-        <div class="training-max box">Training Max: 345</div>
+        <label>
+          1RM:
+          <input type="number" class="oneRepMax" v-model="exercise.oneRepMax" @input="setTrainingMaxLoad(exercise, i)" />
+        </label>
+        1RM: {{ exercise.oneRepMax }}
+        <label class="training-max box">
+          Training Max: {{ exercise.trainingMaxLoad }}
+        </label>
         <div class="increment box">Increment by 5</div>
       </div>
       <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
@@ -17,9 +22,8 @@
 
           <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
             <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'header'">{{ data.name }}</div>
-            <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc(workout, data, i, x) }}</div>
+            <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc(exercise, workout, data, i, x) }}</div>
           </div>
-
         </div>
       </div>
     </div>
@@ -38,13 +42,15 @@ export default {
       exerciseList: [{
           name: "Deadlift",
           oneRepMax: 385,
-          trainingMax: this.oneRepMax * 0.9
+          trainingMaxPercentage: 0.9,
+          trainingMaxLoad: 345
         },
         {
           name: "Press",
           oneRepMax: 225,
-          trainingMax: this.oneRepMax * 0.9
-        },
+          trainingMaxPercentage: 0.9,
+          trainingMaxLoad: 185
+        }
       ],
       exerciseWorkouts: [{
           name: "Week One",
@@ -65,7 +71,7 @@ export default {
           name: "Week Four - Recovery",
           reps: 5,
           percentages: [40, 50, 60]
-        },
+        }
       ],
       workoutDataRows: [{
           name: "header",
@@ -82,7 +88,7 @@ export default {
         {
           name: "data",
           value: "data.value"
-        },
+        }
       ],
       workoutData: [{
           name: "Reps",
@@ -90,7 +96,7 @@ export default {
         },
         {
           name: "Load",
-          value: "exercise.trainingMax * 5"
+          value: null
         },
         {
           name: "Percentage",
@@ -99,53 +105,83 @@ export default {
         {
           name: "Volume",
           value: 925
-        },
+        }
       ],
       trainingMaxPercentage: 0.9,
-      scaleLoadByPercentage: .65,
       loadIncrement: 5,
       currentLoad: 0
     };
   },
+  // beforeMount: {
+  //   initTrainingMaxLoad(exercise, i) {
+  //     return this.exerciseList[i - 1].trainingMaxLoad ?
+  //       this.exerciseList[i - 1].trainingMaxLoad :
+  //       (this.exerciseList[i - 1].trainingMaxLoad =
+  //         this.exerciseList[i - 1].trainingMaxPercentage *
+  //         this.exerciseList[i - 1].oneRepMax);
+  //   }
+  // },
   methods: {
-    dataCalc(w, d, i, x) {
-      // return this.oneRepMax;
-      console.log(`This is dataCalc workout i = ${i}, x = ${x}`)
-      console.log(w)
-      console.log(d)
-      
-      if (d.name === "Reps") {
-        console.log(`this data is named "Reps"`)
-        return w.reps
-      }
-      if (d.name === "Load") {
-        console.log(`this data is named "Load"`)
-        this.currentLoad = Math.round((w.percentages[x-1] * this.trainingMax / 100)/5)*this.loadIncrement
-        return Math.round((w.percentages[x-1] * this.trainingMax / 100)/5)*this.loadIncrement
-      }
-      if (d.name === "Percentage") {
-        console.log(`this data is named "Percentage"`)
-        return w.percentages[x-1]
-      }
-      if (d.name === "Volume") {
-        console.log(`this data is named "Volume"`)
-        return this.currentLoad * w.reps
-      }
-      return w
-      // return (this.trainingMax * this.scaleLoadByPercentage)
+    setTrainingMaxLoad(exercise, i) {
+      console.log(`setTrainingMaxLoad called with ${i}`);
+      console.log(this.exerciseList[i]);
+      console.log(this.exerciseList[i].trainingMaxLoad);
+      this.exerciseList[i].trainingMaxLoad =
+        this.exerciseList[i].trainingMaxPercentage *
+        this.exerciseList[i].oneRepMax;
     },
+    dataCalc(exercise, workout, setData, i, x) {
+      // return this.oneRepMax;
+      // console.log(`This is dataCalc workout i = ${i}, x = ${x}`)
+      // console.log('exercise')
+      // console.log(exercise)
+      // console.log('workout')
+      // console.log(workout)
+      // console.log('setData')
+      // console.log(setData)
+
+      if (setData.name === "Reps") {
+        // console.log(`this data is named "Reps"`)
+        return workout.reps;
+      }
+      if (setData.name === "Load") {
+        // console.log(`this data is named "Load"`)
+        // console.log(this.setTrainingMaxLoad(exercise, i))
+        return (
+          Math.round(
+            (exercise.trainingMaxLoad * workout.percentages[x - 1]) /
+            100 /
+            this.loadIncrement
+          ) * this.loadIncrement
+        );
+      }
+      if (setData.name === "Percentage") {
+        // console.log(`this data is named "Percentage"`)
+        return workout.percentages[x - 1];
+      }
+      if (setData.name === "Volume") {
+        // console.log(`this data is named "Volume"`)
+        return this.currentLoad * workout.reps;
+      } else {
+        return workout;
+      }
+      // return (this.trainingMaxLoad * this.scaleLoadByPercentage)
+    }
   },
   computed: {
+    // setOneRepMax() {
+    //   console.log(this.oneRepMax);
+    //   this.oneRepMax = document.querySelector(".oneRepMax").value;
+    //   console.log(`Second time ${this.oneRepMax}`);
+    // },
 
-    trainingMax() {
-      return this.oneRepMax * this.trainingMaxPercentage
-    },
-    oneRepMax() {
-      return 385
-    },
-    scaleLoadByPercentage() {
-      return .5
-    }
+    // trainingMaxLoad() {
+    //   return this.oneRepMax * this.trainingMaxPercentage
+    // },
+    // oneRepMax() {
+    //   return 385
+    // },
+
   }
 };
 </script>
@@ -223,7 +259,7 @@ export default {
 }
 
 .workout-row-header {
-  background: rgba(255, 150, 255, .25);
+  background: rgba(255, 150, 255, 0.25);
 }
 
 .workout-row-data {}
