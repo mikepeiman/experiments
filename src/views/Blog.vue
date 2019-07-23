@@ -1,11 +1,12 @@
 <template>
   <div>
     <h1>BLOG</h1>
-    <div class="posts-loop" v-for="post in returnPosts">
+
+    <div class="posts-loop" v-for="post in articles">
       <h1 class="title">{{ post.title }}</h1>
       <h2>{{ post.subtitle }}</h2>
     </div>
-    <button @click.prevent="test()">test</button>
+    <!-- <button @click.prevent="test()">test</button> -->
     <section v-if="allPosts">
       <ul>
         <li v-for="post in allPosts" :key="post.id">

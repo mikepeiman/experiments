@@ -8,7 +8,7 @@ import Experiments from "./views/Experiments.vue";
 import RadialSVG from "./views/RadialSVG.vue";
 import ShootGame from "./views/ShootGame.vue";
 import TextEffects from "./views/TextEffects.vue";
-import Airtable from "./views/Airtable.vue";
+import Airtable from "./views/AirtableProducts.vue";
 import Workouts531 from "./views/workouts531.vue";
 import Training from "./views/training.vue";
 
@@ -44,9 +44,9 @@ export default new Router({
     },
     {
       path: "/airtable",
-      name: "airtable",
+      name: "airtableproducts",
       component: () =>
-        import("./views/Airtable.vue")
+        import("./views/AirtableProducts.vue")
     },
     {
       path: "/experiments",

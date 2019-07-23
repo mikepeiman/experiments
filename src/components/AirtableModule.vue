@@ -1,10 +1,11 @@
 <template>
-  <div class="blog">
-    <h1 class="title clear">Blog!</h1>
-    <h2 class="subtitle clear">Subtitle</h2>
+  <div class="airtable-module">
+    <h1 class="title clear">Airtable Module</h1>
+    <h2 class="subtitle clear">Remove the template markup to make it a pure API component</h2>
     <div class="article clear">
       <div class="products-wrapper">
         <div class="product-details" v-for="record in records">
+          {{ record }}
           <div class="single-product-detail">{{ record.fields.make }}</div>
           <div class="single-product-detail">{{ record.fields.model }}</div>
           <div class="single-product-detail">{{ record.fields.version}}</div>
@@ -36,26 +37,25 @@ import axios from "axios";
 import Airtable from "airtable";
 
 export default {
-  name: "airtable",
-
+  name: "AirtableModule",
+  props: {
+    base: String,
+    table: String
+  },
   data() {
     return {
       records: [],
       API_URL: process.env.VUE_APP_AIRTABLE_URI,
       API_KEY: process.env.VUE_APP_AIRTABLE_API_KEY,
-      BASE: "appP3Ar7WtMKMd6Hu/",
-      TABLE: "Test%20Table/"
+      BASE: this.base,
+      TABLE: this.table
     };
   },
-  created() {
-    // let airtable = new Airtable({ apiKey: this.API_KEY, endpointUrl: this.API_URL });
+  beforeMount() {
     this.getData();
   },
   methods: {
     getData() {
-      // const API_URL = process.env.VUE_APP_AIRTABLE_URI;
-      // const API_KEY = process.env.VUE_APP_AIRTABLE_API_KEY;
-      // const BASE = process.env.VUE_APP_AIRTABLE_BASE;
       axios({
         method: "get",
         url: this.API_URL + this.BASE + this.TABLE,
@@ -63,6 +63,7 @@ export default {
           Authorization: `Bearer ${this.API_KEY}`
         }
       }).then(res => {
+        console.log(res)
         this.records = res.data.records;
       });
     },
@@ -129,7 +130,7 @@ label {
   display: flex;
   justify-content: flex-start;
 }
-.blog {
+.airtable-module {
   display: grid;
   grid-template-rows: [title] minmax(2em, 1fr) [subtitle] minmax(2em, 1fr) [article] minmax(
       2em,

@@ -1,5 +1,6 @@
 <template>
 <div class="about">
+  {{ exercises }}
   <h1>Layout Construction For 5-3-1 Template</h1>
   <div class="workouts box">
     <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.name}`]"></div> -->
@@ -33,12 +34,23 @@
 
 <script>
 import Color from "color";
+import axios from "axios";
+import gql from "graphql-tag";
 
+export const exercisesQuery = gql `
+  query {
+      exercises {
+        name
+        oneRepMax
+      }
+    }
+`;
 export default {
   name: "about",
 
   data() {
     return {
+      exercises: null,
       exerciseList: [{
           name: "Deadlift",
           oneRepMax: 385,
@@ -116,15 +128,11 @@ export default {
       currentLoad: 0
     };
   },
-  // beforeMount: {
-  //   initTrainingMaxLoad(exercise, i) {
-  //     return this.exerciseList[i - 1].trainingMaxLoad ?
-  //       this.exerciseList[i - 1].trainingMaxLoad :
-  //       (this.exerciseList[i - 1].trainingMaxLoad =
-  //         this.exerciseList[i - 1].trainingMaxPercentage *
-  //         this.exerciseList[i - 1].oneRepMax);
-  //   }
-  // },
+  apollo: {
+    exercises: {
+      query: exercisesQuery,
+    },
+  },
   methods: {
     workoutVolume(exercise, workout) {
       console.log(`workoutVolume`)
@@ -134,7 +142,7 @@ export default {
       let max = exercise.trainingMaxLoad
       workout.percentages.forEach(perc => {
         console.log(perc)
-        workoutVolume = workoutVolume + (Math.round(perc/100 * max * reps / this.loadIncrement) * this.loadIncrement)
+        workoutVolume = workoutVolume + (Math.round(perc / 100 * max * reps / this.loadIncrement) * this.loadIncrement)
         console.log(`reps ${reps}, max ${max}, workoutVolume ${workoutVolume}`)
       })
       return workoutVolume
@@ -144,8 +152,8 @@ export default {
       console.log(this.exerciseList[i]);
       console.log(this.exerciseList[i].trainingMaxLoad);
       this.exerciseList[i].trainingMaxLoad =
-        this.exerciseList[i].trainingMaxPercentage *
-        this.exerciseList[i].oneRepMax;
+        Math.round(this.exerciseList[i].trainingMaxPercentage *
+          this.exerciseList[i].oneRepMax / this.loadIncrement) * this.loadIncrement;
     },
     dataCalc(exercise, workout, data, i, x) {
       // return this.oneRepMax;
@@ -179,33 +187,53 @@ export default {
       if (data.name === "Volume") {
         // console.log(`this data is named "Volume"`)
         return Math.round(
-          ((exercise.trainingMaxLoad * workout.percentages[x - 1]) /
+            ((exercise.trainingMaxLoad * workout.percentages[x - 1]) /
               100) /
             this.loadIncrement) *
           this.loadIncrement * workout.reps;
-        }
-        else {
-          return workout;
-        }
-        // return (this.trainingMaxLoad * this.scaleLoadByPercentage)
+      } else {
+        return workout;
       }
-    },
-    computed: {
-      // setOneRepMax() {
-      //   console.log(this.oneRepMax);
-      //   this.oneRepMax = document.querySelector(".oneRepMax").value;
-      //   console.log(`Second time ${this.oneRepMax}`);
-      // },
-
-      // trainingMaxLoad() {
-      //   return this.oneRepMax * this.trainingMaxPercentage
-      // },
-      // oneRepMax() {
-      //   return 385
-      // },
-
+      // return (this.trainingMaxLoad * this.scaleLoadByPercentage)
     }
-  };
+  },
+  computed: {
+    // setOneRepMax() {
+    //   console.log(this.oneRepMax);
+    //   this.oneRepMax = document.querySelector(".oneRepMax").value;
+    //   console.log(`Second time ${this.oneRepMax}`);
+    // },
+
+    // trainingMaxLoad() {
+    //   return this.oneRepMax * this.trainingMaxPercentage
+    // },
+    // oneRepMax() {
+    //   return 385
+    // },
+
+  },
+  // beforeMount: {
+  //   axios({
+  //     url: 'https://api-uswest.graphcms.com/v1/cjry7p9c42zcv01i63qwszhh9/master',
+  //     headers: {
+  //       'content-type': 'application/json'
+  //     },
+  //     data: {
+  //       mutation {
+  //         createExercise(data: {
+  //           name: "Exercise Creation Test"
+  //         }) {
+  //           id
+  //           name
+  //         }
+  //       }
+  //     }
+  //   }).then(res => {
+  //     this.records = res.data.records;
+  //     console.log(this.records);
+  //   });
+  // }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -220,10 +248,10 @@ export default {
   grid-auto-rows: auto;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .workouts {

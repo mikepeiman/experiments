@@ -4,6 +4,8 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
     <router-link to="/blog">Blog</router-link> |
+    <router-link to="/airtable">Airtable</router-link> |
+    <router-link to="/graphcms">GraphCMS</router-link> |
     <router-link to="/experiments">Experiments</router-link>
   </div>
   <div class="wrapper">
