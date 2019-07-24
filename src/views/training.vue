@@ -1,6 +1,7 @@
 <template>
 <div class="about">
-  {{ exercises }}
+  <AirtableModule base="apphjOSO84s4oUCKH/" table="Wendler531/" @records="collectRecords($event)" />
+  RECORDS: {{ records }}
   <h1>Layout Construction For 5-3-1 Template</h1>
   <div class="workouts box">
     <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.name}`]"></div> -->
@@ -33,9 +34,13 @@
 </template>
 
 <script>
+import {
+  mapGetters
+} from 'vuex'
 import Color from "color";
 import axios from "axios";
 import gql from "graphql-tag";
+import AirtableModule from '@/components/AirtableModule';
 
 export const exercisesQuery = gql `
   query {
@@ -47,10 +52,13 @@ export const exercisesQuery = gql `
 `;
 export default {
   name: "about",
-
+  components: {
+    AirtableModule
+  },
   data() {
     return {
-      exercises: null,
+      exercises: [],
+      records: [],
       exerciseList: [{
           name: "Deadlift",
           oneRepMax: 385,
@@ -134,6 +142,11 @@ export default {
     },
   },
   methods: {
+    collectRecords(records) {
+      this.records = records
+      console.log('collectRecords from training.vue')
+      console.log(records)
+    },
     workoutVolume(exercise, workout) {
       console.log(`workoutVolume`)
 
@@ -141,16 +154,16 @@ export default {
       let workoutVolume = 0
       let max = exercise.trainingMaxLoad
       workout.percentages.forEach(perc => {
-        console.log(perc)
+        // console.log(perc)
         workoutVolume = workoutVolume + (Math.round(perc / 100 * max * reps / this.loadIncrement) * this.loadIncrement)
-        console.log(`reps ${reps}, max ${max}, workoutVolume ${workoutVolume}`)
+        // console.log(`reps ${reps}, max ${max}, workoutVolume ${workoutVolume}`)
       })
       return workoutVolume
     },
     setTrainingMaxLoad(exercise, i) {
-      console.log(`setTrainingMaxLoad called with ${i}`);
-      console.log(this.exerciseList[i]);
-      console.log(this.exerciseList[i].trainingMaxLoad);
+      // console.log(`setTrainingMaxLoad called with ${i}`);
+      // console.log(this.exerciseList[i]);
+      // console.log(this.exerciseList[i].trainingMaxLoad);
       this.exerciseList[i].trainingMaxLoad =
         Math.round(this.exerciseList[i].trainingMaxPercentage *
           this.exerciseList[i].oneRepMax / this.loadIncrement) * this.loadIncrement;
@@ -194,45 +207,24 @@ export default {
       } else {
         return workout;
       }
-      // return (this.trainingMaxLoad * this.scaleLoadByPercentage)
     }
   },
   computed: {
-    // setOneRepMax() {
-    //   console.log(this.oneRepMax);
-    //   this.oneRepMax = document.querySelector(".oneRepMax").value;
-    //   console.log(`Second time ${this.oneRepMax}`);
-    // },
-
-    // trainingMaxLoad() {
-    //   return this.oneRepMax * this.trainingMaxPercentage
-    // },
-    // oneRepMax() {
-    //   return 385
-    // },
-
+    ...mapGetters([
+      // Mounts the "safelyStoredNumber" getter to the scope of your component.
+      'records'
+    ]),
+    records() {
+      return this.$store.state
+    },
+    // setExercises() {
+    //   this.exercises = this.records
+    // }
   },
-  // beforeMount: {
-  //   axios({
-  //     url: 'https://api-uswest.graphcms.com/v1/cjry7p9c42zcv01i63qwszhh9/master',
-  //     headers: {
-  //       'content-type': 'application/json'
-  //     },
-  //     data: {
-  //       mutation {
-  //         createExercise(data: {
-  //           name: "Exercise Creation Test"
-  //         }) {
-  //           id
-  //           name
-  //         }
-  //       }
-  //     }
-  //   }).then(res => {
-  //     this.records = res.data.records;
-  //     console.log(this.records);
-  //   });
-  // }
+  created() {
+    console.log(`training.vue created()`)
+    console.log(`${this.$store}, ${this.$store.state}`)
+  }
 };
 </script>
 

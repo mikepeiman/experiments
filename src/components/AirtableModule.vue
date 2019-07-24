@@ -1,33 +1,12 @@
 <template>
   <div class="airtable-module">
-    <h1 class="title clear">Airtable Module</h1>
-    <h2 class="subtitle clear">Remove the template markup to make it a pure API component</h2>
-    <div class="article clear">
-      <div class="products-wrapper">
-        <div class="product-details" v-for="record in records">
-          {{ record }}
-          <div class="single-product-detail">{{ record.fields.make }}</div>
-          <div class="single-product-detail">{{ record.fields.model }}</div>
-          <div class="single-product-detail">{{ record.fields.version}}</div>
-        </div>
-      </div>
-    </div>
-    <form class="product-form">
-      <label for="productName">
-        Product name
-        <input type="text" name="productName" id="productName" />
-      </label>
-      <label for="productModel">
-        Product model
-        <input type="text" name="productModel" id="productModel" />
-      </label>
-      <label for="productVersion">
-        Product version
-        <input type="text" name="productVersion" id="productVersion" />
-      </label>
-      <button @click.prevent="postData()">Add New Record</button>
-      <button @click.prevent="getData()">Refresh Records View</button>
-    </form>
+    <div class="display-none emit-data" :on="$emit('records',records)"></div>
+    <!-- <h1 class="title clear">Airtable Module</h1>
+    <h2 v-if="records" class="subtitle clear"  v-on="emitToParent" @change="updateState">Records loaded</h2> -->
+          <!-- {{ records }} -->
+          <!-- example
+          <div class="single-product-detail">{{ record.fields.name }}</div> 
+          -->
   </div>
 </template>
 
@@ -53,8 +32,15 @@ export default {
   },
   beforeMount() {
     this.getData();
+    this.$store.commit('change', this.records)
   },
   methods: {
+    emitToParent() {
+      this.$emit('childToParent', this.records)
+    },
+    updateState() {
+      this.$store.commit('change', this.records)
+    },
     getData() {
       axios({
         method: "get",
@@ -65,6 +51,7 @@ export default {
       }).then(res => {
         console.log(res)
         this.records = res.data.records;
+        this.$store.commit('change', this.records)
       });
     },
     postData() {

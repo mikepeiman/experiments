@@ -1,5 +1,6 @@
 <template>
 <div class="workouts">
+
   <form action class="form-container">
     <h1>5-3-1!</h1>
     <section class="biometrics">
@@ -58,10 +59,13 @@
 
 <script>
 import Color from "color";
+import AirtableModule from '@/components/AirtableModule';
 
 export default {
   name: "workouts531",
-
+  components: {
+    AirtableModule
+  },
   data() {
     return {
       exerciseCombos: [{

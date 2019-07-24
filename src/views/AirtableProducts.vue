@@ -1,7 +1,7 @@
 <template>
   <div class="airtable">
-    <AirtableModule base="appP3Ar7WtMKMd6Hu/" table="Test%20Table/" />
-    <AirtableModule base="apphjOSO84s4oUCKH/" table="Training%20Programs/" />
+    <!-- <AirtableModule base="appP3Ar7WtMKMd6Hu/" table="Test%20Table/" /> -->
+    <AirtableModule base="apphjOSO84s4oUCKH/" table="Wendler531/" />
   </div>
 </template>
 
