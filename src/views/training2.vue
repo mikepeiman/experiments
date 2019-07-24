@@ -1,25 +1,21 @@
-// This template is for the Airtable data source for exercises
-
 <template>
 <div class="about">
   <AirtableModule base="apphjOSO84s4oUCKH/" table="Wendler531/" @records="collectRecords($event)" />
-  <label for="trainingMaxPercentage">Training Maximum Percentage (%) <input type="number" name="trainingMaxPercentage" v-model="trainingMaxPercentage" id="trainingMaxPercentage" value="90" placeholder="%"></label>
   <div class="records-loop" v-for="record in records">{{record.fields}}</div>
   <!-- RECORDS: {{ records }} -->
   <h1>Layout Construction For 5-3-1 Template</h1>
   <div class="workouts box">
-    <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
-    <div v-for="(exercise, i) in records">
-      {{ i, exercise.fields.name }}
-      <h2>{{ exercise.fields.name }}</h2>
+    <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.name}`]"></div> -->
+    <div v-for="(exercise, i) in exerciseList">
+      <h2>{{ exercise.name }}</h2>
       <div class="training-cycle-header box">
         <label>
           1RM:
-          <input type="number" class="oneRepMax" v-model="exercise.fields.oneRepMax" @input="setTrainingMaxLoad(exercise, i)" />
+          <input type="number" class="oneRepMax" v-model="exercise.oneRepMax" @input="setTrainingMaxLoad(exercise, i)" />
         </label>
-        1RM: {{ exercise.fields.oneRepMax }}
+        1RM: {{ exercise.oneRepMax }}
         <label class="training-max box">
-          Training Max: {{ exercise.fields.trainingMaxLoad }}
+          Training Max: {{ exercise.trainingMaxLoad }}
         </label>
         <div class="increment box">Increment by 5</div>
       </div>
@@ -68,13 +64,13 @@ export default {
           name: "Deadlift",
           oneRepMax: 385,
           trainingMaxPercentage: 0.9,
-          trainingMaxLoad: 0
+          trainingMaxLoad: 345
         },
         {
           name: "Press",
           oneRepMax: 225,
           trainingMaxPercentage: 0.9,
-          trainingMaxLoad: 0
+          trainingMaxLoad: 185
         }
       ],
       exerciseWorkouts: [{
@@ -149,17 +145,15 @@ export default {
   methods: {
     collectRecords(records) {
       this.records = records
-      records.forEach((record, i) => {
-        record.trainingMaxLoad = this.setTrainingMaxLoad(record, i)
-      })
-      this.trainingMaxPercentage = document.querySelector('#trainingMaxPercentage').value
+      console.log('collectRecords from training.vue')
+      console.log(records)
     },
     workoutVolume(exercise, workout) {
-      console.log(`workoutVolume called for exercise ${exercise.name} and workout ${workout}`)
+      console.log(`workoutVolume`)
 
       let reps = workout.reps
       let workoutVolume = 0
-      let max = exercise.fields.trainingMaxLoad
+      let max = exercise.trainingMaxLoad
       workout.percentages.forEach(perc => {
         // console.log(perc)
         workoutVolume = workoutVolume + (Math.round(perc / 100 * max * reps / this.loadIncrement) * this.loadIncrement)
@@ -171,9 +165,9 @@ export default {
       // console.log(`setTrainingMaxLoad called with ${i}`);
       // console.log(this.exerciseList[i]);
       // console.log(this.exerciseList[i].trainingMaxLoad);
-      this.records[i].fields.trainingMaxLoad =
-        Math.round(this.trainingMaxPercentage/100 *
-          this.records[i].fields.oneRepMax / this.loadIncrement) * this.loadIncrement;
+      this.exerciseList[i].trainingMaxLoad =
+        Math.round(this.exerciseList[i].trainingMaxPercentage *
+          this.exerciseList[i].oneRepMax / this.loadIncrement) * this.loadIncrement;
     },
     dataCalc(exercise, workout, data, i, x) {
       // return this.oneRepMax;
@@ -194,7 +188,7 @@ export default {
         // console.log(this.setTrainingMaxLoad(exercise, i))
         return (
           Math.round(
-            (exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
+            (exercise.trainingMaxLoad * workout.percentages[x - 1]) /
             100 /
             this.loadIncrement
           ) * this.loadIncrement
@@ -207,7 +201,7 @@ export default {
       if (data.name === "Volume") {
         // console.log(`this data is named "Volume"`)
         return Math.round(
-            ((exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
+            ((exercise.trainingMaxLoad * workout.percentages[x - 1]) /
               100) /
             this.loadIncrement) *
           this.loadIncrement * workout.reps;
@@ -221,9 +215,9 @@ export default {
       // Mounts the "safelyStoredNumber" getter to the scope of your component.
       'records'
     ]),
-    // records() {
-    //   return this.$store.state
-    // },
+    records() {
+      return this.$store.state
+    },
     // setExercises() {
     //   this.exercises = this.records
     // }
