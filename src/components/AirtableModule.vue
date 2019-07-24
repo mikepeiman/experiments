@@ -55,12 +55,6 @@ export default {
       });
     },
     postData() {
-      let productName = document.querySelector("#productName").value;
-      let productVersion = document.querySelector("#productVersion").value;
-      let productModel = document.querySelector("#productModel").value;
-      console.log(`postData function called with ${productName}`);
-      console.log(`postData function called with ${productModel}`);
-      console.log(`postData function called with ${productVersion}`);
       axios({
         method: "post",
         url: this.API_URL + this.BASE + this.TABLE,
@@ -68,11 +62,7 @@ export default {
           Authorization: `Bearer ${this.API_KEY}`
         },
         data: {
-          fields: {
-            make: productName,
-            model: productModel,
-            version: productVersion
-          }
+
         }
       }).then(res => {
         this.records = res.data.records;
