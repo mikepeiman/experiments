@@ -2,15 +2,15 @@ body {
   background: #333;
 }
 
-body.home {
+body .home {
   background-image: linear-gradient(black, rgba(#333,0.05)), url('~@/assets/leather-nunchuck.png');
   color: #aaccee;
   // background: #333;
 }
 
 body.workouts {
-  background-image: url('~@/assets/tactile_noise.png');
+  background-image: url('~@/assets/brijan.gif');
   background-repeat: repeat;
-  background-image: linear-gradient(black, rgba(#333,0.05)), url('~@/assets/leather-nunchuck.png');
-  // background: #333;
+  background-image: linear-gradient(rgba(#333,0.75), rgba(#333,0.5)), url('~@/assets/noisy.png');
+  // background: #0af;
 }

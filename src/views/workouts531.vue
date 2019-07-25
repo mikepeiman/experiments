@@ -233,15 +233,6 @@ export default {
 };
 </script>
 
-<style lang="scss">
-body.workouts {
-  background: rgba(0, 0, 0, 0);
-  background-image: url("./../assets/tactile_noise.png");
-  background-repeat: repeat;
-  overflow: auto;
-}
-</style>
-
 <style lang="scss" scoped>
 .workouts {
   display: flex;

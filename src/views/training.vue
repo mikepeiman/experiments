@@ -1,7 +1,7 @@
 // This template is for the Airtable data source for exercises
 
 <template>
-  <div class="about">
+  <div class="training">
     <AirtableModule
       base="apphjOSO84s4oUCKH/"
       table="Wendler531/"
@@ -36,15 +36,75 @@
           placeholder="2"
         />
       </label>
+      <label for="incrementByValue">
+        Increment By:
+        <input
+          type="number"
+          @change="setWidthByChars"
+          @input="setWidthByChars"
+          name="incrementByValue"
+          style="width: 1.5ch;"
+          min="1"
+          max="50"
+          v-model="incrementByValue"
+          id="incrementByValue"
+          value="5"
+          placeholder="5"
+        />
+      </label>
+      <div class="selectRowsOrColumns">
+       <span class="selectRowsOrColumnsHeading">Select Display:</span>
+        <input
+          type="radio"
+          @change="setWidthByChars"
+          @input="setWidthByChars"
+          name="selectRowsOrColumns"
+          v-model="selectRowsOrColumns"
+          id="selectDisplayRows"
+          value="rows"
+          checked
+        />
+        <label for="selectDisplayRows" class="">Rows</label>
+        <input
+          type="radio"
+          @change="setWidthByChars"
+          @input="setWidthByChars"
+          name="selectRowsOrColumns"
+          v-model="selectRowsOrColumns"
+          id="selectDisplayColumns"
+          value="columns"
+        />
+        <label for="selectDisplayColumns" class="">Columns</label>
+      </div>
+
+      <label for="selectDisplayDensity">
+        Display Density:
+        <input
+          type="number"
+          @change="setWidthByChars"
+          @input="setWidthByChars"
+          name="selectDisplayDensity"
+          style="width: 1.5ch;"
+          min="1"
+          max="3"
+          v-model="selectDisplayDensity"
+          id="selectDisplayDensity"
+          value="1"
+          placeholder="1"
+        />
+      </label>
     </div>
     <!-- <div class="records-loop" v-for="record in records">{{record.fields}}</div> -->
     <!-- RECORDS: {{ records }} -->
     <!-- <h1>Layout Construction For 5-3-1 Template</h1> -->
-    <div :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
-      <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
-      <div v-for="(exercise, i) in records">
-        <h2>{{ exercise.fields.name }}</h2>
+    <div v-if="selectRowsOrColumns === 'rows'" class="workouts box col-1">
+      <div
+        v-for="(exercise, i) in records"
+        :class="['exercise box',`${exercise.fields.name}`]"
+        :style="`background: ${baseColor1};`"
+      >
         <div class="training-cycle-header box">
+          <h2 class="exercise-name">{{ exercise.fields.name }}</h2>
           <label>
             1RM:
             <input
@@ -57,13 +117,16 @@
             />
           </label>
           <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
-          <div class="increment box">Increment by 5</div>
         </div>
-        <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
+        <div
+          v-for="workout in exerciseWorkouts"
+          :class="['workout box', `${workout.name}`]"
+          :style="`background: ${baseColor2};`"
+        >
           <div class="workout-header box">
             <h2 class="workout-header-week-title box">{{workout.name }}</h2>
             <h3 class="workout-header-week-volume box">
-              Total Volume: 
+              Total Volume:
               <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
             </h3>
           </div>
@@ -72,6 +135,57 @@
               v-for="(data, i) in workoutData"
               :class="['data-item box', `${data.name}`]"
               v-if="row.name === 'header'"
+              :style="`background: ${baseColor3};`"
+            >{{ data.name }}</div>
+            <div
+              v-for="(data, i) in workoutData"
+              :class="['data-item box', `${data.name}`]"
+              v-if="row.name === 'data'"
+            >{{ dataCalc(exercise, workout, data, i, x) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
+      <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
+      <div
+        v-for="(exercise, i) in records"
+        :class="['exercise box',`${exercise.fields.name}`]"
+        :style="`background: ${baseColor1}; flex-direction: column;`"
+      >
+        <div class="training-cycle-header box">
+          <h2 class="exercise-name">{{ exercise.fields.name }}</h2>
+          <label>
+            1RM:
+            <input
+              type="number"
+              class="oneRepMax"
+              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
+              id="oneRepMax"
+              v-model="exercise.fields.oneRepMax"
+              @input="setTrainingMaxLoad(exercise, i)"
+            />
+          </label>
+          <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
+        </div>
+        <div
+          v-for="workout in exerciseWorkouts"
+          :class="['workout box', `${workout.name}`]"
+          :style="`background: ${baseColor2};`"
+        >
+          <div class="workout-header box">
+            <h2 class="workout-header-week-title box">{{workout.name }}</h2>
+            <h3 class="workout-header-week-volume box">
+              Total Volume:
+              <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
+            </h3>
+          </div>
+          <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
+            <div
+              v-for="(data, i) in workoutData"
+              :class="['data-item box', `${data.name}`]"
+              v-if="row.name === 'header'"
+              :style="`background: ${baseColor3};`"
             >{{ data.name }}</div>
             <div
               v-for="(data, i) in workoutData"
@@ -100,10 +214,15 @@ export default {
   data() {
     return {
       vuexExercises: [],
-      // oneRepMax: 0,
+      baseColor1: "rgba(25,75,155,0.75)",
+      baseColor2: "rgba(125,0,95,0.75)",
+      baseColor3: "rgba(25,155,25,0.75)",
+      selectRowsOrColumns: "rows",
+      // selectDisplayColumns: true,
+      selectDisplayDensity: 0,
       numberOfWorkoutColumns: 2,
       trainingMaxPercentage: 90,
-      loadIncrement: 5,
+      incrementByValue: 5,
       currentLoad: 0,
       exercises: [],
       records: [],
@@ -141,7 +260,7 @@ export default {
           volume: null
         },
         {
-          name: "Week Four - Recovery",
+          name: "Week Four",
           reps: 5,
           percentages: [40, 50, 60],
           volume: null
@@ -197,8 +316,8 @@ export default {
         Math.round(
           ((this.trainingMaxPercentage / 100) *
             this.records[i].fields.oneRepMax) /
-            this.loadIncrement
-        ) * this.loadIncrement;
+            this.incrementByValue
+        ) * this.incrementByValue;
       this.records[i].fields.oneRepMaxChars = this.records[
         i
       ].fields.trainingMaxLoad.toString().length;
@@ -212,8 +331,8 @@ export default {
       workout.percentages.forEach(perc => {
         workoutVolume =
           workoutVolume +
-          Math.round(((perc / 100) * max * reps) / this.loadIncrement) *
-            this.loadIncrement;
+          Math.round(((perc / 100) * max * reps) / this.incrementByValue) *
+            this.incrementByValue;
       });
       // console.log(workoutVolume);
       return workoutVolume;
@@ -235,8 +354,8 @@ export default {
           Math.round(
             (exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
               100 /
-              this.loadIncrement
-          ) * this.loadIncrement
+              this.incrementByValue
+          ) * this.incrementByValue
         );
       }
       if (data.name === "Percentage") {
@@ -249,9 +368,9 @@ export default {
           Math.round(
             (exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
               100 /
-              this.loadIncrement
+              this.incrementByValue
           ) *
-          this.loadIncrement *
+          this.incrementByValue *
           workout.reps
         );
       } else {
@@ -285,23 +404,31 @@ export default {
       );
     }
   },
-    beforeCreate() {
-    document.body.className = 'workouts'
+  beforeCreate() {
+    document.body.className = "workouts";
   }
 };
 </script>
 
 <style lang="scss" scoped>
+body.workouts {
+  background-image: url("~@/assets/brijan.gif");
+  background-repeat: repeat;
+  // background-image: linear-gradient(black, rgba(#333,0.05)), url('~@/assets/leather-nunchuck.png');
+  // background: #333;
+}
+
 .box {
   // background: rgba(0, 0, 0, 0.1);
   color: white;
   font-weight: 300;
   // border: 1px solid rgba(50, 200, 255, 0.35);
   // border-radius: 5px;
-  padding: 0.125rem;
+  // padding: 0.125rem;
   display: grid;
   grid-auto-columns: auto;
   grid-auto-rows: auto;
+  // border-bottom: 1px solid rgba(50, 200, 255, 1);
 }
 
 input {
@@ -323,8 +450,43 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+input[type="select"] {
+  background: red;
+
+  & option {
+    background: blue;
+  }
+}
+
+.selectRowsOrColumns {
+  background: rgba(50, 200, 255, 0.5);
+  margin: 0 1rem;
+  border: 3px solid rgba(0, 0, 0, 0.25);
+  padding: 0.25rem;
+  color: #333;
+  // font-family: 'Muli';
+
+  & input[type="radio"] {
+    display: none;
+  }
+
+  label {
+    display: inline-block;
+    padding: .25rem;
+  }
+
+  & input[type="radio"]:checked + label {
+    background: rgba(50, 200, 255, 1);
+  }
+}
+
+.selectRowsOrColumnsHeading {
+  margin: 0 .5rem;
+  color: rgba(50, 200, 255, 1);
+}
+
 .workouts {
-  background: rgba(5,10,75,.2);
+  background: rgba(5, 10, 75, 0.2);
   font-family: "Merriweather";
   // font-family: 'Nunito';
   // font-family: 'Muli';
@@ -362,7 +524,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .training-cycle-header {
   // background: rgba(0, 0, 0, 0.75);
-  padding: 1rem;
+  // padding: 1rem;
   // border: 2px solid rgba(50, 255, 200, 0.25);
 }
 
@@ -371,21 +533,30 @@ input[type="number"]::-webkit-outer-spin-button {
   // border: 2px solid rgba(50, 255, 200, 0.5);
   display: flex;
   flex-direction: column;
+  background: rgba(125, 0, 95, 0.75);
 }
 
 .exercise {
   margin: 1rem;
   padding: 0;
   display: flex;
-  flex-direction: column;
-  border: 2px solid rgba(255, 0, 0, 0.25);
+  // flex-direction: column;
+  background: rgba(0, 50, 95, 0.75);
+  border: 0.25rem solid rgba(0, 0, 0, 0.25);
+
+  & h2 {
+    margin: 1rem 0 0 0;
+  }
+}
+
+h2.exercise-name {
+  padding: 0 1rem;
 }
 
 .workout-header {
   background: rgba(25, 75, 55, 0.5);
   display: flex;
   justify-content: space-around;
-  flex-direction: column;
   // grid-template-columns: auto;
   // grid-template-rows: [title] 3rem auto;
   // grid-template-areas:
@@ -422,6 +593,7 @@ input[type="number"]::-webkit-outer-spin-button {
   padding-right: 1rem;
   align-self: flex-end;
 }
+
 .workout-header-week-volume .data-item {
   margin-left: 1rem;
 }
@@ -443,8 +615,9 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .workout-variables {
-  font-family: 'Muli';
+  font-family: "Muli";
   display: flex;
+  align-items: center;
   padding: 1rem;
   background: #333;
   color: #ccc;
