@@ -1,55 +1,92 @@
 // This template is for the Airtable data source for exercises
 
 <template>
-<div class="about">
-  <AirtableModule base="apphjOSO84s4oUCKH/" table="Wendler531/" @records="collectRecords($event)" />
-  <div class="workout-variables box">
-    <label for="trainingMaxPercentage">
-      Training Maximum Percentage (%)
-      <input type="number" name="trainingMaxPercentage" style="width: 2.5ch;" @change="setWidthByChars" @input="setWidthByChars" v-model="trainingMaxPercentage" id="trainingMaxPercentage" value="90" placeholder="%" />
-    </label>
-    <label for="numberOfWorkoutColumns">
-      Number Of Workout Columns:
-      <input type="number" name="numberOfWorkoutColumns" v-model="numberOfWorkoutColumns" id="numberOfWorkoutColumns" value="2" placeholder="2" />
-    </label>
-  </div>
-  <!-- <div class="records-loop" v-for="record in records">{{record.fields}}</div> -->
-  <!-- RECORDS: {{ records }} -->
-  <!-- <h1>Layout Construction For 5-3-1 Template</h1> -->
-  <div :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
-    <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
-    <div v-for="(exercise, i) in records">
-      <h2>{{ exercise.fields.name }}</h2>
-      <div class="training-cycle-header box">
-        <label>
-          1RM:
-          <input type="number" class="oneRepMax" :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`" id="oneRepMax" v-model="exercise.fields.oneRepMax" @input="setTrainingMaxLoad(exercise, i)" />
-        </label>
-        <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
-        <div class="increment box">Increment by 5</div>
-      </div>
-      <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
-        <div class="workout-header box">
-          <h2 class="workout-header-week-title box">{{workout.name }}</h2>
-          <h2 class="workout-header-week-title box">
-            Total Volume:
-            <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
-          </h2>
+  <div class="about">
+    <AirtableModule
+      base="apphjOSO84s4oUCKH/"
+      table="Wendler531/"
+      @records="collectRecords($event)"
+    />
+    <div class="workout-variables box">
+      <label for="trainingMaxPercentage">
+        Training Maximum Percentage (%)
+        <input
+          type="number"
+          name="trainingMaxPercentage"
+          style="width: 2.5ch;"
+          @change="setWidthByChars"
+          @input="setWidthByChars"
+          v-model="trainingMaxPercentage"
+          id="trainingMaxPercentage"
+          value="90"
+          placeholder="%"
+        />
+      </label>
+      <label for="numberOfWorkoutColumns">
+        Number Of Workout Columns:
+        <input
+          type="number"
+          name="numberOfWorkoutColumns"
+          style="width: 1.5ch;"
+          min="1"
+          max="8"
+          v-model="numberOfWorkoutColumns"
+          id="numberOfWorkoutColumns"
+          value="2"
+          placeholder="2"
+        />
+      </label>
+    </div>
+    <!-- <div class="records-loop" v-for="record in records">{{record.fields}}</div> -->
+    <!-- RECORDS: {{ records }} -->
+    <!-- <h1>Layout Construction For 5-3-1 Template</h1> -->
+    <div :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
+      <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
+      <div v-for="(exercise, i) in records">
+        <h2>{{ exercise.fields.name }}</h2>
+        <div class="training-cycle-header box">
+          <label>
+            1RM:
+            <input
+              type="number"
+              class="oneRepMax"
+              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
+              id="oneRepMax"
+              v-model="exercise.fields.oneRepMax"
+              @input="setTrainingMaxLoad(exercise, i)"
+            />
+          </label>
+          <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
+          <div class="increment box">Increment by 5</div>
         </div>
-        <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
-          <div v-for="(data, i) in workoutData" :class="['data-item box', `${data.name}`]" v-if="row.name === 'header'">{{ data.name }}</div>
-          <div v-for="(data, i) in workoutData" :class="['data-item box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc(exercise, workout, data, i, x) }}</div>
+        <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
+          <div class="workout-header box">
+            <h2 class="workout-header-week-title box">{{workout.name }}</h2>
+            <h3 class="workout-header-week-volume box">
+              Total Volume: 
+              <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
+            </h3>
+          </div>
+          <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
+            <div
+              v-for="(data, i) in workoutData"
+              :class="['data-item box', `${data.name}`]"
+              v-if="row.name === 'header'"
+            >{{ data.name }}</div>
+            <div
+              v-for="(data, i) in workoutData"
+              :class="['data-item box', `${data.name}`]"
+              v-if="row.name === 'data'"
+            >{{ dataCalc(exercise, workout, data, i, x) }}</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
-import {
-  mapGetters
-} from "vuex";
+import { mapGetters } from "vuex";
 import Color from "color";
 import store from "@/store";
 import axios from "axios";
@@ -70,7 +107,8 @@ export default {
       currentLoad: 0,
       exercises: [],
       records: [],
-      exerciseList: [{
+      exerciseList: [
+        {
           name: "Deadlift",
           oneRepMax: 385,
           trainingMaxPercentage: 0.9,
@@ -83,7 +121,8 @@ export default {
           trainingMaxLoad: 0
         }
       ],
-      exerciseWorkouts: [{
+      exerciseWorkouts: [
+        {
           name: "Week One",
           reps: 5,
           percentages: [65, 75, 85],
@@ -108,7 +147,8 @@ export default {
           volume: null
         }
       ],
-      workoutDataRows: [{
+      workoutDataRows: [
+        {
           name: "header",
           value: "data.name"
         },
@@ -125,7 +165,8 @@ export default {
           value: "data.value"
         }
       ],
-      workoutData: [{
+      workoutData: [
+        {
           name: "Reps",
           value: 5
         },
@@ -141,7 +182,7 @@ export default {
           name: "Volume",
           value: 925
         }
-      ],
+      ]
     };
   },
   methods: {
@@ -156,9 +197,11 @@ export default {
         Math.round(
           ((this.trainingMaxPercentage / 100) *
             this.records[i].fields.oneRepMax) /
-          this.loadIncrement
+            this.loadIncrement
         ) * this.loadIncrement;
-      this.records[i].fields.oneRepMaxChars = this.records[i].fields.trainingMaxLoad.toString().length
+      this.records[i].fields.oneRepMaxChars = this.records[
+        i
+      ].fields.trainingMaxLoad.toString().length;
     },
     workoutVolume(exercise, workout) {
       // console.log(`workoutVolume called for exercise ${exercise.fields.name} and workout ${workout.name}`)
@@ -170,16 +213,16 @@ export default {
         workoutVolume =
           workoutVolume +
           Math.round(((perc / 100) * max * reps) / this.loadIncrement) *
-          this.loadIncrement;
+            this.loadIncrement;
       });
       // console.log(workoutVolume);
       return workoutVolume;
     },
     setWidthByChars(e) {
-      console.log(`setWidthByChars called`)
+      console.log(`setWidthByChars called`);
       // let len = e.target.value.toString().length
-      e.target.style.width = `${e.target.value.toString().length + .5}ch`
-      console.log(e.target.style.width)
+      e.target.style.width = `${e.target.value.toString().length + 0.5}ch`;
+      console.log(e.target.style.width);
     },
     dataCalc(exercise, workout, data, i, x) {
       if (data.name === "Reps") {
@@ -191,8 +234,8 @@ export default {
         return (
           Math.round(
             (exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
-            100 /
-            this.loadIncrement
+              100 /
+              this.loadIncrement
           ) * this.loadIncrement
         );
       }
@@ -205,8 +248,8 @@ export default {
         return (
           Math.round(
             (exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
-            100 /
-            this.loadIncrement
+              100 /
+              this.loadIncrement
           ) *
           this.loadIncrement *
           workout.reps
@@ -218,15 +261,13 @@ export default {
   },
   computed: {
     oneRepMax: {
-
       get: function(e) {
-      console.log(`computed oneRepMax`)
+        console.log(`computed oneRepMax`);
       },
       set: function(e) {
-
-      console.log('oneRepMax setter')
-            console.log(this)
-                  return exercise.fields.oneRepMax
+        console.log("oneRepMax setter");
+        console.log(this);
+        return exercise.fields.oneRepMax;
       }
     }
   },
@@ -238,8 +279,10 @@ export default {
   },
   watch: {
     oneRepMax() {
-      let input = document.querySelector('#oneRepMax').value
-      console.log(`setTrainingMaxLoad input = document.querySelector('#oneRepMax').value ${input.length}`)
+      let input = document.querySelector("#oneRepMax").value;
+      console.log(
+        `setTrainingMaxLoad input = document.querySelector('#oneRepMax').value ${input.length}`
+      );
     }
   }
 };
@@ -250,7 +293,7 @@ export default {
   background: rgba(0, 0, 0, 0.1);
   color: white;
   font-weight: 300;
-  border: 1px solid rgba(50, 200, 255, 0.35);
+  // border: 1px solid rgba(50, 200, 255, 0.35);
   // border-radius: 5px;
   padding: 0.125rem;
   display: grid;
@@ -262,12 +305,12 @@ input {
   background: none;
   border: none;
   color: rgba(50, 200, 255, 1);
-  font-family: 'Muli';
+  font-family: "Muli";
   font-size: 1.1rem;
-  padding-left: .25rem;
+  padding-left: 0.25rem;
   width: 5ch;
   border-bottom: 1px solid rgba(50, 200, 255, 1);
-  margin: .5rem;
+  margin: 0.5rem;
   justify-self: flex-end;
 }
 
@@ -337,13 +380,14 @@ input[type="number"]::-webkit-outer-spin-button {
   background: rgba(25, 75, 55, 0.5);
   display: flex;
   justify-content: space-around;
-  // flex-direction: column;
+  flex-direction: column;
   // grid-template-columns: auto;
   // grid-template-rows: [title] 3rem auto;
   // grid-template-areas:
   //   "title"
   //   "data";
   justify-content: center;
+  // border-bottom: 1px solid rgba(200,225,255,1);
 }
 
 .workout-header-week-title {
@@ -357,11 +401,28 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 0;
   margin: 0.25rem 1rem;
   border: none;
+  background: none;
   // background: rgba(0, 255, 255, 0.25);
 }
 
+.workout-header-week-volume {
+  font-size: 90%;
+  border: none;
+  background: none;
+  margin: 0.125rem;
+  padding: 0.125rem;
+  display: flex;
+  // position: absolute;
+  // right: 0;
+  padding-right: 1rem;
+  align-self: flex-end;
+}
+.workout-header-week-volume .data-item {
+  margin-left: 1rem;
+}
+
 .workout-header-column-headings {
-  background: rgba(255, 0, 255, 0.25);
+  // background: rgba(55, 0, 55, 0.75);
 }
 
 .workout-row {
@@ -369,21 +430,24 @@ input[type="number"]::-webkit-outer-spin-button {
   grid-area: data;
   grid-template-columns: [reps] 1fr [load] 1fr [percentage] 1fr [totVolume] 1fr;
   grid-template-areas: "reps load percentage totVolume";
-}
+  border: none;
 
-.workout-row-header {
-  background: rgba(255, 150, 255, 0.25);
+  &.header {
+    background: rgba(0, 150, 55, 0.15);
+  }
 }
 
 .workout-variables {
+  font-family: 'Muli';
   display: flex;
   padding: 1rem;
-  background: #eee;
-  color: #111;
+  background: #333;
+  color: #ccc;
 }
 
 .data-item {
   font-family: "Muli";
+  border: none;
 }
 
 .reps {
