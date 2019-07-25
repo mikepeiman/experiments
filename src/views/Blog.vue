@@ -53,7 +53,7 @@ export const articlesQuery = gql`
 `;
 
 export default {
-  name: "HomePage",
+  name: "blog",
   data: () => ({
     loading: 0,
     allPosts: null,

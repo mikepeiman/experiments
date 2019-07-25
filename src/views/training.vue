@@ -284,13 +284,16 @@ export default {
         `setTrainingMaxLoad input = document.querySelector('#oneRepMax').value ${input.length}`
       );
     }
+  },
+    beforeCreate() {
+    document.body.className = 'workouts'
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .box {
-  background: rgba(0, 0, 0, 0.1);
+  // background: rgba(0, 0, 0, 0.1);
   color: white;
   font-weight: 300;
   // border: 1px solid rgba(50, 200, 255, 0.35);
@@ -321,14 +324,16 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .workouts {
-  background: #111;
+  background: rgba(5,10,75,.2);
   font-family: "Merriweather";
   // font-family: 'Nunito';
   // font-family: 'Muli';
   // font-family: 'Poppins';
   font-family: "Montserrat";
+  // margin: 1rem;
 
   grid-template-columns: repeat(2, 1fr);
+  grid-gap: 1rem;
 
   &.col-1 {
     grid-template-columns: repeat(1, 1fr);
@@ -356,14 +361,14 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .training-cycle-header {
-  background: rgba(0, 0, 0, 0.75);
+  // background: rgba(0, 0, 0, 0.75);
   padding: 1rem;
-  border: 2px solid rgba(50, 255, 200, 0.25);
+  // border: 2px solid rgba(50, 255, 200, 0.25);
 }
 
 .workout {
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(50, 255, 200, 0.5);
+  // background: rgba(0, 0, 0, 0.5);
+  // border: 2px solid rgba(50, 255, 200, 0.5);
   display: flex;
   flex-direction: column;
 }
@@ -448,6 +453,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .data-item {
   font-family: "Muli";
   border: none;
+  font-weight: 300;
 }
 
 .reps {
