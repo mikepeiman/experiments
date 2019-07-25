@@ -3,11 +3,18 @@
 <template>
 <div class="about">
   <AirtableModule base="apphjOSO84s4oUCKH/" table="Wendler531/" @records="collectRecords($event)" />
-  <label for="trainingMaxPercentage">Training Maximum Percentage (%) <input type="number" name="trainingMaxPercentage" v-model="trainingMaxPercentage" id="trainingMaxPercentage" value="90" placeholder="%"></label>
+  <label for="trainingMaxPercentage">
+    Training Maximum Percentage (%)
+    <input type="number" name="trainingMaxPercentage" v-model="trainingMaxPercentage" id="trainingMaxPercentage" value="90" placeholder="%" />
+  </label>
+  <label for="numberOfWorkoutColumns">
+    Number Of Workout Columns:
+    <input type="number" name="numberOfWorkoutColumns" v-model="numberOfWorkoutColumns" id="numberOfWorkoutColumns" value="2" placeholder="2" />
+  </label>
   <!-- <div class="records-loop" v-for="record in records">{{record.fields}}</div> -->
   <!-- RECORDS: {{ records }} -->
   <h1>Layout Construction For 5-3-1 Template</h1>
-  <div class="workouts box">
+  <div :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
     <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
     <div v-for="(exercise, i) in records">
       <h2>{{ exercise.fields.name }}</h2>
@@ -17,9 +24,7 @@
           <input type="number" class="oneRepMax" v-model="exercise.fields.oneRepMax" @input="setTrainingMaxLoad(exercise, i)" />
         </label>
         1RM: {{ exercise.fields.oneRepMax }}
-        <label class="training-max box">
-          Training Max: {{ exercise.fields.trainingMaxLoad }}
-        </label>
+        <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
         <div class="increment box">Increment by 5</div>
       </div>
       <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
@@ -40,11 +45,11 @@
 <script>
 import {
   mapGetters
-} from 'vuex'
+} from "vuex";
 import Color from "color";
 import store from "@/store";
 import axios from "axios";
-import AirtableModule from '@/components/AirtableModule';
+import AirtableModule from "@/components/AirtableModule";
 
 export default {
   name: "training",
@@ -54,6 +59,7 @@ export default {
   data() {
     return {
       vuexExercises: [],
+      numberOfWorkoutColumns: 2,
       exercises: [],
       records: [],
       exerciseList: [{
@@ -135,27 +141,33 @@ export default {
   },
   methods: {
     collectRecords(records) {
-      this.records = records
+      this.records = records;
       records.forEach((record, i) => {
-        record.trainingMaxLoad = this.setTrainingMaxLoad(record, i)
-      })
+        record.trainingMaxLoad = this.setTrainingMaxLoad(record, i);
+      });
     },
     workoutVolume(exercise, workout) {
       // console.log(`workoutVolume called for exercise ${exercise.fields.name} and workout ${workout.name}`)
 
-      let reps = workout.reps
-      let workoutVolume = 0
-      let max = exercise.fields.trainingMaxLoad
+      let reps = workout.reps;
+      let workoutVolume = 0;
+      let max = exercise.fields.trainingMaxLoad;
       workout.percentages.forEach(perc => {
-        workoutVolume = workoutVolume + (Math.round(perc / 100 * max * reps / this.loadIncrement) * this.loadIncrement)
-      })
-      console.log(workoutVolume)
-      return workoutVolume
+        workoutVolume =
+          workoutVolume +
+          Math.round(((perc / 100) * max * reps) / this.loadIncrement) *
+          this.loadIncrement;
+      });
+      console.log(workoutVolume);
+      return workoutVolume;
     },
     setTrainingMaxLoad(exercise, i) {
       this.records[i].fields.trainingMaxLoad =
-        Math.round(this.trainingMaxPercentage/100 *
-          this.records[i].fields.oneRepMax / this.loadIncrement) * this.loadIncrement;
+        Math.round(
+          ((this.trainingMaxPercentage / 100) *
+            this.records[i].fields.oneRepMax) /
+          this.loadIncrement
+        ) * this.loadIncrement;
     },
     dataCalc(exercise, workout, data, i, x) {
       if (data.name === "Reps") {
@@ -178,22 +190,25 @@ export default {
       }
       if (data.name === "Volume") {
         // console.log(`this data is named "Volume"`)
-        return Math.round(
-            ((exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
-              100) /
-            this.loadIncrement) *
-          this.loadIncrement * workout.reps;
+        return (
+          Math.round(
+            (exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
+            100 /
+            this.loadIncrement
+          ) *
+          this.loadIncrement *
+          workout.reps
+        );
       } else {
         return workout;
       }
     }
   },
-  computed: {
-  },
+  computed: {},
   mounted() {
-    console.log(`training.vue created()`)
-    console.log(this.$store)
-    console.log(this.$store.getters)
+    console.log(`training.vue created()`);
+    console.log(this.$store);
+    console.log(this.$store.getters);
     // this.trainingMaxPercentage = document.querySelector('#trainingMaxPercentage').value
   }
 };
@@ -211,15 +226,37 @@ export default {
   grid-auto-rows: auto;
 }
 
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 .workouts {
   background: #333;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  &.col-1 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  &.col-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &.col-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &.col-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &.col-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  &.col-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
 .training-cycle-header {
