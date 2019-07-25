@@ -1,12 +1,6 @@
 <template>
   <div class="airtable-module">
     <div class="display-none emit-data" :on="$emit('records',records)"></div>
-    <!-- <h1 class="title clear">Airtable Module</h1>
-    <h2 v-if="records" class="subtitle clear"  v-on="emitToParent" @change="updateState">Records loaded</h2> -->
-          <!-- {{ records }} -->
-          <!-- example
-          <div class="single-product-detail">{{ record.fields.name }}</div> 
-          -->
   </div>
 </template>
 
@@ -32,14 +26,10 @@ export default {
   },
   beforeMount() {
     this.getData();
-    this.$store.commit('change', this.records)
   },
   methods: {
     emitToParent() {
       this.$emit('childToParent', this.records)
-    },
-    updateState() {
-      this.$store.commit('change', this.records)
     },
     getData() {
       axios({
@@ -73,6 +63,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.display-none {
+  display: none;
+}
 label {
   background: rgba(0, 0, 0, 0.25);
   padding: 0.5rem;

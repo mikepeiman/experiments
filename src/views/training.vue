@@ -4,13 +4,12 @@
 <div class="about">
   <AirtableModule base="apphjOSO84s4oUCKH/" table="Wendler531/" @records="collectRecords($event)" />
   <label for="trainingMaxPercentage">Training Maximum Percentage (%) <input type="number" name="trainingMaxPercentage" v-model="trainingMaxPercentage" id="trainingMaxPercentage" value="90" placeholder="%"></label>
-  <div class="records-loop" v-for="record in storeRecords">{{record.fields}}</div>
+  <!-- <div class="records-loop" v-for="record in records">{{record.fields}}</div> -->
   <!-- RECORDS: {{ records }} -->
   <h1>Layout Construction For 5-3-1 Template</h1>
   <div class="workouts box">
     <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
     <div v-for="(exercise, i) in records">
-      {{ i}} {{ exercise.fields }}
       <h2>{{ exercise.fields.name }}</h2>
       <div class="training-cycle-header box">
         <label>
@@ -129,7 +128,7 @@ export default {
           value: 925
         }
       ],
-      trainingMaxPercentage: 0.9,
+      trainingMaxPercentage: 90,
       loadIncrement: 5,
       currentLoad: 0
     };
@@ -142,16 +141,15 @@ export default {
       })
     },
     workoutVolume(exercise, workout) {
-      console.log(`workoutVolume called for exercise ${exercise.fields.name} and workout ${workout}`)
+      // console.log(`workoutVolume called for exercise ${exercise.fields.name} and workout ${workout.name}`)
 
       let reps = workout.reps
       let workoutVolume = 0
       let max = exercise.fields.trainingMaxLoad
       workout.percentages.forEach(perc => {
-        // console.log(perc)
         workoutVolume = workoutVolume + (Math.round(perc / 100 * max * reps / this.loadIncrement) * this.loadIncrement)
-        // console.log(`reps ${reps}, max ${max}, workoutVolume ${workoutVolume}`)
       })
+      console.log(workoutVolume)
       return workoutVolume
     },
     setTrainingMaxLoad(exercise, i) {
@@ -166,7 +164,6 @@ export default {
       }
       if (data.name === "Load") {
         // console.log(`this data is named "Load"`)
-        // console.log(this.setTrainingMaxLoad(exercise, i))
         return (
           Math.round(
             (exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
@@ -192,21 +189,12 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters([
-    //   // Mounts the "safelyStoredNumber" getter to the scope of your component.
-    //   'records'
-    // ]),
-    storeRecords() {
-      return this.$store.state
-    },
-    // setExercises() {
-    //   this.exercises = this.records
-    // }
   },
   mounted() {
     console.log(`training.vue created()`)
-    // console.log(`${this.$store}, ${this.$store.state}`)
-    this.trainingMaxPercentage = document.querySelector('#trainingMaxPercentage').value
+    console.log(this.$store)
+    console.log(this.$store.getters)
+    // this.trainingMaxPercentage = document.querySelector('#trainingMaxPercentage').value
   }
 };
 </script>
