@@ -1,45 +1,81 @@
 // This template is for the Airtable data source for exercises
 
 <template>
-<div class="about">
-  <AirtableModule base="apphjOSO84s4oUCKH/" table="Wendler531/" @records="collectRecords($event)" />
-  <label for="trainingMaxPercentage">
-    Training Maximum Percentage (%)
-    <input type="number" name="trainingMaxPercentage" v-model="trainingMaxPercentage" id="trainingMaxPercentage" value="90" placeholder="%" />
-  </label>
-  <label for="numberOfWorkoutColumns">
-    Number Of Workout Columns:
-    <input type="number" name="numberOfWorkoutColumns" v-model="numberOfWorkoutColumns" id="numberOfWorkoutColumns" value="2" placeholder="2" />
-  </label>
-  <!-- <div class="records-loop" v-for="record in records">{{record.fields}}</div> -->
-  <!-- RECORDS: {{ records }} -->
-  <h1>Layout Construction For 5-3-1 Template</h1>
-  <div :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
-    <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
-    <div v-for="(exercise, i) in records">
-      <h2>{{ exercise.fields.name }}</h2>
-      <div class="training-cycle-header box">
-        <label>
-          1RM:
-          <input type="number" class="oneRepMax" v-model="exercise.fields.oneRepMax" @input="setTrainingMaxLoad(exercise, i)" />
-        </label>
-        1RM: {{ exercise.fields.oneRepMax }}
-        <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
-        <div class="increment box">Increment by 5</div>
-      </div>
-      <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
-        <div class="workout-header box">
-          <h2 class="workout-header-week-title box">{{workout.name }} || Total Volume: {{ workoutVolume(exercise, workout) }}</h2>
-
+  <div class="about">
+    <AirtableModule
+      base="apphjOSO84s4oUCKH/"
+      table="Wendler531/"
+      @records="collectRecords($event)"
+    />
+    <div class="workout-variables box">
+      <label for="trainingMaxPercentage">
+        Training Maximum Percentage (%)
+        <input
+          type="number"
+          name="trainingMaxPercentage"
+          v-model="trainingMaxPercentage"
+          id="trainingMaxPercentage"
+          value="90"
+          placeholder="%"
+        />
+      </label>
+      <label for="numberOfWorkoutColumns">
+        Number Of Workout Columns:
+        <input
+          type="number"
+          name="numberOfWorkoutColumns"
+          v-model="numberOfWorkoutColumns"
+          id="numberOfWorkoutColumns"
+          value="2"
+          placeholder="2"
+        />
+      </label>
+    </div>
+    <!-- <div class="records-loop" v-for="record in records">{{record.fields}}</div> -->
+    <!-- RECORDS: {{ records }} -->
+    <!-- <h1>Layout Construction For 5-3-1 Template</h1> -->
+    <div :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
+      <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
+      <div v-for="(exercise, i) in records">
+        <h2>{{ exercise.fields.name }}</h2>
+        <div class="training-cycle-header box">
+          <label>
+            1RM:
+            <input
+              type="number"
+              class="oneRepMax"
+              id="oneRepMax"
+              v-model="exercise.fields.oneRepMax"
+              @input="setTrainingMaxLoad(exercise, i)"
+            />
+          </label>
+          <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
+          <div class="increment box">Increment by 5</div>
+        </div>
+        <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
+          <div class="workout-header box">
+            <h2 class="workout-header-week-title box">{{workout.name }}</h2>
+            <h2 class="workout-header-week-title box">
+              Total Volume:
+              <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
+            </h2>
+          </div>
           <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
-            <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'header'">{{ data.name }}</div>
-            <div v-for="(data, i) in workoutData" :class="['workout-row-data box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc(exercise, workout, data, i, x) }}</div>
+            <div
+              v-for="(data, i) in workoutData"
+              :class="['data-item box', `${data.name}`]"
+              v-if="row.name === 'header'"
+            >{{ data.name }}</div>
+            <div
+              v-for="(data, i) in workoutData"
+              :class="['data-item box', `${data.name}`]"
+              v-if="row.name === 'data'"
+            >{{ dataCalc(exercise, workout, data, i, x) }}</div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -59,7 +95,11 @@ export default {
   data() {
     return {
       vuexExercises: [],
+      oneRepMax: 0,
       numberOfWorkoutColumns: 2,
+      trainingMaxPercentage: 90,
+      loadIncrement: 5,
+      currentLoad: 0,
       exercises: [],
       records: [],
       exerciseList: [{
@@ -134,9 +174,6 @@ export default {
           value: 925
         }
       ],
-      trainingMaxPercentage: 90,
-      loadIncrement: 5,
-      currentLoad: 0
     };
   },
   methods: {
@@ -158,7 +195,7 @@ export default {
           Math.round(((perc / 100) * max * reps) / this.loadIncrement) *
           this.loadIncrement;
       });
-      console.log(workoutVolume);
+      // console.log(workoutVolume);
       return workoutVolume;
     },
     setTrainingMaxLoad(exercise, i) {
@@ -168,6 +205,7 @@ export default {
             this.records[i].fields.oneRepMax) /
           this.loadIncrement
         ) * this.loadIncrement;
+      this.oneRepMax = this.records[i].fields.trainingMaxLoad
     },
     dataCalc(exercise, workout, data, i, x) {
       if (data.name === "Reps") {
@@ -204,12 +242,23 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    oneRepMax() {
+      return this.
+    }
+  },
   mounted() {
     console.log(`training.vue created()`);
     console.log(this.$store);
     console.log(this.$store.getters);
     // this.trainingMaxPercentage = document.querySelector('#trainingMaxPercentage').value
+  },
+  watch: {
+    oneRepMax() {
+      let input = document.querySelector('#oneRepMax').value
+      console.log(`setTrainingMaxLoad input = document.querySelector('#oneRepMax').value ${input.length}`)
+      this.oneRepMax = input
+    }
   }
 };
 </script>
@@ -217,13 +266,27 @@ export default {
 <style lang="scss" scoped>
 .box {
   background: rgba(0, 0, 0, 0.1);
-  color: rgba(150, 200, 255, 0.85);
-  border: 1px solid rgba(50, 200, 255, 0.15);
+  color: white;
+  font-weight: 300;
+  border: 1px solid rgba(50, 200, 255, 0.35);
   // border-radius: 5px;
   padding: 0.125rem;
   display: grid;
   grid-auto-columns: auto;
   grid-auto-rows: auto;
+}
+
+input {
+  background: none;
+  border: none;
+  color: rgba(50, 200, 255, 1);
+  font-family: "Muli";
+  font-size: 1.1rem;
+  padding-left: 0.25rem;
+  width: 5ch;
+  border-bottom: 1px solid rgba(50, 200, 255, 1);
+  margin: 0.5rem;
+  justify-self: flex-end;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -233,11 +296,19 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .workouts {
-  background: #333;
+  background: #111;
+  font-family: "Merriweather";
+  // font-family: 'Nunito';
+  // font-family: 'Muli';
+  // font-family: 'Poppins';
+  font-family: "Montserrat";
+
   grid-template-columns: repeat(2, 1fr);
+
   &.col-1 {
     grid-template-columns: repeat(1, 1fr);
   }
+
   &.col-2 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -282,14 +353,14 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .workout-header {
   background: rgba(25, 75, 55, 0.5);
-
   display: flex;
-  flex-direction: column;
-  grid-template-columns: auto;
-  grid-template-rows: [title] 3rem auto;
-  grid-template-areas:
-    "title"
-    "data";
+  justify-content: space-around;
+  // flex-direction: column;
+  // grid-template-columns: auto;
+  // grid-template-rows: [title] 3rem auto;
+  // grid-template-areas:
+  //   "title"
+  //   "data";
   justify-content: center;
 }
 
@@ -297,10 +368,14 @@ input[type="number"]::-webkit-outer-spin-button {
   grid-area: title;
   grid-column: 1/5;
   grid-row: 1/2;
+  display: flex;
   align-content: center;
+  justify-content: space-around;
+  flex-direction: row;
   padding: 0;
-  margin: 0;
-  background: rgba(0, 255, 255, 0.25);
+  margin: 0.25rem 1rem;
+  border: none;
+  // background: rgba(0, 255, 255, 0.25);
 }
 
 .workout-header-column-headings {
@@ -318,7 +393,16 @@ input[type="number"]::-webkit-outer-spin-button {
   background: rgba(255, 150, 255, 0.25);
 }
 
-.workout-row-data {}
+.workout-variables {
+  display: flex;
+  padding: 1rem;
+  background: #eee;
+  color: #111;
+}
+
+.data-item {
+  font-family: "Muli";
+}
 
 .reps {
   grid-area: reps;
