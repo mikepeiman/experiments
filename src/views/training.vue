@@ -1,81 +1,49 @@
 // This template is for the Airtable data source for exercises
 
 <template>
-  <div class="about">
-    <AirtableModule
-      base="apphjOSO84s4oUCKH/"
-      table="Wendler531/"
-      @records="collectRecords($event)"
-    />
-    <div class="workout-variables box">
-      <label for="trainingMaxPercentage">
-        Training Maximum Percentage (%)
-        <input
-          type="number"
-          name="trainingMaxPercentage"
-          v-model="trainingMaxPercentage"
-          id="trainingMaxPercentage"
-          value="90"
-          placeholder="%"
-        />
-      </label>
-      <label for="numberOfWorkoutColumns">
-        Number Of Workout Columns:
-        <input
-          type="number"
-          name="numberOfWorkoutColumns"
-          v-model="numberOfWorkoutColumns"
-          id="numberOfWorkoutColumns"
-          value="2"
-          placeholder="2"
-        />
-      </label>
-    </div>
-    <!-- <div class="records-loop" v-for="record in records">{{record.fields}}</div> -->
-    <!-- RECORDS: {{ records }} -->
-    <!-- <h1>Layout Construction For 5-3-1 Template</h1> -->
-    <div :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
-      <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
-      <div v-for="(exercise, i) in records">
-        <h2>{{ exercise.fields.name }}</h2>
-        <div class="training-cycle-header box">
-          <label>
-            1RM:
-            <input
-              type="number"
-              class="oneRepMax"
-              id="oneRepMax"
-              v-model="exercise.fields.oneRepMax"
-              @input="setTrainingMaxLoad(exercise, i)"
-            />
-          </label>
-          <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
-          <div class="increment box">Increment by 5</div>
+<div class="about">
+  <AirtableModule base="apphjOSO84s4oUCKH/" table="Wendler531/" @records="collectRecords($event)" />
+  <div class="workout-variables box">
+    <label for="trainingMaxPercentage">
+      Training Maximum Percentage (%)
+      <input type="number" name="trainingMaxPercentage" style="width: 2.5ch;" @change="setWidthByChars" @input="setWidthByChars" v-model="trainingMaxPercentage" id="trainingMaxPercentage" value="90" placeholder="%" />
+    </label>
+    <label for="numberOfWorkoutColumns">
+      Number Of Workout Columns:
+      <input type="number" name="numberOfWorkoutColumns" v-model="numberOfWorkoutColumns" id="numberOfWorkoutColumns" value="2" placeholder="2" />
+    </label>
+  </div>
+  <!-- <div class="records-loop" v-for="record in records">{{record.fields}}</div> -->
+  <!-- RECORDS: {{ records }} -->
+  <!-- <h1>Layout Construction For 5-3-1 Template</h1> -->
+  <div :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
+    <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
+    <div v-for="(exercise, i) in records">
+      <h2>{{ exercise.fields.name }}</h2>
+      <div class="training-cycle-header box">
+        <label>
+          1RM:
+          <input type="number" class="oneRepMax" :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`" id="oneRepMax" v-model="exercise.fields.oneRepMax" @input="setTrainingMaxLoad(exercise, i)" />
+        </label>
+        <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
+        <div class="increment box">Increment by 5</div>
+      </div>
+      <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
+        <div class="workout-header box">
+          <h2 class="workout-header-week-title box">{{workout.name }}</h2>
+          <h2 class="workout-header-week-title box">
+            Total Volume:
+            <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
+          </h2>
         </div>
-        <div v-for="workout in exerciseWorkouts" :class="['workout box', `${workout.name}`]">
-          <div class="workout-header box">
-            <h2 class="workout-header-week-title box">{{workout.name }}</h2>
-            <h2 class="workout-header-week-title box">
-              Total Volume:
-              <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
-            </h2>
-          </div>
-          <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
-            <div
-              v-for="(data, i) in workoutData"
-              :class="['data-item box', `${data.name}`]"
-              v-if="row.name === 'header'"
-            >{{ data.name }}</div>
-            <div
-              v-for="(data, i) in workoutData"
-              :class="['data-item box', `${data.name}`]"
-              v-if="row.name === 'data'"
-            >{{ dataCalc(exercise, workout, data, i, x) }}</div>
-          </div>
+        <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
+          <div v-for="(data, i) in workoutData" :class="['data-item box', `${data.name}`]" v-if="row.name === 'header'">{{ data.name }}</div>
+          <div v-for="(data, i) in workoutData" :class="['data-item box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc(exercise, workout, data, i, x) }}</div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -95,7 +63,7 @@ export default {
   data() {
     return {
       vuexExercises: [],
-      oneRepMax: 0,
+      // oneRepMax: 0,
       numberOfWorkoutColumns: 2,
       trainingMaxPercentage: 90,
       loadIncrement: 5,
@@ -183,6 +151,15 @@ export default {
         record.trainingMaxLoad = this.setTrainingMaxLoad(record, i);
       });
     },
+    setTrainingMaxLoad(exercise, i) {
+      this.records[i].fields.trainingMaxLoad =
+        Math.round(
+          ((this.trainingMaxPercentage / 100) *
+            this.records[i].fields.oneRepMax) /
+          this.loadIncrement
+        ) * this.loadIncrement;
+      this.records[i].fields.oneRepMaxChars = this.records[i].fields.trainingMaxLoad.toString().length
+    },
     workoutVolume(exercise, workout) {
       // console.log(`workoutVolume called for exercise ${exercise.fields.name} and workout ${workout.name}`)
 
@@ -198,14 +175,11 @@ export default {
       // console.log(workoutVolume);
       return workoutVolume;
     },
-    setTrainingMaxLoad(exercise, i) {
-      this.records[i].fields.trainingMaxLoad =
-        Math.round(
-          ((this.trainingMaxPercentage / 100) *
-            this.records[i].fields.oneRepMax) /
-          this.loadIncrement
-        ) * this.loadIncrement;
-      this.oneRepMax = this.records[i].fields.trainingMaxLoad
+    setWidthByChars(e) {
+      console.log(`setWidthByChars called`)
+      // let len = e.target.value.toString().length
+      e.target.style.width = `${e.target.value.toString().length + .5}ch`
+      console.log(e.target.style.width)
     },
     dataCalc(exercise, workout, data, i, x) {
       if (data.name === "Reps") {
@@ -243,8 +217,17 @@ export default {
     }
   },
   computed: {
-    oneRepMax() {
-      return this.
+    oneRepMax: {
+
+      get: function(e) {
+      console.log(`computed oneRepMax`)
+      },
+      set: function(e) {
+
+      console.log('oneRepMax setter')
+            console.log(this)
+                  return exercise.fields.oneRepMax
+      }
     }
   },
   mounted() {
@@ -257,7 +240,6 @@ export default {
     oneRepMax() {
       let input = document.querySelector('#oneRepMax').value
       console.log(`setTrainingMaxLoad input = document.querySelector('#oneRepMax').value ${input.length}`)
-      this.oneRepMax = input
     }
   }
 };
@@ -280,12 +262,12 @@ input {
   background: none;
   border: none;
   color: rgba(50, 200, 255, 1);
-  font-family: "Muli";
+  font-family: 'Muli';
   font-size: 1.1rem;
-  padding-left: 0.25rem;
+  padding-left: .25rem;
   width: 5ch;
   border-bottom: 1px solid rgba(50, 200, 255, 1);
-  margin: 0.5rem;
+  margin: .5rem;
   justify-self: flex-end;
 }
 
