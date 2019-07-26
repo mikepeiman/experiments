@@ -1,99 +1,8 @@
 <template>
-  <div class="training">
-    <AirtableModule
-      base="apphjOSO84s4oUCKH/"
-      table="Wendler531/"
-      @records="collectRecords($event)"
-    />
-    <div class="workout-variables box">
-      <label for="trainingMaxPercentage">
-        Training Maximum Percentage (%)
-        <input
-          type="number"
-          name="trainingMaxPercentage"
-          style="width: 2.5ch;"
-          @change="setWidthByChars"
-          @input="setWidthByChars"
-          v-model="trainingMaxPercentage"
-          id="trainingMaxPercentage"
-          value="90"
-          placeholder="%"
-        />
-      </label>
-      <label for="incrementByValue">
-        Increment By:
-        <input
-          type="number"
-          @change="setWidthByChars"
-          @input="setWidthByChars"
-          name="incrementByValue"
-          style="width: 1.5ch;"
-          min="1"
-          max="50"
-          v-model="incrementByValue"
-          id="incrementByValue"
-          value="5"
-          placeholder="5"
-        />
-      </label>
-      <div class="selectRowsOrColumns">
-        <span class="selectRowsOrColumnsHeading">Select Display:</span>
-        <input
-          type="radio"
-          @change="setWidthByChars"
-          @input="setWidthByChars"
-          name="selectRowsOrColumns"
-          v-model="selectRowsOrColumns"
-          id="selectDisplayRows"
-          value="rows"
-          checked
-        />
-        <label for="selectDisplayRows" class>Rows</label>
-        <input
-          type="radio"
-          @change="setWidthByChars"
-          @input="setWidthByChars"
-          name="selectRowsOrColumns"
-          v-model="selectRowsOrColumns"
-          id="selectDisplayColumns"
-          value="columns"
-        />
-        <label for="selectDisplayColumns" class>Columns</label>
-      </div>
-      <label for="numberOfWorkoutColumns" v-if="selectRowsOrColumns === 'columns'">
-        how many columns?
-        <input
-          type="number"
-          name="numberOfWorkoutColumns"
-          style="width: 1.5ch;"
-          min="1"
-          max="8"
-          v-model="numberOfWorkoutColumns"
-          id="numberOfWorkoutColumns"
-          value="2"
-          placeholder="2"
-        />
-      </label>
-
-      <label for="selectDisplayDensity">
-        Display Density:
-        <input
-          type="number"
-          @change="setWidthByChars"
-          @input="setWidthByChars"
-          name="selectDisplayDensity"
-          style="width: 1.5ch;"
-          min="1"
-          max="3"
-          v-model="selectDisplayDensity"
-          id="selectDisplayDensity"
-          value="1"
-          placeholder="1"
-        />
-      </label>
-    </div>
-
-    <TrainingCycle :selectRowsOrColumns="selectRowsOrColumns" :numberOfWorkoutColumns="numberOfWorkoutColumns" />
+  <div class="training-cycle">
+    <h1>TRAININGCYCLE.VUE</h1>
+    <Workout v-if="selectRowsOrColumns === 'rows'" class="workouts box col-1" />
+    <Workout v-else :class="['workouts box', `col-${numberOfWorkoutColumns}`]" />
     <!-- <div v-if="selectRowsOrColumns === 'rows'" class="workouts box col-1">
       <div
         v-for="(exercise, i) in records"
@@ -162,7 +71,7 @@
     </div>
     <div v-else :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
       <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
-      <!-- <div
+      <div
         v-for="(exercise, i) in records"
         :class="['exercise box',`${exercise.fields.name}`]"
         :style="`background: ${baseColor1}; flex-direction: column;`"
@@ -224,23 +133,24 @@
           </div>
         </div>
       </div>
-    </div> -->
+    <!-- </div> --> 
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import Color from "color";
 import store from "@/store";
 import axios from "axios";
-import AirtableModule from "@/components/AirtableModule";
-import TrainingCycle from "@/components/TrainingCycle";
+import Workout from "@/components/Workout";
 
 export default {
-  name: "training",
+  name: "TrainingCycle",
   components: {
-    AirtableModule,
-    TrainingCycle,
+    Workout
+  },
+  props: {
+    selectRowsOrColumns: String,
+    numberOfWorkoutColumns: Number,
   },
   data() {
     return {
