@@ -1,6 +1,6 @@
 <template>
 <div class="training-cycle">
-  <div v-for="(exercise, i) in records" :class="['exercise box',`${exercise.fields.name}`]" :style="`background: ${baseColor1};`">
+  <div v-for="(exercise, i) in records" :class="['exercise box',`${exercise.fields.name}`]">
     <div class="training-cycle-header box">
       <h2 class="exercise-name">{{ exercise.fields.name }}</h2>
       <div class="training-cycle-header-data">
@@ -21,7 +21,7 @@
           <h3 class="workout-header-week-volume box">
             <span>Workout</span>
             <span>Volume:</span>
-            <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
+            <span class="data-item">{{ workoutVolume(exercise, workout) }}{{ unit }}</span>
           </h3>
         </div>
         <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]" :style="`background: ${adjustAlpha(baseColorBlackClear, x, 7.5)};`">
@@ -60,6 +60,7 @@ export default {
       // selectDisplayColumns: true,
       selectDisplayDensity: 0,
       numberOfWorkoutColumns: 3,
+      unit: 'lbs',
       trainingMaxPercentage: 90,
       incrementByValue: 5,
       currentLoad: 0,
@@ -253,24 +254,29 @@ export default {
 };
 </script>
 
+<style lang="scss">
+// body.workouts {
+//   background-image: url("~@/assets/brijan.gif");
+//   background-repeat: repeat;
+//   // background-image: linear-gradient(black, rgba(#333,0.05)), url('~@/assets/leather-nunchuck.png');
+//   // background: #333;
+// }
+</style>
+
+
 <style lang="scss" scoped>
-body.workouts {
-  background-image: url("~@/assets/brijan.gif");
-  background-repeat: repeat;
-  // background-image: linear-gradient(black, rgba(#333,0.05)), url('~@/assets/leather-nunchuck.png');
-  // background: #333;
-}
+
 
 .box {
   // background: rgba(0, 0, 0, 0.1);
-  color: white;
-  font-weight: 300;
+  // color: white;
+  // font-weight: 300;
   // border: 1px solid rgba(50, 200, 255, 0.35);
   // border-radius: 5px;
   // padding: 0.125rem;
-  display: grid;
-  grid-auto-columns: auto;
-  grid-auto-rows: auto;
+  // display: grid;
+  // grid-auto-columns: auto;
+  // grid-auto-rows: auto;
   // border-bottom: 1px solid rgba(50, 200, 255, 1);
 }
 
@@ -393,7 +399,8 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 0;
   display: flex;
   flex-direction: column;
-  // background: rgba(0, 50, 95, 0.75);
+  background: rgba(0, 50, 95, 0.25);
+  // background: linear-gradient(150deg, rgba(155, 55, 55, 0.15), rgba(55, 75, 195, 0.15));
   border: 0.25rem solid rgba(0, 0, 0, 0.25);
 }
 
@@ -412,7 +419,7 @@ h2.exercise-name {
 }
 
 .workout-header {
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(255,255,255, 0.25);
   display: flex;
   justify-content: space-around;
   // grid-template-columns: auto;
@@ -443,7 +450,8 @@ h2.exercise-name {
 }
 
 .workout-header-week-volume {
-  font-size: 70%;
+  font-weight: 300;
+  font-size: .75rem;
   border: none;
   background: none;
   margin: 0.125rem;
@@ -454,6 +462,9 @@ h2.exercise-name {
   // right: 0;
   padding-right: 1rem;
   align-self: center;
+  &.data-item {
+    font-weight: 900;
+  }
 }
 
 .workout-header-week-volume .data-item {
@@ -470,6 +481,13 @@ h2.exercise-name {
   grid-template-columns: [reps] 1fr [load] 1fr [percentage] 1fr [totVolume] 1fr;
   grid-template-areas: "reps load percentage totVolume";
   border: none;
+  &.header {
+
+    font-family: 'Montserrat';
+    font-weight: 300;
+    font-size: .75rem;
+
+  }
 }
 
 .workout-variables {
@@ -482,10 +500,11 @@ h2.exercise-name {
   color: #ccc;
 }
 
-.data-item {
+data.data-item {
   font-family: "Muli";
   border: none;
   font-weight: 300;
+  color: red;
 }
 
 .reps {
