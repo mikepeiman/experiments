@@ -62,20 +62,20 @@
         />
         <label for="selectDisplayColumns" class>Columns</label>
       </div>
-              <label for="numberOfWorkoutColumns" v-if="selectRowsOrColumns === 'columns'">
-          how many columns?
-          <input
-            type="number"
-            name="numberOfWorkoutColumns"
-            style="width: 1.5ch;"
-            min="1"
-            max="8"
-            v-model="numberOfWorkoutColumns"
-            id="numberOfWorkoutColumns"
-            value="2"
-            placeholder="2"
-          />
-        </label>
+      <label for="numberOfWorkoutColumns" v-if="selectRowsOrColumns === 'columns'">
+        how many columns?
+        <input
+          type="number"
+          name="numberOfWorkoutColumns"
+          style="width: 1.5ch;"
+          min="1"
+          max="8"
+          v-model="numberOfWorkoutColumns"
+          id="numberOfWorkoutColumns"
+          value="2"
+          placeholder="2"
+        />
+      </label>
 
       <label for="selectDisplayDensity">
         Display Density:
@@ -105,7 +105,7 @@
       >
         <div class="training-cycle-header box">
           <h2 class="exercise-name">{{ exercise.fields.name }}</h2>
-          <label>
+          <label for="oneRepMax" class="training-cycle-header-data">
             1RM:
             <input
               type="number"
@@ -116,33 +116,49 @@
               @input="setTrainingMaxLoad(exercise, i)"
             />
           </label>
-          <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
+          <label class="training-cycle-header-data">
+            Training Max:
+            <input
+            disabled
+              type="number"
+              class="trainingMax"
+              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
+              id="oneRepMax"
+              v-model="exercise.fields.trainingMaxLoad"
+              @input="setTrainingMaxLoad(exercise, i)"
+            />
+          </label>
         </div>
-        <div
-          v-for="workout in exerciseWorkouts"
-          :class="['workout box', `${workout.name}`]"
-          :style="`background: ${baseColor2};`"
-        >
-          <div class="workout-header box">
-            <h2 class="workout-header-week-title box">{{workout.name }}</h2>
-            <h3 class="workout-header-week-volume box">
-              <span>Workout</span> <span>Volume</span>
-              <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
-            </h3>
-          </div>
-          <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
+        <div class="workout-cycle">
+          <div
+            v-for="workout in exerciseWorkouts"
+            :class="['workout box', `${workout.name}`]"
+            :style="`background: ${baseColor2};`"
+          >
+            <div class="workout-header box">
+              <h2 class="workout-header-week-title box">{{workout.name }}</h2>
+              <h3 class="workout-header-week-volume box">
+                <span>Workout</span>
+                <span>Volume</span>
+                <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
+              </h3>
+            </div>
             <div
-              v-for="(data, i) in workoutData"
-              :class="['data-item box', `${data.name}`]"
-              v-if="row.name === 'header'"
-              
-            >{{ data.name }}</div>
-            <div
-              v-for="(data, i) in workoutData"
-              :class="['data-item box', `${data.name}`]"
-              v-if="row.name === 'data'"
-              :style="`background: ${adjustColor(baseColor3, x, 5)};`"
-            >{{ dataCalc(exercise, workout, data, i, x) }}</div>
+              v-for="(row, x) in workoutDataRows"
+              :class="['workout-row box', `${row.name}`]"
+              :style="`background: ${adjustColor(baseColorBlackClear, x, 7.5)};`"
+            >
+              <div
+                v-for="(data, i) in workoutData"
+                :class="['data-item box', `${data.name}`]"
+                v-if="row.name === 'header'"
+              >{{ data.name }}</div>
+              <div
+                v-for="(data, i) in workoutData"
+                :class="['data-item box', `${data.name}`]"
+                v-if="row.name === 'data'"
+              >{{ dataCalc(exercise, workout, data, i, x) }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -156,7 +172,7 @@
       >
         <div class="training-cycle-header box">
           <h2 class="exercise-name">{{ exercise.fields.name }}</h2>
-          <label>
+          <label for="oneRepMax" class="training-cycle-header-data">
             1RM:
             <input
               type="number"
@@ -167,7 +183,18 @@
               @input="setTrainingMaxLoad(exercise, i)"
             />
           </label>
-          <label class="training-max box">Training Max: {{ exercise.fields.trainingMaxLoad }}</label>
+          <label class="training-cycle-header-data">
+            Training Max:
+            <input
+            disabled
+              type="number"
+              class="trainingMax"
+              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
+              id="oneRepMax"
+              v-model="exercise.fields.trainingMaxLoad"
+              @input="setTrainingMaxLoad(exercise, i)"
+            />
+          </label>
         </div>
         <div
           v-for="workout in exerciseWorkouts"
@@ -177,16 +204,20 @@
           <div class="workout-header box">
             <h2 class="workout-header-week-title box">{{workout.name }}</h2>
             <h3 class="workout-header-week-volume box">
-              <span>Workout</span> <span>Volume:</span>
+              <span>Workout</span>
+              <span>Volume:</span>
               <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
             </h3>
           </div>
-          <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]">
+          <div
+            v-for="(row, x) in workoutDataRows"
+            :class="['workout-row box', `${row.name}`]"
+            :style="`background: ${adjustColor(baseColorBlackClear, x, 7.5)};`"
+          >
             <div
               v-for="(data, i) in workoutData"
               :class="['data-item box', `${data.name}`]"
               v-if="row.name === 'header'"
-              :style="`background: ${baseColor3};`"
             >{{ data.name }}</div>
             <div
               v-for="(data, i) in workoutData"
@@ -215,13 +246,14 @@ export default {
   data() {
     return {
       vuexExercises: [],
-      baseColor1: "rgba(25,75,155,0.75)",
-      baseColor2: "rgba(125,0,95,0.75)",
+      baseColor1: "rgba(25,75,125,0.85)",
+      baseColor2: "rgba(125,0,95,0.25)",
       baseColor3: "rgba(25,155,25,0.25)",
-      selectRowsOrColumns: "rows",
+      baseColorBlackClear: "rgba(0,0,0,0)",
+      selectRowsOrColumns: "columns",
       // selectDisplayColumns: true,
       selectDisplayDensity: 0,
-      numberOfWorkoutColumns: 2,
+      numberOfWorkoutColumns: 3,
       trainingMaxPercentage: 90,
       incrementByValue: 5,
       currentLoad: 0,
@@ -307,21 +339,11 @@ export default {
   },
   methods: {
     adjustColor(color, x, y) {
-      // console.log(`adjustColor method, valpha: ${Color(color).valpha} ${x} `)
-      let c = Color(color)
-      let a = c.valpha
-      a += x*y/100
-      // console.log(`before adjusted valpha: ${color}, a: ${a}`)
-      c.object().alpha = a
-      let c2 = Color(c)
-      // console.log(`after adjusted valpha: ${c2}, a: ${a}`)
-      let newColor = c.object()
-      // console.log(newColor.alpha)
-      newColor.alpha = newColor.alpha + (x * y / 100)
-      // console.log(`new alpha: ${c2.object().alpha}`)
-      newColor = Color(newColor)   
-      // console.log(newColor)
-      return newColor
+      let c = Color(color);
+      let newColor = c.object();
+      newColor.alpha += (x * y) / 100;
+      newColor = Color(newColor);
+      return newColor;
     },
     collectRecords(records) {
       this.records = records;
@@ -468,14 +490,6 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-input[type="select"] {
-  background: red;
-
-  & option {
-    background: blue;
-  }
-}
-
 .selectRowsOrColumns {
   background: rgba(50, 200, 255, 0.5);
   margin: 0 1rem;
@@ -504,7 +518,7 @@ input[type="select"] {
 }
 
 .workouts {
-  background: rgba(5, 10, 75, 0.2);
+  background: rgba(0,0,0, 0.2);
   font-family: "Merriweather";
   // font-family: 'Nunito';
   // font-family: 'Muli';
@@ -541,26 +555,37 @@ input[type="select"] {
 }
 
 .training-cycle-header {
-  // background: rgba(0, 0, 0, 0.75);
-  // padding: 1rem;
-  // border: 2px solid rgba(50, 255, 200, 0.25);
+  display: flex;
+  justify-content: space-between;
+}
+.training-cycle-header-data {
+  align-self: center;
+  padding-right: 2rem;
+}
+
+.trainingMax {
+  color: #aaa;
+  border-bottom: 1px solid #aaa;
 }
 
 .workout {
-  // background: rgba(0, 0, 0, 0.5);
-  // border: 2px solid rgba(50, 255, 200, 0.5);
   display: flex;
   flex-direction: column;
-  background: rgba(125, 0, 95, 0.75);
+  // background: rgba(125, 0, 95, 0.75);
 }
 
 .exercise {
   margin: 1rem;
   padding: 0;
   display: flex;
-  // flex-direction: column;
-  background: rgba(0, 50, 95, 0.75);
+  flex-direction: column;
+  // background: rgba(0, 50, 95, 0.75);
   border: 0.25rem solid rgba(0, 0, 0, 0.25);
+}
+
+.workout-cycle {
+  display: flex;
+  flex-direction: row;
 }
 
 h2.exercise-name {
@@ -568,7 +593,7 @@ h2.exercise-name {
 }
 
 .workout-header {
-  background: rgba(0,0,0,0.25);
+  background: rgba(0, 0, 0, 0.25);
   display: flex;
   justify-content: space-around;
   // grid-template-columns: auto;
@@ -627,10 +652,6 @@ h2.exercise-name {
   grid-template-areas: "reps load percentage totVolume";
   border: none;
 
-  &.header {
-    background: rgba(0, 150, 55, 0.15);
-    color: red;
-  }
 }
 
 .workout-variables {
