@@ -22,20 +22,6 @@
           placeholder="%"
         />
       </label>
-      <label for="numberOfWorkoutColumns">
-        Number Of Workout Columns:
-        <input
-          type="number"
-          name="numberOfWorkoutColumns"
-          style="width: 1.5ch;"
-          min="1"
-          max="8"
-          v-model="numberOfWorkoutColumns"
-          id="numberOfWorkoutColumns"
-          value="2"
-          placeholder="2"
-        />
-      </label>
       <label for="incrementByValue">
         Increment By:
         <input
@@ -53,7 +39,7 @@
         />
       </label>
       <div class="selectRowsOrColumns">
-       <span class="selectRowsOrColumnsHeading">Select Display:</span>
+        <span class="selectRowsOrColumnsHeading">Select Display:</span>
         <input
           type="radio"
           @change="setWidthByChars"
@@ -64,7 +50,7 @@
           value="rows"
           checked
         />
-        <label for="selectDisplayRows" class="">Rows</label>
+        <label for="selectDisplayRows" class>Rows</label>
         <input
           type="radio"
           @change="setWidthByChars"
@@ -74,8 +60,22 @@
           id="selectDisplayColumns"
           value="columns"
         />
-        <label for="selectDisplayColumns" class="">Columns</label>
+        <label for="selectDisplayColumns" class>Columns</label>
       </div>
+              <label for="numberOfWorkoutColumns" v-if="selectRowsOrColumns === 'columns'">
+          how many columns?
+          <input
+            type="number"
+            name="numberOfWorkoutColumns"
+            style="width: 1.5ch;"
+            min="1"
+            max="8"
+            v-model="numberOfWorkoutColumns"
+            id="numberOfWorkoutColumns"
+            value="2"
+            placeholder="2"
+          />
+        </label>
 
       <label for="selectDisplayDensity">
         Display Density:
@@ -126,7 +126,7 @@
           <div class="workout-header box">
             <h2 class="workout-header-week-title box">{{workout.name }}</h2>
             <h3 class="workout-header-week-volume box">
-              Total Volume:
+              <span>Workout</span> <span>Volume</span>
               <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
             </h3>
           </div>
@@ -135,12 +135,13 @@
               v-for="(data, i) in workoutData"
               :class="['data-item box', `${data.name}`]"
               v-if="row.name === 'header'"
-              :style="`background: ${baseColor3};`"
+              
             >{{ data.name }}</div>
             <div
               v-for="(data, i) in workoutData"
               :class="['data-item box', `${data.name}`]"
               v-if="row.name === 'data'"
+              :style="`background: ${adjustColor(baseColor3, x, 5)};`"
             >{{ dataCalc(exercise, workout, data, i, x) }}</div>
           </div>
         </div>
@@ -176,7 +177,7 @@
           <div class="workout-header box">
             <h2 class="workout-header-week-title box">{{workout.name }}</h2>
             <h3 class="workout-header-week-volume box">
-              Total Volume:
+              <span>Workout</span> <span>Volume:</span>
               <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
             </h3>
           </div>
@@ -216,7 +217,7 @@ export default {
       vuexExercises: [],
       baseColor1: "rgba(25,75,155,0.75)",
       baseColor2: "rgba(125,0,95,0.75)",
-      baseColor3: "rgba(25,155,25,0.75)",
+      baseColor3: "rgba(25,155,25,0.25)",
       selectRowsOrColumns: "rows",
       // selectDisplayColumns: true,
       selectDisplayDensity: 0,
@@ -242,25 +243,25 @@ export default {
       ],
       exerciseWorkouts: [
         {
-          name: "Week One",
+          name: "Workout One",
           reps: 5,
           percentages: [65, 75, 85],
           volume: null
         },
         {
-          name: "Week Two",
+          name: "Workout Two",
           reps: 3,
           percentages: [70, 80, 90],
           volume: null
         },
         {
-          name: "Week Three",
+          name: "Workout Three",
           reps: 1,
           percentages: [75, 85, 95],
           volume: null
         },
         {
-          name: "Week Four",
+          name: "Workout Four",
           reps: 5,
           percentages: [40, 50, 60],
           volume: null
@@ -305,6 +306,23 @@ export default {
     };
   },
   methods: {
+    adjustColor(color, x, y) {
+      // console.log(`adjustColor method, valpha: ${Color(color).valpha} ${x} `)
+      let c = Color(color)
+      let a = c.valpha
+      a += x*y/100
+      // console.log(`before adjusted valpha: ${color}, a: ${a}`)
+      c.object().alpha = a
+      let c2 = Color(c)
+      // console.log(`after adjusted valpha: ${c2}, a: ${a}`)
+      let newColor = c.object()
+      // console.log(newColor.alpha)
+      newColor.alpha = newColor.alpha + (x * y / 100)
+      // console.log(`new alpha: ${c2.object().alpha}`)
+      newColor = Color(newColor)   
+      // console.log(newColor)
+      return newColor
+    },
     collectRecords(records) {
       this.records = records;
       records.forEach((record, i) => {
@@ -472,7 +490,7 @@ input[type="select"] {
 
   label {
     display: inline-block;
-    padding: .25rem;
+    padding: 0.25rem;
   }
 
   & input[type="radio"]:checked + label {
@@ -481,7 +499,7 @@ input[type="select"] {
 }
 
 .selectRowsOrColumnsHeading {
-  margin: 0 .5rem;
+  margin: 0 0.5rem;
   color: rgba(50, 200, 255, 1);
 }
 
@@ -543,10 +561,6 @@ input[type="select"] {
   // flex-direction: column;
   background: rgba(0, 50, 95, 0.75);
   border: 0.25rem solid rgba(0, 0, 0, 0.25);
-
-  & h2 {
-    margin: 1rem 0 0 0;
-  }
 }
 
 h2.exercise-name {
@@ -554,7 +568,7 @@ h2.exercise-name {
 }
 
 .workout-header {
-  background: rgba(25, 75, 55, 0.5);
+  background: rgba(0,0,0,0.25);
   display: flex;
   justify-content: space-around;
   // grid-template-columns: auto;
@@ -567,11 +581,14 @@ h2.exercise-name {
 }
 
 .workout-header-week-title {
+  font-size: 1.25rem;
   grid-area: title;
   grid-column: 1/5;
   grid-row: 1/2;
   display: flex;
+  width: 100%;
   align-content: center;
+  align-self: center;
   justify-content: space-around;
   flex-direction: row;
   padding: 0;
@@ -582,16 +599,17 @@ h2.exercise-name {
 }
 
 .workout-header-week-volume {
-  font-size: 90%;
+  font-size: 70%;
   border: none;
   background: none;
   margin: 0.125rem;
   padding: 0.125rem;
   display: flex;
+  flex-direction: column;
   // position: absolute;
   // right: 0;
   padding-right: 1rem;
-  align-self: flex-end;
+  align-self: center;
 }
 
 .workout-header-week-volume .data-item {
@@ -611,6 +629,7 @@ h2.exercise-name {
 
   &.header {
     background: rgba(0, 150, 55, 0.15);
+    color: red;
   }
 }
 
