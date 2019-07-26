@@ -1,139 +1,7 @@
 <template>
   <div class="training-cycle">
-    <h1>TRAININGCYCLE.VUE</h1>
-    <Workout v-if="selectRowsOrColumns === 'rows'" class="workouts box col-1" />
-    <Workout v-else :class="['workouts box', `col-${numberOfWorkoutColumns}`]" />
-    <!-- <div v-if="selectRowsOrColumns === 'rows'" class="workouts box col-1">
-      <div
-        v-for="(exercise, i) in records"
-        :class="['exercise box',`${exercise.fields.name}`]"
-        :style="`background: ${baseColor1};`"
-      >
-        <div class="training-cycle-header box">
-          <h2 class="exercise-name">{{ exercise.fields.name }}</h2>
-          <label for="oneRepMax" class="training-cycle-header-data">
-            1RM:
-            <input
-              type="number"
-              class="oneRepMax"
-              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
-              id="oneRepMax"
-              v-model="exercise.fields.oneRepMax"
-              @input="setTrainingMaxLoad(exercise, i)"
-            />
-          </label>
-          <label class="training-cycle-header-data">
-            Training Max:
-            <input
-            disabled
-              type="number"
-              class="trainingMax"
-              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
-              id="oneRepMax"
-              v-model="exercise.fields.trainingMaxLoad"
-              @input="setTrainingMaxLoad(exercise, i)"
-            />
-          </label>
-        </div>
-        <div class="workout-cycle">
-          <div
-            v-for="(workout, x1) in exerciseWorkouts"
-            :class="['workout box', `${workout.name}`]"
-            :style="`background: ${adjustAlpha(baseColorBlackClear, x1, 7.5)};`"
-          >
-            <div class="workout-header box">
-              <h2 class="workout-header-week-title box">{{workout.name }}</h2>
-              <h3 class="workout-header-week-volume box">
-                <span>Workout</span>
-                <span>Volume</span>
-                <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
-              </h3>
-            </div>
-            <div
-              v-for="(row, x2) in workoutDataRows"
-              :class="['workout-row box', `${row.name}`]"
-              :style="`background: ${adjustAlpha(baseColorBlackClear, x2, 7.5)};`"
-            >
-              <div
-                v-for="(data, i) in workoutData"
-                :class="['data-item box', `${data.name}`]"
-                v-if="row.name === 'header'"
-              >{{ data.name }}</div>
-              <div
-                v-for="(data, i) in workoutData"
-                :class="['data-item box', `${data.name}`]"
-                v-if="row.name === 'data'"
-              >{{ dataCalc(exercise, workout, data, i, x2) }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-else :class="['workouts box', `col-${numberOfWorkoutColumns}`]">
-      <!-- <div v-for="exercise in exerciseList" :class="['exercise box',`${exercise.fields.name}`]"></div> -->
-      <div
-        v-for="(exercise, i) in records"
-        :class="['exercise box',`${exercise.fields.name}`]"
-        :style="`background: ${baseColor1}; flex-direction: column;`"
-      >
-        <div class="training-cycle-header box">
-          <h2 class="exercise-name">{{ exercise.fields.name }}</h2>
-          <label for="oneRepMax" class="training-cycle-header-data">
-            1RM:
-            <input
-              type="number"
-              class="oneRepMax"
-              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
-              id="oneRepMax"
-              v-model="exercise.fields.oneRepMax"
-              @input="setTrainingMaxLoad(exercise, i)"
-            />
-          </label>
-          <label class="training-cycle-header-data">
-            Training Max:
-            <input
-            disabled
-              type="number"
-              class="trainingMax"
-              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
-              id="oneRepMax"
-              v-model="exercise.fields.trainingMaxLoad"
-              @input="setTrainingMaxLoad(exercise, i)"
-            />
-          </label>
-        </div>
-        <div
-          v-for="(workout, x1) in exerciseWorkouts"
-          :class="['workout box', `${workout.name}`]"
-          :style="`background: ${adjustAlpha(baseColorBlackClear, x1, 20)};`"
-        >
-          <div class="workout-header box">
-            <h2 class="workout-header-week-title box">{{workout.name }}</h2>
-            <h3 class="workout-header-week-volume box">
-              <span>Workout</span>
-              <span>Volume:</span>
-              <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
-            </h3>
-          </div>
-          <div
-            v-for="(row, x) in workoutDataRows"
-            :class="['workout-row box', `${row.name}`]"
-            :style="`background: ${adjustAlpha(baseColorBlackClear, x, 7.5)};`"
-          >
-            <div
-              v-for="(data, i) in workoutData"
-              :class="['data-item box', `${data.name}`]"
-              v-if="row.name === 'header'"
-            >{{ data.name }}</div>
-            <div
-              v-for="(data, i) in workoutData"
-              :class="['data-item box', `${data.name}`]"
-              v-if="row.name === 'data'"
-            >{{ dataCalc(exercise, workout, data, i, x) }}</div>
-          </div>
-        </div>
-      </div>
-    <!-- </div> --> 
+    <Workout :records="records" v-if="selectRowsOrColumns === 'rows'" class="workouts box col-1" />
+    <Workout :records="records" v-else :class="['workouts box', `col-${numberOfWorkoutColumns}`]" />
   </div>
 </template>
 
@@ -142,15 +10,18 @@ import Color from "color";
 import store from "@/store";
 import axios from "axios";
 import Workout from "@/components/Workout";
+import AirtableModule from "@/components/AirtableModule";
 
 export default {
   name: "TrainingCycle",
   components: {
-    Workout
+    Workout,
+    AirtableModule,
   },
   props: {
     selectRowsOrColumns: String,
     numberOfWorkoutColumns: Number,
+    records: Array,
   },
   data() {
     return {

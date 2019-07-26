@@ -93,7 +93,7 @@
       </label>
     </div>
 
-    <TrainingCycle :selectRowsOrColumns="selectRowsOrColumns" :numberOfWorkoutColumns="numberOfWorkoutColumns" />
+    <TrainingCycle :records="records" :selectRowsOrColumns="selectRowsOrColumns" :numberOfWorkoutColumns="numberOfWorkoutColumns" />
     <!-- <div v-if="selectRowsOrColumns === 'rows'" class="workouts box col-1">
       <div
         v-for="(exercise, i) in records"
