@@ -1,68 +1,37 @@
 <template>
-    <div class="training-cycle">
-      <div
-        v-for="(exercise, i) in records"
-        :class="['exercise box',`${exercise.fields.name}`]"
-        :style="`background: ${baseColor1}; flex-direction: column;`"
-      >
-        <div class="training-cycle-header box">
-          <h2 class="exercise-name">{{ exercise.fields.name }}</h2>
-          <label for="oneRepMax" class="training-cycle-header-data">
-            1RM:
-            <input
-              type="number"
-              class="oneRepMax"
-              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
-              id="oneRepMax"
-              v-model="exercise.fields.oneRepMax"
-              @input="setTrainingMaxLoad(exercise, i)"
-            />
-          </label>
-          <label class="training-cycle-header-data">
-            Training Max:
-            <input
-              disabled
-              type="number"
-              class="trainingMax"
-              :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`"
-              id="oneRepMax"
-              v-model="exercise.fields.trainingMaxLoad"
-              @input="setTrainingMaxLoad(exercise, i)"
-            />
-          </label>
-        </div>
-        <div
-          v-for="(workout, x1) in exerciseWorkouts"
-          :class="['workout box', `${workout.name}`]"
-          :style="`background: ${adjustAlpha(baseColorBlackClear, x1, 20)};`"
-        >
-          <div class="workout-header box">
-            <h2 class="workout-header-week-title box">{{workout.name }}</h2>
-            <h3 class="workout-header-week-volume box">
-              <span>Workout</span>
-              <span>Volume:</span>
-              <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
-            </h3>
-          </div>
-          <div
-            v-for="(row, x) in workoutDataRows"
-            :class="['workout-row box', `${row.name}`]"
-            :style="`background: ${adjustAlpha(baseColorBlackClear, x, 7.5)};`"
-          >
-            <div
-              v-for="(data, i) in workoutData"
-              :class="['data-item box', `${data.name}`]"
-              v-if="row.name === 'header'"
-            >{{ data.name }}</div>
-            <div
-              v-for="(data, i) in workoutData"
-              :class="['data-item box', `${data.name}`]"
-              v-if="row.name === 'data'"
-            >{{ dataCalc(exercise, workout, data, i, x) }}</div>
-          </div>
-        </div>
+<div class="training-cycle">
+  <div v-for="(exercise, i) in records" :class="['exercise box',`${exercise.fields.name}`]" :style="`background: ${baseColor1};`">
+    <div class="training-cycle-header box">
+      <h2 class="exercise-name">{{ exercise.fields.name }}</h2>
+      <div class="training-cycle-header-data">
+      <label>
+        1RM:
+        <input type="number" class="oneRepMax" :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`" v-model="exercise.fields.oneRepMax" @input="setTrainingMaxLoad(exercise, i)" />
+      </label>
+      <label >
+        Training Max:
+        <input disabled type="number" class="trainingMax" :style="`width: ${exercise.fields.oneRepMaxChars + .5}ch;`" v-model="exercise.fields.trainingMaxLoad" @input="setTrainingMaxLoad(exercise, i)" />
+      </label>
       </div>
     </div>
+<div :class="['workout-cycle', selectRowsOrColumns === 'rows' ? 'rows' : 'columns']">
+      <div v-for="(workout, x1) in exerciseWorkouts" :class="['workout box', `${workout.name}`]" :style="`background: ${adjustAlpha(baseColorBlackClear, x1, 20)};`">
+        <div class="workout-header box">
+          <h2 class="workout-header-week-title box">{{workout.name }}</h2>
+          <h3 class="workout-header-week-volume box">
+            <span>Workout</span>
+            <span>Volume:</span>
+            <span class="data-item">{{ workoutVolume(exercise, workout) }}</span>
+          </h3>
+        </div>
+        <div v-for="(row, x) in workoutDataRows" :class="['workout-row box', `${row.name}`]" :style="`background: ${adjustAlpha(baseColorBlackClear, x, 7.5)};`">
+          <div v-for="(data, i) in workoutData" :class="['data-item box', `${data.name}`]" v-if="row.name === 'header'">{{ data.name }}</div>
+          <div v-for="(data, i) in workoutData" :class="['data-item box', `${data.name}`]" v-if="row.name === 'data'">{{ dataCalc(exercise, workout, data, i, x) }}</div>
+        </div>
+      </div>
+</div>
+  </div>
+</div>
 </template>
 
 <script>
@@ -77,7 +46,8 @@ export default {
     AirtableModule
   },
   props: {
-    records: Array
+    records: Array,
+    selectRowsOrColumns: String,
   },
   data() {
     return {
@@ -95,8 +65,7 @@ export default {
       currentLoad: 0,
       exercises: [],
       records: [],
-      exerciseList: [
-        {
+      exerciseList: [{
           name: "Deadlift",
           oneRepMax: 385,
           trainingMaxPercentage: 0.9,
@@ -109,8 +78,7 @@ export default {
           trainingMaxLoad: 0
         }
       ],
-      exerciseWorkouts: [
-        {
+      exerciseWorkouts: [{
           name: "Workout One",
           reps: 5,
           percentages: [65, 75, 85],
@@ -135,8 +103,7 @@ export default {
           volume: null
         }
       ],
-      workoutDataRows: [
-        {
+      workoutDataRows: [{
           name: "header",
           value: "data.name"
         },
@@ -153,8 +120,7 @@ export default {
           value: "data.value"
         }
       ],
-      workoutData: [
-        {
+      workoutData: [{
           name: "Reps",
           value: 5
         },
@@ -193,7 +159,7 @@ export default {
         Math.round(
           ((this.trainingMaxPercentage / 100) *
             this.records[i].fields.oneRepMax) /
-            this.incrementByValue
+          this.incrementByValue
         ) * this.incrementByValue;
       this.records[i].fields.oneRepMaxChars = this.records[
         i
@@ -209,7 +175,7 @@ export default {
         workoutVolume =
           workoutVolume +
           Math.round(((perc / 100) * max * reps) / this.incrementByValue) *
-            this.incrementByValue;
+          this.incrementByValue;
       });
       // console.log(workoutVolume);
       return workoutVolume;
@@ -230,8 +196,8 @@ export default {
         return (
           Math.round(
             (exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
-              100 /
-              this.incrementByValue
+            100 /
+            this.incrementByValue
           ) * this.incrementByValue
         );
       }
@@ -244,8 +210,8 @@ export default {
         return (
           Math.round(
             (exercise.fields.trainingMaxLoad * workout.percentages[x - 1]) /
-              100 /
-              this.incrementByValue
+            100 /
+            this.incrementByValue
           ) *
           this.incrementByValue *
           workout.reps
@@ -257,10 +223,10 @@ export default {
   },
   computed: {
     oneRepMax: {
-      get: function(e) {
+      get: function (e) {
         console.log(`computed oneRepMax`);
       },
-      set: function(e) {
+      set: function (e) {
         console.log("oneRepMax setter");
         console.log(this);
         return exercise.fields.oneRepMax;
@@ -343,7 +309,7 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 0.5rem;
   }
 
-  & input[type="radio"]:checked + label {
+  & input[type="radio"]:checked+label {
     background: rgba(50, 200, 255, 1);
   }
 }
@@ -394,16 +360,26 @@ input[type="number"]::-webkit-outer-spin-button {
 .training-cycle-header {
   display: flex;
   justify-content: space-between;
+  min-height: 70px;
 }
 
 .training-cycle-header-data {
+  font-size: .75rem;
   align-self: center;
-  padding-right: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: .5rem;
+  input {
+    margin: 0;
+    font-size: .75rem;
+  }
 }
 
 .trainingMax {
   color: #aaa;
-  border-bottom: 1px solid #aaa;
+  border-bottom: none;
+  background: none;
 }
 
 .workout {
@@ -423,11 +399,16 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .workout-cycle {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  &.rows {
+    flex-direction: row;
+  }
 }
 
 h2.exercise-name {
   padding: 0 1rem;
+  margin: .25rem;
+  align-self: center;
 }
 
 .workout-header {

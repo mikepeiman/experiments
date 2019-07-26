@@ -1,22 +1,18 @@
 <template>
   <div class="training-cycle">
-    <Workout :records="records" v-if="selectRowsOrColumns === 'rows'" class="workouts box col-1" />
+    <Workout :records="records" :selectRowsOrColumns="selectRowsOrColumns" v-if="selectRowsOrColumns === 'rows'" class="workouts box col-1" />
     <Workout :records="records" v-else :class="['workouts box', `col-${numberOfWorkoutColumns}`]" />
   </div>
 </template>
 
 <script>
 import Color from "color";
-import store from "@/store";
-import axios from "axios";
 import Workout from "@/components/Workout";
-import AirtableModule from "@/components/AirtableModule";
 
 export default {
   name: "TrainingCycle",
   components: {
     Workout,
-    AirtableModule,
   },
   props: {
     selectRowsOrColumns: String,
