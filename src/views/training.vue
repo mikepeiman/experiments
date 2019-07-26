@@ -131,9 +131,9 @@
         </div>
         <div class="workout-cycle">
           <div
-            v-for="workout in exerciseWorkouts"
+            v-for="(workout, x1) in exerciseWorkouts"
             :class="['workout box', `${workout.name}`]"
-            :style="`background: ${baseColor2};`"
+            :style="`background: ${adjustAlpha(baseColorBlackClear, x1, 7.5)};`"
           >
             <div class="workout-header box">
               <h2 class="workout-header-week-title box">{{workout.name }}</h2>
@@ -144,9 +144,9 @@
               </h3>
             </div>
             <div
-              v-for="(row, x) in workoutDataRows"
+              v-for="(row, x2) in workoutDataRows"
               :class="['workout-row box', `${row.name}`]"
-              :style="`background: ${adjustColor(baseColorBlackClear, x, 7.5)};`"
+              :style="`background: ${adjustAlpha(baseColorBlackClear, x2, 7.5)};`"
             >
               <div
                 v-for="(data, i) in workoutData"
@@ -157,7 +157,7 @@
                 v-for="(data, i) in workoutData"
                 :class="['data-item box', `${data.name}`]"
                 v-if="row.name === 'data'"
-              >{{ dataCalc(exercise, workout, data, i, x) }}</div>
+              >{{ dataCalc(exercise, workout, data, i, x2) }}</div>
             </div>
           </div>
         </div>
@@ -197,9 +197,9 @@
           </label>
         </div>
         <div
-          v-for="workout in exerciseWorkouts"
+          v-for="(workout, x1) in exerciseWorkouts"
           :class="['workout box', `${workout.name}`]"
-          :style="`background: ${baseColor2};`"
+          :style="`background: ${adjustAlpha(baseColorBlackClear, x1, 20)};`"
         >
           <div class="workout-header box">
             <h2 class="workout-header-week-title box">{{workout.name }}</h2>
@@ -212,7 +212,7 @@
           <div
             v-for="(row, x) in workoutDataRows"
             :class="['workout-row box', `${row.name}`]"
-            :style="`background: ${adjustColor(baseColorBlackClear, x, 7.5)};`"
+            :style="`background: ${adjustAlpha(baseColorBlackClear, x, 7.5)};`"
           >
             <div
               v-for="(data, i) in workoutData"
@@ -338,7 +338,8 @@ export default {
     };
   },
   methods: {
-    adjustColor(color, x, y) {
+    adjustAlpha(color, x, y) {
+      console.log(`adjustAlpha x ${x} y ${y}`)
       let c = Color(color);
       let newColor = c.object();
       newColor.alpha += (x * y) / 100;
@@ -494,7 +495,6 @@ input[type="number"]::-webkit-outer-spin-button {
   background: rgba(50, 200, 255, 0.5);
   margin: 0 1rem;
   border: 3px solid rgba(0, 0, 0, 0.25);
-  padding: 0.25rem;
   color: #333;
   // font-family: 'Muli';
 
@@ -504,7 +504,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
   label {
     display: inline-block;
-    padding: 0.25rem;
+    padding: 0.5rem;
   }
 
   & input[type="radio"]:checked + label {
@@ -518,7 +518,8 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .workouts {
-  background: rgba(0,0,0, 0.2);
+  // background: rgba(0,0,0, 0.2);
+  // padding-top: 1rem;
   font-family: "Merriweather";
   // font-family: 'Nunito';
   // font-family: 'Muli';
@@ -575,7 +576,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .exercise {
-  margin: 1rem;
+  // margin: 1rem;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -659,6 +660,7 @@ h2.exercise-name {
   display: flex;
   align-items: center;
   padding: 1rem;
+  margin-bottom: 1rem;
   background: #333;
   color: #ccc;
 }
