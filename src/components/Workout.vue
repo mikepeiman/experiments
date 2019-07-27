@@ -31,7 +31,7 @@
         <div
           v-for="(workout, x1) in exerciseWorkouts"
           :class="['workout box', `${workout.name}`]"
-          :style="`background: ${adjustAlpha(workout.name, baseColorBlue, x1, 10)};`"
+          :style="`background: ${adjustAlpha(workout.name, baseColorBlue, x1, 15)};`"
           :key="x1"
         >
           <div class="workout-header box">

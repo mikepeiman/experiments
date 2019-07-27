@@ -13,7 +13,8 @@ export default {
   name: "AirtableModule",
   props: {
     base: String,
-    table: String
+    table: String,
+    data: Object
   },
   data() {
     return {
@@ -39,24 +40,31 @@ export default {
           Authorization: `Bearer ${this.API_KEY}`
         }
       }).then(res => {
-        console.log(res)
+        console.log('AirtableMOdule getData results:')
+        console.log(res.data.records)
         this.records = res.data.records;
         this.$store.commit('change', this.records)
       });
     },
-    postData() {
+    postData(data) {
       axios({
         method: "post",
         url: this.API_URL + this.BASE + this.TABLE,
         headers: {
           Authorization: `Bearer ${this.API_KEY}`
         },
-        data: {
-
-        }
+        data: data
       }).then(res => {
-        this.records = res.data.records;
+                console.log('AirtableMOdule postData results:')
+        console.log(res)
+        // this.records = res.data.records;
+        this.records.push(res)
       });
+    }
+  },
+  watch: {
+    data(data) {
+      this.postData(data)
     }
   }
 };
