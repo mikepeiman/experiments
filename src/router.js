@@ -3,7 +3,7 @@ import Router from "vue-router";
 import Home from "./views/Home.vue";
 import About from "./views/About.vue";
 import Blog from "./views/Blog.vue";
-import GraphCMS from "./views/GraphCMS.vue";
+// import GraphCMS from "./views/GraphCMS.vue";
 import Experiments from "./views/Experiments.vue";
 import RadialSVG from "./views/RadialSVG.vue";
 import ShootGame from "./views/ShootGame.vue";
@@ -36,12 +36,12 @@ export default new Router({
       component: () =>
         import("./views/Blog.vue")
     },
-    {
-      path: "/graphcms",
-      name: "graphcms",
-      component: () =>
-        import("./views/GraphCMS.vue")
-    },
+    // {
+    //   path: "/graphcms",
+    //   name: "graphcms",
+    //   component: () =>
+    //     import("./views/GraphCMS.vue")
+    // },
     {
       path: "/airtable",
       name: "airtableproducts",
