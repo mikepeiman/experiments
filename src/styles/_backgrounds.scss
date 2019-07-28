@@ -1,10 +1,13 @@
 body {
   background: #333;
+  background-image: linear-gradient(black, rgba(#333,0.05)), url('~@/assets/leather-nunchuck.png');
+  background-image: linear-gradient(-30deg, rgba(238, 68, 20, 0.35), rgba(75, 75, 255, 0.5));
+  color: white;
 }
 
-body .home {
-  background-image: linear-gradient(black, rgba(#333,0.05)), url('~@/assets/leather-nunchuck.png');
-  color: #aaccee;
+body.home {
+  // background-image: linear-gradient(black, rgba(#333,0.05)), url('~@/assets/leather-nunchuck.png');
+  color: #eee;
   // background: #333;
 }
 
@@ -12,6 +15,6 @@ body.workouts {
   background-image: url('~@/assets/bg1.jpg');
   background-repeat: repeat;
   // background-image: linear-gradient(rgba(#333,0.75), rgba(#333,0.5)), url('~@/assets/leather-nunchuck.png');
-  background-image: linear-gradient(-30deg, rgba(238, 68, 20, 0.35), rgba(75, 75, 255, 0.5))
+  background-image: linear-gradient(-30deg, rgba(238, 68, 20, 0.35), rgba(75, 75, 255, 0.5));
   // background: #0af;
 }

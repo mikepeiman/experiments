@@ -321,8 +321,8 @@ export default {
 
 <style lang="scss" scoped>
 body.workouts {
-  background-image: url("~@/assets/brijan.gif");
-  background-repeat: repeat;
+  // background-image: url("~@/assets/brijan.gif");
+  // background-repeat: repeat;
   // background-image: linear-gradient(black, rgba(#333,0.05)), url('~@/assets/leather-nunchuck.png');
   // background: #333;
 }
