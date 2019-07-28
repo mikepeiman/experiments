@@ -97,7 +97,7 @@ export default {
 
 <style lang="scss" scoped>
 label {
-  background: rgba(0, 0, 0, 0.25);
+  // background: rgba(0, 0, 0, 0.25);
   padding: 0.5rem;
   justify-content: center;
   align-items: center;
@@ -108,9 +108,34 @@ label {
 }
 
 .product-form {
+  background: rgba(0,0,0,0.1);
+  padding: 0 .5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  justify-self: center;
+  align-items: center;
+  grid-row: 3;
+  & label {
+    display: flex;
+    justify-content: space-between;
+    justify-self: flex-end;
+    width: 100%;
+  }
+  & button {
+    width: calc(100% + 1rem);
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid rgba(50, 200, 255, .5);
+    transition: all .25s;
+    color: white;
+    &:hover {
+      color: rgba(50, 200, 255, 1);
+      background: rgba(50, 200, 255, .2);
+      border-bottom: 3px solid rgba(50, 200, 255, 1);
+    }
+  }
 }
 
 .products-wrapper {

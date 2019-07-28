@@ -359,6 +359,10 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .selectRowsOrColumns {
   background: rgba(50, 200, 255, 0.5);
   margin: 0 1rem;
