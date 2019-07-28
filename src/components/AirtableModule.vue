@@ -47,6 +47,7 @@ export default {
       });
     },
     postData(data) {
+      console.log('postData called in AirtableModule')
       axios({
         method: "post",
         url: this.API_URL + this.BASE + this.TABLE,
@@ -58,12 +59,14 @@ export default {
                 console.log('AirtableMOdule postData results:')
         console.log(res)
         // this.records = res.data.records;
-        this.records.push(res)
+        this.records.push(res.data)
       });
     }
   },
   watch: {
     data(data) {
+      console.log('it seems that data was updated....')
+      console.log(data)
       this.postData(data)
     }
   }

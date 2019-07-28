@@ -10,7 +10,8 @@
     <h2 class="subtitle clear">Subtitle</h2>
     <div class="article clear">
       <div class="products-wrapper">
-        <div class="product-details" v-for="record in records">
+        <div class="product-details" v-for="(record, i) in records" :key="i">
+          <div class="single-product-detail">{{ i+1 }}</div>
           <div class="single-product-detail">{{ record.fields.make }}</div>
           <div class="single-product-detail">{{ record.fields.model }}</div>
           <div class="single-product-detail">{{ record.fields.version}}</div>
@@ -121,14 +122,17 @@ label {
 }
 .product-details {
   display: grid;
-  grid-template-columns: [make] 1fr [model] 1fr [version] 1fr;
-  width: 100%;
+  grid-template-columns: [id] 1fr [make] 1fr [model] 1fr [version] 1fr;
+  width: 90%;
+  margin-left: 10%;
   justify-items: center;
 }
 
 .single-product-detail {
   display: flex;
   justify-content: flex-start;
+  text-align: left;
+  width: 100%;
 }
 .blog {
   display: grid;
