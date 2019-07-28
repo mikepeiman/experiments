@@ -49,6 +49,12 @@ export default new Router({
         import("./views/AirtableProducts.vue")
     },
     {
+      path: "/forms",
+      name: "forms",
+      component: () =>
+        import("./views/Forms.vue")
+    },
+    {
       path: "/experiments",
       name: "experiments",
       meta: { bodyClass: 'experiments' },
