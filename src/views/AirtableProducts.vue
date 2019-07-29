@@ -6,12 +6,13 @@
       @records="collectRecords($event)"
       :addRecord="newRecord"
       :recordToDelete="recordToDelete"
+      :recordToUpdate="recordToUpdate"
       
     />
     <h1 class="title clear">Airtable Sample Data</h1>
     <div class="article clear">
       <div class="products-wrapper">
-        <div class="product-details" v-for="(record, i) in xyz" :key="i">
+        <div class="product-details" v-for="(record, i) in xyz" :key="i" @click.prevent="updateRecord" :id="record.id">
           <div class="single-product-detail">{{ i+1 }}</div>
           <div class="single-product-detail">{{ record.fields.make }}</div>
           <div class="single-product-detail">{{ record.fields.model }}</div>
@@ -56,6 +57,7 @@ export default {
       records: [],
       newRecord: {},
       recordToDelete: '',
+      recordToUpdate: '',
       xyz: []
     };
   },
@@ -96,6 +98,11 @@ export default {
       console.log('deleteRecord called on ')
       console.log(e.target.id)
       this.recordToDelete = e.target.id
+    },
+    updateRecord(e) {
+      console.log('updateRecord called on ')
+      console.log(e.target.parentNode.id)
+      this.recordToUpdate = e.target.id
     }
   }
 };
@@ -152,32 +159,36 @@ label {
 }
 .product-details {
   // pointer-events: none;
+  z-index: 20;
   display: grid;
   grid-template-columns: [id] 1fr [make] 1fr [model] 1fr [version] 1fr [delete] .25fr;
   width: 90%;
   margin-left: 10%;
   justify-items: center;
+  padding: .125rem;
+  border-bottom: .5px solid rgba(0,0,0,0.25);
   & button.delete {
     // content: "X";
     // pointer-events: all;
     position: relative;
     right: 20%;
-    background: rgba(255, 50, 50, 0.5);
+    background: rgba(238, 68, 20, 0.75);
     padding: 0.125rem 0.75rem;
     border-radius: 1rem;
     margin-left: -2rem;
     font-size: 0.75rem;
     transition: all .25s;
-    border: 1px solid rgba(255,255,255,0);
+    border: 2px solid rgba(75, 75, 255,0);
       &:hover {
-    background: rgba(255, 50, 50, 0.75);
-    border: 1px solid rgba(255,255,255,0.5);
+    background: rgba(255, 75, 60, 1);
+    border: 2px solid rgba(255, 255, 255, 1);
   }
   }
-  // &:hover:after {
-  //   background: rgba(255, 50, 50, 0.75);
-  //   border: 1px solid rgba(255,255,255,0.5);
-  // }
+  &:hover {
+    background: rgba(255, 50, 50, 0.15);
+    border-bottom: .5px solid rgba(255,255,255,0.5);
+    cursor: pointer;
+  }
 }
 
 .single-product-detail {
@@ -186,8 +197,7 @@ label {
   justify-content: flex-start;
   text-align: left;
   width: 100%;
-  padding: 0.125rem;
-  border-bottom: 0.5px solid rgba(0, 0, 0, 0.25);
+  padding: 0.25rem;
 }
 .blog {
   display: grid;
