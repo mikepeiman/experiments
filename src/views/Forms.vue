@@ -39,16 +39,20 @@ export default {
       buttons: [
         {
           name: 'B1',
-          clickMethod: 'testEvent2()'
+          clickMethod: 'testEvent()'
         },
         {
-          name: 'B2'
+          name: 'B2',
+          clickMethod: 'testEvent2()'
         }
       ]
     }
   },
   beforeCreate() {
     document.body.className = 'home'
+  },
+  beforeMount() {
+    
   },
   methods: {
     clickEvent() {

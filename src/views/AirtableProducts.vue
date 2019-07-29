@@ -41,6 +41,7 @@ import Color from "color";
 import axios from "axios";
 import Airtable from "airtable";
 import AirtableModule from "@/components/AirtableModule";
+import VueLocalStorage from 'vue-localstorage';
 
 export default {
   name: "graphcms",
@@ -53,12 +54,23 @@ export default {
       newRecord: {}
     };
   },
-  created() {
-
+  mounted() {
+    console.log('this.$localStorage: ')
+    console.log(this.$localStorage) // this one
+    console.log(this.$localstorage)
+    console.log(this.VueLocalStorage)
+    console.log(this.ls)
   },
   methods: {
     collectRecords(records) {
-      this.records = records;
+      // this.records = records;
+      this.$localStorage.set('test-airtable', JSON.stringify(records))
+      this.records = JSON.parse(this.$localStorage.get('test-airtable'))
+    },
+    getData() {
+      console.log('getData() in AirtableProducts')
+      console.log(this.$localStorage.get('test-airtable'))
+      this.records = this.$localStorage.get('test-airtable')
     },
     postData() {
       let productName = document.querySelector("#productName").value;

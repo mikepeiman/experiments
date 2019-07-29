@@ -1,6 +1,6 @@
 <template>
-  <div class="airtable-module">
-    <div class="display-none emit-data" :on="$emit('records',records)"></div>
+  <div class="airtable-module display-none">
+    <div class="emit-data" :on="$emit('records',records)"></div>
   </div>
 </template>
 
