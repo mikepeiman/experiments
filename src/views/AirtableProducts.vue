@@ -4,16 +4,19 @@
       base="appP3Ar7WtMKMd6Hu/"
       table="Test%20Table/"
       @records="collectRecords($event)"
-      :data="newRecord"
+      :addRecord="newRecord"
+      :recordToDelete="recordToDelete"
+      
     />
     <h1 class="title clear">Airtable Sample Data</h1>
     <div class="article clear">
       <div class="products-wrapper">
-        <div class="product-details" v-for="(record, i) in records" :key="i">
+        <div class="product-details" v-for="(record, i) in xyz" :key="i">
           <div class="single-product-detail">{{ i+1 }}</div>
           <div class="single-product-detail">{{ record.fields.make }}</div>
           <div class="single-product-detail">{{ record.fields.model }}</div>
           <div class="single-product-detail">{{ record.fields.version}}</div>
+          <button class="delete" :id="record.id" @click.prevent="deleteRecord">X</button>
         </div>
       </div>
     </div>
@@ -41,36 +44,38 @@ import Color from "color";
 import axios from "axios";
 import Airtable from "airtable";
 import AirtableModule from "@/components/AirtableModule";
-import VueLocalStorage from 'vue-localstorage';
+import VueLocalStorage from "vue-localstorage";
 
 export default {
-  name: "graphcms",
+  name: "AirtableExample",
   components: {
     AirtableModule
   },
   data() {
     return {
       records: [],
-      newRecord: {}
+      newRecord: {},
+      recordToDelete: '',
+      xyz: []
     };
   },
   mounted() {
-    console.log('this.$localStorage: ')
-    console.log(this.$localStorage) // this one
-    console.log(this.$localstorage)
-    console.log(this.VueLocalStorage)
-    console.log(this.ls)
+    console.log("this.$localStorage: ");
+    console.log(this.$localStorage); // this one
+    console.log(this.$localstorage);
+    console.log(this.VueLocalStorage);
+    console.log(this.ls);
   },
   methods: {
-    collectRecords(records) {
+    collectRecords(xyz) {
       // this.records = records;
-      this.$localStorage.set('test-airtable', JSON.stringify(records))
-      this.records = JSON.parse(this.$localStorage.get('test-airtable'))
+      this.$localStorage.set("test-airtable", JSON.stringify(xyz));
+      this.xyz = JSON.parse(this.$localStorage.get("test-airtable"));
     },
     getData() {
-      console.log('getData() in AirtableProducts')
-      console.log(this.$localStorage.get('test-airtable'))
-      this.records = this.$localStorage.get('test-airtable')
+      console.log("getData() in AirtableProducts");
+      console.log(this.$localStorage.get("test-airtable"));
+      this.records = this.$localStorage.get("test-airtable");
     },
     postData() {
       let productName = document.querySelector("#productName").value;
@@ -85,23 +90,12 @@ export default {
           model: productModel,
           version: productVersion
         }
-      }
-      // axios({
-      //   method: "post",
-      //   url: this.API_URL + this.BASE + this.TABLE,
-      //   headers: {
-      //     Authorization: `Bearer ${this.API_KEY}`
-      //   },
-      //   data: {
-      //     fields: {
-      //       make: productName,
-      //       model: productModel,
-      //       version: productVersion
-      //     }
-      //   }
-      // }).then(res => {
-      //   this.records = res.data.records;
-      // });
+      };
+    },
+    deleteRecord(e) {
+      console.log('deleteRecord called on ')
+      console.log(e.target.id)
+      this.recordToDelete = e.target.id
     }
   }
 };
@@ -120,8 +114,8 @@ label {
 }
 
 .product-form {
-  background: rgba(0,0,0,0.1);
-  padding: 0 .5rem;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -139,12 +133,12 @@ label {
     padding: 0.5rem;
     background: none;
     border: none;
-    border-bottom: 3px solid rgba(50, 200, 255, .5);
-    transition: all .25s;
+    border-bottom: 3px solid rgba(50, 200, 255, 0.5);
+    transition: all 0.25s;
     color: white;
     &:hover {
       color: rgba(50, 200, 255, 1);
-      background: rgba(50, 200, 255, .2);
+      background: rgba(50, 200, 255, 0.2);
       border-bottom: 3px solid rgba(50, 200, 255, 1);
     }
   }
@@ -157,28 +151,47 @@ label {
   flex-direction: column;
 }
 .product-details {
+  // pointer-events: none;
   display: grid;
-  grid-template-columns: [id] 1fr [make] 1fr [model] 1fr [version] 1fr;
+  grid-template-columns: [id] 1fr [make] 1fr [model] 1fr [version] 1fr [delete] .25fr;
   width: 90%;
   margin-left: 10%;
   justify-items: center;
+  & button.delete {
+    // content: "X";
+    // pointer-events: all;
+    position: relative;
+    right: 20%;
+    background: rgba(255, 50, 50, 0.5);
+    padding: 0.125rem 0.75rem;
+    border-radius: 1rem;
+    margin-left: -2rem;
+    font-size: 0.75rem;
+    transition: all .25s;
+    border: 1px solid rgba(255,255,255,0);
+      &:hover {
+    background: rgba(255, 50, 50, 0.75);
+    border: 1px solid rgba(255,255,255,0.5);
+  }
+  }
+  // &:hover:after {
+  //   background: rgba(255, 50, 50, 0.75);
+  //   border: 1px solid rgba(255,255,255,0.5);
+  // }
 }
 
 .single-product-detail {
-  font-family: 'Muli';
+  font-family: "Muli";
   display: flex;
   justify-content: flex-start;
   text-align: left;
   width: 100%;
-  padding: .125rem;
-  border-bottom: .5px solid rgba(0,0,0,0.25);
+  padding: 0.125rem;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.25);
 }
 .blog {
   display: grid;
-  grid-template-rows: [title] minmax(2rem, 1fr) [article] minmax(
-      2rem,
-      auto
-    );
+  grid-template-rows: [title] minmax(2rem, 1fr) [article] minmax(2rem, auto);
 }
 
 .clear {

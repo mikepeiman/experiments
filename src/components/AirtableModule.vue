@@ -14,7 +14,8 @@ export default {
   props: {
     base: String,
     table: String,
-    data: Object
+    recordToDelete: String,
+    addRecord: Object,    
   },
   data() {
     return {
@@ -61,13 +62,39 @@ export default {
         // this.records = res.data.records;
         this.records.push(res.data)
       });
-    }
+    },
+        deleteRecord() {
+      axios({
+        method: "delete",
+        url: this.API_URL + this.BASE + this.TABLE + this.recordToDelete,
+        headers: {
+          Authorization: `Bearer ${this.API_KEY}`
+        }
+      }).then(res => {
+        console.log('AirtableMOdule deleteData results:')
+        console.log(res.data.deleted)
+        if(res.data.deleted) {
+          this.records = this.records.filter(item => {
+            return item.id !== this.recordToDelete
+          })
+        } else {
+          console.log(`There appears to be an error attempting to delete ${this.recordToDelete}`)
+        }
+        // this.records = res.data.records;
+        // this.$store.commit('change', this.records)
+      });
+    },
   },
   watch: {
-    data(data) {
-      console.log('it seems that data was updated....')
-      console.log(data)
-      this.postData(data)
+    addRecord(record) {
+      console.log('it seems that record was updated....')
+      console.log(record)
+      this.postData(record)
+    },
+    recordToDelete(record) {
+      console.log('recordToDelete called in AirtableModule')
+      console.log(record)
+      this.deleteRecord(record)
     }
   }
 };
