@@ -165,27 +165,28 @@ label {
   width: 90%;
   margin-left: 10%;
   justify-items: center;
-  padding: .125rem;
+  padding: .125rem .125rem .125rem 1rem;
   border-bottom: .5px solid rgba(0,0,0,0.25);
+  background-image: linear-gradient(-30deg, rgba(255, 68, 20, 0.15), rgba(75, 75, 255, 0.5));
   & button.delete {
-    // content: "X";
-    // pointer-events: all;
     position: relative;
-    right: 20%;
+    height: 110%;
+    right: 0;
+    width: 100%;
+    top: -2px;
     background: rgba(238, 68, 20, 0.75);
-    padding: 0.125rem 0.75rem;
-    border-radius: 1rem;
-    margin-left: -2rem;
+    margin: 0;
     font-size: 0.75rem;
+    -webkit-transition: all .25s;
     transition: all .25s;
-    border: 2px solid rgba(75, 75, 255,0);
+    border: 2px solid rgba(238, 68, 20, 0.75);
       &:hover {
     background: rgba(255, 75, 60, 1);
     border: 2px solid rgba(255, 255, 255, 1);
   }
   }
   &:hover {
-    background: rgba(255, 50, 50, 0.15);
+    background-image: linear-gradient(-30deg, rgba(255, 68, 20, 0.35), rgba(75, 75, 255, 0.75));
     border-bottom: .5px solid rgba(255,255,255,0.5);
     cursor: pointer;
   }
