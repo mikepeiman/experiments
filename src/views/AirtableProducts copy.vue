@@ -4,15 +4,18 @@
   <h1 class="title clear">Airtable Sample Data</h1>
   <div class="article clear">
     <div class="products-wrapper">
-      <div class="product-details" v-for="(record, i) in xyz" :key="i" :record-id="record.id">
-        <div class="single-product-detail">{{i+1}}</div>
-        <div class="single-product-detail" v-for="(field, x) in record.fields" v-if="x !== 'id'" :key="x" @click.prevent="enableUpdate" :value="field">{{field}}</div>
-        <button class="delete" @click.prevent="deleteRecord">X</button>
-      </div>
-      <div class="product-details hide" v-for="(record, i) in xyz" :key="i" :record-id="record.id">
-        <div class="single-product-detail">{{i+1}}</div>
-        <input class="single-product-detail" v-for="(field, x) in record.fields" v-if="x !== 'id'" :key="x" @click.prevent="updateRecord" :value="field">
-        <button class="delete" @click.prevent="deleteRecord">X</button>
+      <div class="product-details" >
+
+        <div class="single-record-row display" v-for="(record, i) in xyz" :key="i" :id="record.id">
+          <div class="single-product-detail">{{i+1}}</div>
+          <div class="single-product-detail" v-for="(field, x) in record.fields" v-if="x !== 'id'" :key="x" @click.prevent="enableUpdate" :value="field">{{field}}</div>
+          <button class="delete" :id="record.id" @click.prevent="deleteRecord">X</button>
+        </div>
+        <div class="single-record-row update" v-for="(record, i) in xyz" :key="i" :id="record.id">          
+          <div class="single-product-detail">{{i+1}}</div>
+          <input class="single-product-detail" v-for="(field, x) in record.fields" v-if="x !== 'id'" :key="x" @click.prevent="updateRecord" :value="field">
+          <button class="delete" :id="record.id" @click.prevent="deleteRecord">X</button>
+        </div>
       </div>
     </div>
   </div>
@@ -91,28 +94,16 @@ export default {
     },
     deleteRecord(e) {
       console.log("deleteRecord called on ");
-      let id = e.target.parentElement.attributes[1].value
-      console.log(e)
-      console.log(id)
-      this.recordToDelete = id;
+      console.log(e.target.id);
+      this.recordToDelete = e.target.id;
     },
     enableUpdate(e) {
       console.log('enableUpdate called')
-
-      let p = e.target.parentElement;
-      console.log(e)
-      console.log(p)
-      let id = e.target.parentElement.attributes[1].value
-      console.log(`ID: ${id}`)
-      let x = document.querySelectorAll(`[record-id="${id}"]`)
-      console.log(x[1])
-      x[0].classList.toggle('hide')
-      x[1].classList.toggle('hide')
-      // p.classList.toggle('hide');
+      console.log(e.target.parentNode)
     },
     updateRecord(e) {
       console.log("updateRecord called on ");
-      console.log(e.target.parentElement.id);
+      console.log(e.target.parentNode.id);
       console.log(e.target)
       this.recordToUpdate = e.target.id;
     }
@@ -121,10 +112,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.product-details.hide {
-  display: none;
-}
-
 label {
   // background: rgba(0, 0, 0, 0.25);
   padding: 0.5rem;
@@ -178,7 +165,7 @@ label {
   flex-direction: column;
 }
 
-.product-details {
+.single-record-row {
   // pointer-events: none;
   z-index: 20;
   display: grid;
