@@ -7,6 +7,9 @@ import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import VueApollo from 'vue-apollo';
 import VueLocalStorage from 'vue-localstorage'
+import SvgIcon from 'vue-svgicon'
+import './icons'
+
 // import "./registerServiceWorker";
 
 Vue.config.productionTip = false;
@@ -19,6 +22,9 @@ const apolloClient = new ApolloClient({
 })
 Vue.use(VueApollo)
 Vue.use(VueLocalStorage)
+Vue.use(SvgIcon, {
+  tagName: 'svgicon'
+})
 
 const apolloProvider = new VueApollo({
   defaultClient: apolloClient

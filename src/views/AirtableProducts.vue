@@ -10,12 +10,21 @@
       </div>
       <div class="record-details" v-for="(record, i) in xyz" :key="i" :record-id="record.id">
         <div class="single-record-detail">{{i+1}}</div>
-        <div class="single-record-detail single-record-display hide" v-for="(field, x) in record.fields" v-if="rowConditions(x)" :key="x" @click.prevent="enableUpdate" :value="field">{{field}}</div>
-        <input class="single-record-detail single-record-input" v-for="(field, x) in record.fields" v-if="rowConditions(x)" :key="x" @click.prevent="updateRecord" :value="field" />
+        <!-- <div class="single-record-detail single-record-display hide" v-for="(field, x) in record.fields" v-if="rowConditions(x)" :key="x" @click.prevent="enableUpdate" :value="field">{{field}}</div> -->
+        <div class="single-record-detail" v-for="(field, x) in record.fields" v-if="rowConditions(x)" :key="x">
+          <input class="single-record-input" :value="field" @click.prevent="updateRecord" />
+        </div>
         <button class="delete" @click.prevent="deleteRecord">X</button>
       </div>
     </div>
+
   </div>
+  <div id="update-dialogue" class="update-dialogue hide">
+    <div class="icon-wrapper" v-for="icon in iconsets.confirmationDialogue" :data="icon.name" @click.prevent="closeDialogue">
+      <svgicon :class="icon.name" :fill="true" :name="icon.name" width="26" height="26" :color="icon.colors"></svgicon>
+    </div>
+  </div>
+
   <form class="product-form">
     <label for="productName">
       Product name
@@ -51,9 +60,30 @@ export default {
     return {
       records: [],
       newRecord: {},
+      hovered: false,
       recordToDelete: "",
       recordToUpdate: "",
-      xyz: []
+      xyz: [],
+      iconsets: {
+        confirmationDialogue: [{
+            name: 'check-in-circle',
+            colors: "rgba(0,0,0,0) #3AE665",
+            hoverColors: "rgba(0,0,0,0.5) #3AE665",
+          },
+          {
+            name: 'x-in-circle',
+            colors: "rgba(0,0,0,0) #C82819",
+            hoverColors: "rgba(0,0,0,0.5) #3AE665",
+          }
+        ]
+      },
+      // colors: [{
+      //     checkCircle: "none #5E16D2 #3AE665"
+      //   },
+      //   {
+      //     xCircle: "#5E16D2 #C82819"
+      //   },
+      // ]
     };
   },
   mounted() {
@@ -65,6 +95,9 @@ export default {
   },
   computed: {},
   methods: {
+    mouseover() {
+      this.hovered = !this.hovered
+    },
     rowConditions(x) {
       if (x !== "id") {
         return true;
@@ -123,7 +156,26 @@ export default {
       console.log(e.target.parentElement);
       console.log(e.target);
       e.target.select();
+      let dialogue = document.querySelector('#update-dialogue')
+      dialogue.classList.remove('hide')
+      e.target.parentElement.insertBefore(dialogue, e.target.nextSibling)
+      console.log('dialogue')
+      console.log(dialogue)
       this.recordToUpdate = e.target.id;
+    },
+    hideDialogue(e) {
+      console.log('onblur')
+      let dialogue = document.querySelector('#update-dialogue')
+      dialogue.classList.add('hide')
+    },
+    closeDialogue(e) {
+      let dialogue = document.querySelector('#update-dialogue')
+      dialogue.classList.toggle('close')
+      setTimeout(() => {
+        dialogue.classList.toggle('hide')
+      }, 500);
+      console.log(e.target)
+      e.target.childElement[0].classList.toggle('close-target')
     },
     setWidthByChars(e) {
       console.log(`setWidthByChars called`);
@@ -137,6 +189,10 @@ export default {
 
 <style lang="scss" scoped>
 $main-blue: rgba(50, 200, 255, 0.5);
+
+.update-dialogue.hide {
+  display: none;
+}
 
 .record-details.hide,
 .single-record-detail.hide {
@@ -160,6 +216,10 @@ label {
 
   & input {
     margin-left: 1rem;
+
+    &:focus {
+      outline: none;
+    }
   }
 }
 
@@ -184,7 +244,7 @@ label {
     width: calc(100% + 1rem);
     padding: 0.5rem;
     background: none;
-        background-image: linear-gradient(-30deg,
+    background-image: linear-gradient(-30deg,
         rgba(255, 68, 20, 0.35),
         rgba(75, 75, 255, 0.75));
     margin: .5rem 0 0 0;
@@ -195,9 +255,9 @@ label {
     &:hover {
       color: white;
       background: rgba(50, 200, 255, 0.2);
-          background-image: linear-gradient(30deg,
-        rgba(255, 68, 20, 0.35),
-        rgba(75, 75, 255, 0.75));
+      background-image: linear-gradient(30deg,
+          rgba(255, 68, 20, 0.35),
+          rgba(75, 75, 255, 0.75));
       border: 1px solid rgba(50, 200, 255, 1);
     }
   }
@@ -215,7 +275,7 @@ label {
   z-index: 20;
   display: grid;
   grid-template-columns: [id] .5fr [make] 1fr [model] 1fr [version] 1fr [delete] 0.25fr;
-  width: 60%;
+  width: 62%;
   // margin-left: 10%;
   justify-items: flex-start;
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.25);
@@ -244,12 +304,13 @@ label {
     font-size: 0.75rem;
     -webkit-transition: all 0.25s;
     transition: all 0.25s;
-    border: 2.25px solid rgba(238, 68, 20, 0.75);
+    border: 2.25px solid rgba(238, 68, 20, 0);
 
     &:hover {
       background: rgba(255, 75, 60, 1);
       border: 2px solid rgba(255, 255, 255, 1);
       z-index: 10;
+      color: white;
     }
   }
 
@@ -279,7 +340,25 @@ label {
 }
 
 .single-record-detail {
+  position: relative;
   font-family: "Muli";
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  width: auto;
+  padding: 0.25rem;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0);
+
+}
+
+input.single-record-input {
+  border: none;
+  outline: none;
+  background: none;
+  font-family: "Muli";
+  color: white;
+  font-size: 1rem;
   display: flex;
   justify-content: flex-start;
   text-align: left;
@@ -291,22 +370,69 @@ label {
     border-bottom: 0.5px dashed rgba(50, 200, 255, 1);
     background: rgba(0, 0, 0, 0.5);
     color: rgba(50, 200, 255, 1);
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline: none;
+    border-bottom: 0.5px dashed rgba(50, 200, 255, 1);
+    background: rgba(0, 0, 0, 0.5);
+    color: rgba(50, 200, 255, 1);
   }
 }
 
-input.single-record-detail {
-  border: none;
+.update-dialogue {
+  // background-image: linear-gradient(-30deg,
+  //     rgba(255, 68, 20, 0.35),
+  //     rgba(75, 75, 255, 0.75));
+  // background: rgba(0,0,0,0.5);
+  z-index: 11;
   background: none;
-  font-family: "Muli";
-  color: white;
-  font-size: 1rem;
-  display: flex;
-  justify-content: flex-start;
-  text-align: left;
+  border: none;
+  padding: 0;
+  margin: 0;
   width: auto;
-  padding: 0.25rem;
-  border-bottom: 0.5px solid rgba(255, 255, 255, 0);
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: .25rem;
+  right: .25rem;
+
+  & .icon-wrapper {
+    border: 1px solid rgba(0, 0, 0, 0);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid $main-blue;
+    }
+  }
+
+  & .close {
+    background: red;
+    fill: yellow;
+    transition: all .5s;
+  }
+
+  & .close-target {
+    background: white;
+    fill: green;
+    transition: all .5s;
+  }
 }
+
+.update-confirm {}
+
+.svg-icon {
+  // border-radius:  40px;
+}
+
+// .check-in-circle rect {
+//   fill: none;
+// }
+
+// .check-in-circle path[pid='1'] {
+//   // fill: none;
+// }
 
 .blog {
   display: grid;
