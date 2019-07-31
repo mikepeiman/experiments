@@ -99,8 +99,10 @@ export default {
       this.hovered = !this.hovered
     },
     rowConditions(x) {
-      if (x !== "id") {
-        return true;
+      if (x === "id") {
+        return false;
+      } else {
+        return x
       }
     },
     collectRecords(xyz) {
@@ -362,7 +364,7 @@ input.single-record-input {
   display: flex;
   justify-content: flex-start;
   text-align: left;
-  width: auto;
+  width: 100%;
   padding: 0.25rem;
   border-bottom: 0.5px solid rgba(255, 255, 255, 0);
 
