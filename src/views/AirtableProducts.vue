@@ -24,16 +24,16 @@
     </div>
 
   </div>
-  <div id="confirmation-dialogue" class="confirmation-dialogue hide">
+  <!-- <div id="confirmation-dialogue" class="confirmation-dialogue hide">
     <div class="icon-wrapper" v-for="icon in iconsets.confirmationDialogue" :data="icon.name" @click.prevent="closeDialogue">
       <svgicon :class="icon.name" :fill="true" :name="icon.name" width="26" height="26" :color="icon.colors"></svgicon>
     </div>
+  </div> -->
+    <div id="confirmation-dialogue" class="confirmation-dialogue hide">
+      <div class="confirmation-update">Accept</div>
+      <div class="confirmation-cancel">Cancel</div>
   </div>
-  <div id="update-dialogue" class="update-dialogue hide">
-    <div class="icon-wrapper" v-for="icon in iconsets.update" :data="icon.name" @click.prevent="closeDialogue">
-      <svgicon :class="icon.name" :fill="true" :name="icon.name" width="26" height="26" :color="icon.colors"></svgicon>
-    </div>
-  </div>
+
 
   <form class="product-form">
     <label for="productName">
@@ -466,6 +466,8 @@ input.single-record-input {
     transition: all .5s;
   }
 }
+
+
 
 .update-confirm {}
 
