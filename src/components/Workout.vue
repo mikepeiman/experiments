@@ -31,7 +31,7 @@
         <div
           v-for="(workout, x1) in exerciseWorkouts"
           :class="['workout box', `${workout.name}`]"
-          :style="`background: ${adjustAlpha(workout.name, baseColorBlue, x1, 15)};`"
+          :style="`background: ${adjustAlpha(workout.name, baseColorBlue, -x1, 15)};`"
           :key="x1"
         >
           <div class="workout-header box">
@@ -46,7 +46,7 @@
             v-for="(row, x) in workoutDataRows"
             :key="x"
             :class="['workout-row box', `${row.name}`]"
-            :style="`background: ${adjustAlpha(row.name, baseColorBlackClear, x, 7.5)};`"
+            :style="`background: ${adjustAlpha(row.name, baseColorBlackClear, x, 20)};`"
           >
             <div
               v-for="(data, i) in workoutData"
@@ -185,8 +185,8 @@ export default {
         return "rgba(55, 155, 55, .65)";
       } else {
         let c = Color(color);
-        let newColor = c.object();
-        newColor.alpha -= (x * y) / 100;
+        let newColor = c.object(); 
+        newColor.alpha += (x * y) / 100;
         newColor = Color(newColor);
         return newColor;
       }

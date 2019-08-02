@@ -118,7 +118,7 @@ export default {
       console.log(`adjustAlpha x ${x} y ${y}`)
       let c = Color(color);
       let newColor = c.object();
-      newColor.alpha += (x * y) / 100;
+      newColor.alpha -= (x * y) / 100;
       newColor = Color(newColor);
       return newColor;
     },

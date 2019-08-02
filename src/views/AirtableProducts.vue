@@ -2,6 +2,7 @@
 <div class="blog">
   <AirtableModule base="appP3Ar7WtMKMd6Hu/" table="Test%20Table/" @records="collectRecords($event)" :addRecord="newRecord" :recordToDelete="recordToDelete" :recordToUpdate="recordToUpdate" />
   <h1 class="title clear">Airtable Sample Data</h1>
+
   <div class="article clear">
     <div class="records-wrapper">
       <div class="record-details record-details-header" v-for="(record, i) in xyz" v-if="i === 0" :key="i+record" :record-id="record.id">
@@ -11,16 +12,25 @@
       <div class="record-details" v-for="(record, i) in xyz" :key="i" :record-id="record.id">
         <div class="single-record-detail">{{i+1}}</div>
         <!-- <div class="single-record-detail single-record-display hide" v-for="(field, x) in record.fields" v-if="rowConditions(x)" :key="x" @click.prevent="enableUpdate" :value="field">{{field}}</div> -->
-        <div class="single-record-detail" v-for="(field, x) in record.fields" v-if="rowConditions(x)" :key="x">
-          <input class="single-record-input" :value="field" @click.prevent="updateRecord" />
+        <div class="single-record-detail" v-for="(field, x) in record.fields" v-if="x !== 'id'" :key="x">
+          <input class="single-record-input" :value="field" @blur="hideDialogue" @click.prevent="updateRecord" />
+          <!-- <UpdateIcon1 class="update-icon" /> -->
+          <!-- <UpdateIcon2 class="update-icon" /> -->
+          <UpdateIcon3 class="update-icon" />
+          <!-- <UpdateIcon4 class="update-icon" /> -->
         </div>
         <button class="delete" @click.prevent="deleteRecord">X</button>
       </div>
     </div>
 
   </div>
-  <div id="update-dialogue" class="update-dialogue hide">
+  <div id="confirmation-dialogue" class="confirmation-dialogue hide">
     <div class="icon-wrapper" v-for="icon in iconsets.confirmationDialogue" :data="icon.name" @click.prevent="closeDialogue">
+      <svgicon :class="icon.name" :fill="true" :name="icon.name" width="26" height="26" :color="icon.colors"></svgicon>
+    </div>
+  </div>
+  <div id="update-dialogue" class="update-dialogue hide">
+    <div class="icon-wrapper" v-for="icon in iconsets.update" :data="icon.name" @click.prevent="closeDialogue">
       <svgicon :class="icon.name" :fill="true" :name="icon.name" width="26" height="26" :color="icon.colors"></svgicon>
     </div>
   </div>
@@ -50,11 +60,19 @@ import axios from "axios";
 import Airtable from "airtable";
 import AirtableModule from "@/components/AirtableModule";
 import VueLocalStorage from "vue-localstorage";
+import UpdateIcon1 from './../svg/noun_edit_1071793.svg';
+import UpdateIcon2 from './../svg/noun_edit_1156170.svg';
+import UpdateIcon3 from './../svg/noun_edit_1256379.svg';
+import UpdateIcon4 from './../svg/noun_edit_1980790.svg';
 
 export default {
   name: "AirtableExample",
   components: {
-    AirtableModule
+    AirtableModule,
+    UpdateIcon1,
+    UpdateIcon2,
+    UpdateIcon3,
+    UpdateIcon4,
   },
   data() {
     return {
@@ -75,7 +93,12 @@ export default {
             colors: "rgba(0,0,0,0) #C82819",
             hoverColors: "rgba(0,0,0,0.5) #3AE665",
           }
-        ]
+        ],
+        update: [{
+          name: 'noun_edit_1071793',
+          colors: "rgba(0,0,0,0) #3AE665",
+          hoverColors: "rgba(0,0,0,0.5) #3AE665",
+        }]
       },
       // colors: [{
       //     checkCircle: "none #5E16D2 #3AE665"
@@ -154,30 +177,35 @@ export default {
       // p.classList.toggle('hide');
     },
     updateRecord(e) {
-      console.log("updateRecord called on ");
-      console.log(e.target.parentElement);
+      console.log("updateRecord called on: ");
       console.log(e.target);
+
+      console.log("updateRecord target parent: ");
+      console.log(e.target.parentElement);
+
       e.target.select();
-      let dialogue = document.querySelector('#update-dialogue')
+      let dialogue = document.querySelector('#confirmation-dialogue')
       dialogue.classList.remove('hide')
       e.target.parentElement.insertBefore(dialogue, e.target.nextSibling)
-      console.log('dialogue')
+      console.log('updateRecord dialogue element is: ')
       console.log(dialogue)
       this.recordToUpdate = e.target.id;
     },
     hideDialogue(e) {
       console.log('onblur')
-      let dialogue = document.querySelector('#update-dialogue')
+      let dialogue = document.querySelector('#confirmation-dialogue')
       dialogue.classList.add('hide')
     },
     closeDialogue(e) {
-      let dialogue = document.querySelector('#update-dialogue')
-      dialogue.classList.toggle('close')
+      let dialogue = document.querySelector('#confirmation-dialogue')
+      // dialogue.classList.toggle('close')
+      e.target.parentElement.classList.toggle('close-target')
       setTimeout(() => {
-        dialogue.classList.toggle('hide')
+        e.target.parentElement.classList.toggle('hide', 'close-target')
       }, 500);
-      console.log(e.target)
-      e.target.childElement[0].classList.toggle('close-target')
+      console.log('closeDialogue')
+      console.log(e)
+      // e.target.parentElement.classList.toggle('close-target')
     },
     setWidthByChars(e) {
       console.log(`setWidthByChars called`);
@@ -192,10 +220,8 @@ export default {
 <style lang="scss" scoped>
 $main-blue: rgba(50, 200, 255, 0.5);
 
-.update-dialogue.hide {
-  display: none;
-}
-
+.confirmation-dialogue.hide,
+.update-dialogue.hide,
 .record-details.hide,
 .single-record-detail.hide {
   display: none;
@@ -341,6 +367,19 @@ label {
   }
 }
 
+.update-icon {
+  position: absolute;
+  top: .375rem;
+  right: .25rem;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+
+  & rect {
+    fill: none;
+  }
+}
+
 .single-record-detail {
   position: relative;
   font-family: "Muli";
@@ -352,6 +391,11 @@ label {
   padding: 0.25rem;
   border-bottom: 0.5px solid rgba(255, 255, 255, 0);
 
+  &:hover {
+    & .update-icon {
+      opacity: 1;
+    }
+  }
 }
 
 input.single-record-input {
@@ -383,6 +427,7 @@ input.single-record-input {
   }
 }
 
+.confirmation-dialogue,
 .update-dialogue {
   // background-image: linear-gradient(-30deg,
   //     rgba(255, 68, 20, 0.35),
