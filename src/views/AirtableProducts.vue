@@ -30,8 +30,8 @@
     </div>
   </div> -->
   <div id="confirmation-dialogue" class="confirmation-dialogue hide">
-    <div class="confirmation-update">Accept</div>
-    <div class="confirmation-cancel">Cancel</div>
+    <div class="confirmation-update" @click.prevent="closeDialogue">Accept</div>
+    <div class="confirmation-cancel" @click.prevent="closeDialogue">Cancel</div>
   </div>
 
   <form class="product-form">
@@ -77,8 +77,7 @@ export default {
     return {
       records: [],
       newRecord: {},
-      thisRecord: '',
-      hovered: false,
+      rowUpdateActive: false,
       recordToDelete: "",
       recordToUpdate: "",
       xyz: [],
@@ -182,15 +181,16 @@ export default {
 
       console.log("updateRecord target parent: ");
       console.log(e.target.parentElement);
-      // let row = e.target.parentElement.parentElement
-      // row.classList.add('expand')
 
       let dialogue = document.querySelector('#confirmation-dialogue')
-      dialogue.classList.toggle('hide')
+      dialogue.classList.contains('hide') ? dialogue.classList.remove('hide') : null
+
       let row = e.target.closest('.record-row')
+      row.classList.contains('row-active') ? null : row.classList.add('row-active')
+
       console.log('closest row is: ')
       console.log(row)
-      // e.target.parentElement.insertBefore(dialogue, e.target.nextSibling)
+
       row.appendChild(dialogue)
       console.log('updateRecord dialogue element is: ')
       console.log(dialogue)
@@ -201,27 +201,37 @@ export default {
     },
     hideDialogue(e) {
       console.log('onblur')
-      let row = e.target.parentElement.parentElement
-      row.classList.remove('expand')
+      let row = e.target.closest('.record-row')
       let dialogue = document.querySelector('#confirmation-dialogue')
       // dialogue.classList.add('hide')
     },
     closeDialogue(e) {
       let dialogue = document.querySelector('#confirmation-dialogue')
+      let row = e.target.closest('.record-row')
+
       // dialogue.classList.toggle('close')
-      e.target.parentElement.classList.toggle('close-target')
+      e.target.classList.add('close-target')
+      e.target.parentElement.classList.add('close-dialogue')
       setTimeout(() => {
-        e.target.parentElement.classList.toggle('hide', 'close-target')
+        e.target.parentElement.classList.toggle('hide')
+        e.target.parentElement.classList.remove('close-dialogue')
+        row.classList.remove('row-active')
+        e.target.classList.remove('close-target')
       }, 500);
       console.log('closeDialogue')
       console.log(e)
-      // e.target.parentElement.classList.toggle('close-target')
+
     },
     setWidthByChars(e) {
       console.log(`setWidthByChars called`);
       // let len = e.target.value.toString().length
       e.target.style.width = `${e.target.value.toString().length + 0.5}ch`;
       console.log(e.target.style.width);
+    }
+  },
+  watch: {
+    rowUpdateActive() {
+      this.rowUpdateActive ? console.log('rowUpdateActive is true') : console.log('rowUpdateActive is false')
     }
   }
 };
@@ -440,19 +450,48 @@ input.single-record-input {
 .confirmation-dialogue.hide {
   display: none;
   z-index: 1;
-  background: black;
   border: none;
   padding: 0;
   opacity: 0;
   margin: 0;
   height: 0;
   width: calc(100% + 0.5rem);
-  display: flex;
+  // display: flex;
   justify-content: space-around;
   // position: absolute;
   bottom: 0;
   left: .25rem;
-  transition: all .25s;
+  // transition: all .25s;
+}
+
+@keyframes dialogueFade {
+  0% {
+    background: rgba(0, 0, 0, 0.25);
+    color: white;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes confirmationFlicker {
+  20% {
+    color: black;
+  }
+
+  60% {
+    background: white;
+    color: white;
+  }
+
+  80% {
+    background: rgba(0, 0, 0, 0.25);
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 .confirmation-dialogue {
@@ -462,9 +501,9 @@ input.single-record-input {
   // background: rgba(0,0,0,0.5);
   z-index: 1;
   width: 5rem;
-  left: -5rem;
+  left: calc(-5rem - 2px);
   top: -1px;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0, 0, 0, 0.25);
   // font-size: .8rem;
   border: none;
   padding: 0;
@@ -474,7 +513,8 @@ input.single-record-input {
   flex-direction: column;
   justify-content: space-around;
   position: absolute;
-  transition: all .25s;
+  // transition: all .25s;
+  border: 1px solid $main-blue;
 
   & .icon-wrapper {
     border: 1px solid rgba(0, 0, 0, 0);
@@ -485,28 +525,35 @@ input.single-record-input {
     }
   }
 
-  & .close {
-    background: red;
-    fill: yellow;
-    transition: all .5s;
+  & .close-dialogue {
+    animation: confirmationFlicker .5s;
   }
 
-  & .close-target {
-    background: white;
-    fill: green;
-    transition: all .5s;
-  }
   & .confirmation-update {
     border-bottom: 1px solid $main-blue;
+
   }
 
-  & .confirmation-update,
+  & .confirmation-update {
+    transition: all .25s;
+    &:hover {
+      background: rgba(55, 255, 75, 0.5);
+    }
+  }
   & .confirmation-cancel {
     transition: all .25s;
     &:hover {
-      background: rgba(255,255,255,0.25);
+      background: rgba(255, 55, 75, 0.75);
     }
   }
+}
+
+.close-dialogue {
+  animation: dialogueFade .5s;
+}
+
+.close-target {
+  animation: confirmationFlicker .5s;
 }
 
 .update-confirm {}
