@@ -29,11 +29,10 @@
       <svgicon :class="icon.name" :fill="true" :name="icon.name" width="26" height="26" :color="icon.colors"></svgicon>
     </div>
   </div> -->
-    <div id="confirmation-dialogue" class="confirmation-dialogue hide">
-      <div class="confirmation-update">Accept</div>
-      <div class="confirmation-cancel">Cancel</div>
+  <div id="confirmation-dialogue" class="confirmation-dialogue hide">
+    <div class="confirmation-update">Accept</div>
+    <div class="confirmation-cancel">Cancel</div>
   </div>
-
 
   <form class="product-form">
     <label for="productName">
@@ -185,28 +184,14 @@ export default {
       console.log(e.target.parentElement);
       // let row = e.target.parentElement.parentElement
       // row.classList.add('expand')
-      
-      let div = document.createElement('div')
-      let accept = document.createElement('div')
-      let cancel = document.createElement('div')
-      div.setAttribute('class','confirmation-dialogue hide')
-      div.setAttribute('id','confirmation-dialogue')
-      accept.setAttribute('class', 'confirmation-update')
-      cancel.setAttribute('class', 'confirmation-cancel')
-      div.append(...[accept, cancel])
-      console.log(`new div: ${div}`)
-      console.log(div)
-
-    let div2 = `<div id="confirmation-dialogue" class="confirmation-dialogue hide">
-      <div class="confirmation-update">Accept</div>
-      <div class="confirmation-cancel">Cancel</div>
-  </div>`
-      console.log(`new div2: ${div2}`)
-      console.log(div2)
 
       let dialogue = document.querySelector('#confirmation-dialogue')
       dialogue.classList.toggle('hide')
-      e.target.parentElement.insertBefore(div, e.target.nextSibling)
+      let row = e.target.closest('.record-row')
+      console.log('closest row is: ')
+      console.log(row)
+      // e.target.parentElement.insertBefore(dialogue, e.target.nextSibling)
+      row.appendChild(dialogue)
       console.log('updateRecord dialogue element is: ')
       console.log(dialogue)
       this.recordToUpdate = e.target.id;
@@ -219,7 +204,7 @@ export default {
       let row = e.target.parentElement.parentElement
       row.classList.remove('expand')
       let dialogue = document.querySelector('#confirmation-dialogue')
-      dialogue.classList.add('hide')
+      // dialogue.classList.add('hide')
     },
     closeDialogue(e) {
       let dialogue = document.querySelector('#confirmation-dialogue')
@@ -325,6 +310,7 @@ label {
   // pointer-events: none;
   // z-index: 20;
   display: grid;
+  position: relative;
   grid-template-columns: [id] .5fr [make] 1fr [model] 1fr [version] 1fr [delete] 0.25fr;
   width: 62%;
   // margin-left: 10%;
@@ -468,23 +454,26 @@ input.single-record-input {
   left: .25rem;
   transition: all .25s;
 }
+
 .confirmation-dialogue {
   // background-image: linear-gradient(-30deg,
   //     rgba(255, 68, 20, 0.35),
   //     rgba(75, 75, 255, 0.75));
   // background: rgba(0,0,0,0.5);
   z-index: 1;
-  background: black;
+  width: 5rem;
+  left: -5rem;
+  top: -1px;
+  background: rgba(0,0,0,0.25);
+  // font-size: .8rem;
   border: none;
   padding: 0;
   margin: 0;
   height: auto;
-  width: calc(100% + 0.5rem);
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
-  // position: absolute;
-  bottom: -1rem;
-  left: .25rem;
+  position: absolute;
   transition: all .25s;
 
   & .icon-wrapper {
@@ -507,9 +496,18 @@ input.single-record-input {
     fill: green;
     transition: all .5s;
   }
+  & .confirmation-update {
+    border-bottom: 1px solid $main-blue;
+  }
+
+  & .confirmation-update,
+  & .confirmation-cancel {
+    transition: all .25s;
+    &:hover {
+      background: rgba(255,255,255,0.25);
+    }
+  }
 }
-
-
 
 .update-confirm {}
 
