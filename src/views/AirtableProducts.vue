@@ -5,11 +5,11 @@
 
   <div class="article clear">
     <div class="records-wrapper">
-      <div class="record-details record-details-header" v-for="(record, i) in xyz" v-if="i === 0" :key="i+record" :record-id="record.id">
+      <div class="record-row record-row-header" v-for="(record, i) in xyz" v-if="i === 0" :key="i+record" :record-id="record.id">
         <div class="single-record-heading single-record-display">#</div>
         <div class="single-record-heading single-record-display" v-for="field in Object.keys(record.fields)" v-if="field !== 'id'" :key="field" :value="field">{{field.toUpperCase()}}</div>
       </div>
-      <div class="record-details" v-for="(record, i) in xyz" :key="i" :record-id="record.id">
+      <div class="record-row" v-for="(record, i) in xyz" :key="i" :record-id="record.id">
         <div class="single-record-detail">{{i+1}}</div>
         <!-- <div class="single-record-detail single-record-display hide" v-for="(field, x) in record.fields" v-if="rowConditions(x)" :key="x" @click.prevent="enableUpdate" :value="field">{{field}}</div> -->
         <div class="single-record-detail" v-for="(field, x) in record.fields" v-if="x !== 'id'" :key="x">
@@ -29,7 +29,7 @@
       <svgicon :class="icon.name" :fill="true" :name="icon.name" width="26" height="26" :color="icon.colors"></svgicon>
     </div>
   </div> -->
-    <div id="confirmation-dialogue" class="confirmation-dialogue hide">
+    <div id="confirmation-dialogue" class="confirmation-dialogue collapsed">
       <div class="confirmation-update">Accept</div>
       <div class="confirmation-cancel">Cancel</div>
   </div>
@@ -183,10 +183,12 @@ export default {
 
       console.log("updateRecord target parent: ");
       console.log(e.target.parentElement);
+      let row = e.target.parentElement.parentElement
+      row.classList.add('expand')
 
 
       let dialogue = document.querySelector('#confirmation-dialogue')
-      dialogue.classList.remove('hide')
+      dialogue.classList.toggle('collapsed')
       e.target.parentElement.insertBefore(dialogue, e.target.nextSibling)
       console.log('updateRecord dialogue element is: ')
       console.log(dialogue)
@@ -197,8 +199,10 @@ export default {
     },
     hideDialogue(e) {
       console.log('onblur')
+      let row = e.target.parentElement.parentElement
+      row.classList.remove('expand')
       let dialogue = document.querySelector('#confirmation-dialogue')
-      dialogue.classList.add('hide')
+      dialogue.classList.add('collapsed')
     },
     closeDialogue(e) {
       let dialogue = document.querySelector('#confirmation-dialogue')
@@ -224,9 +228,9 @@ export default {
 <style lang="scss" scoped>
 $main-blue: rgba(50, 200, 255, 0.5);
 
-.confirmation-dialogue.hide,
+
 .update-dialogue.hide,
-.record-details.hide,
+.record-row.hide,
 .single-record-detail.hide {
   display: none;
 }
@@ -302,7 +306,7 @@ label {
   flex-direction: column;
 }
 
-.record-details {
+.record-row {
   // pointer-events: none;
   // z-index: 20;
   display: grid;
@@ -315,7 +319,7 @@ label {
       rgba(255, 68, 20, 0.15),
       rgba(75, 75, 255, 0.5));
 
-  &.record-details-header {
+  &.record-row-header {
     display: grid;
     grid-template-columns: [id] .5fr [make] 1fr [model] 1fr [version] 1fr [delete] 0.25fr;
     background-image: linear-gradient(-30deg,
@@ -432,6 +436,22 @@ input.single-record-input {
   }
 }
 
+.confirmation-dialogue.collapsed {
+  z-index: 1;
+  background: black;
+  border: none;
+  padding: 0;
+  opacity: 0;
+  margin: 0;
+  height: 0;
+  width: calc(100% + 0.5rem);
+  display: flex;
+  justify-content: space-around;
+  // position: absolute;
+  bottom: 0;
+  left: .25rem;
+  // transition: all .25s;
+}
 .confirmation-dialogue,
 .update-dialogue {
   // background-image: linear-gradient(-30deg,
@@ -443,12 +463,14 @@ input.single-record-input {
   border: none;
   padding: 0;
   margin: 0;
-  width: calc(100% - 0.5rem);
+  height: auto;
+  width: calc(100% + 0.5rem);
   display: flex;
   justify-content: space-around;
   // position: absolute;
   bottom: -1rem;
   left: .25rem;
+  transition: all .25s;
 
   & .icon-wrapper {
     border: 1px solid rgba(0, 0, 0, 0);
