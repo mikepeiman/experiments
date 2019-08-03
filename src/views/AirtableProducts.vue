@@ -13,7 +13,7 @@
         <div class="single-record-detail">{{i+1}}</div>
         <!-- <div class="single-record-detail single-record-display hide" v-for="(field, x) in record.fields" v-if="rowConditions(x)" :key="x" @click.prevent="enableUpdate" :value="field">{{field}}</div> -->
         <div class="single-record-detail" v-for="(field, x) in record.fields" v-if="x !== 'id'" :key="x">
-          <input class="single-record-input" :value="field" @blur="hideDialogue" @click.prevent="updateRecord" />
+          <input class="single-record-input" :value="field" @blur="hideDialogue" @input="updateRecord" @click="selectRecord" />
           <!-- <UpdateIcon1 class="update-icon" /> -->
           <!-- <UpdateIcon2 class="update-icon" /> -->
           <UpdateIcon3 class="update-icon" />
@@ -78,6 +78,7 @@ export default {
     return {
       records: [],
       newRecord: {},
+      thisRecord: '',
       hovered: false,
       recordToDelete: "",
       recordToUpdate: "",
@@ -183,13 +184,16 @@ export default {
       console.log("updateRecord target parent: ");
       console.log(e.target.parentElement);
 
-      e.target.select();
+
       let dialogue = document.querySelector('#confirmation-dialogue')
       dialogue.classList.remove('hide')
       e.target.parentElement.insertBefore(dialogue, e.target.nextSibling)
       console.log('updateRecord dialogue element is: ')
       console.log(dialogue)
       this.recordToUpdate = e.target.id;
+    },
+    selectRecord(e) {
+      e.target.select();
     },
     hideDialogue(e) {
       console.log('onblur')
@@ -300,7 +304,7 @@ label {
 
 .record-details {
   // pointer-events: none;
-  z-index: 20;
+  // z-index: 20;
   display: grid;
   grid-template-columns: [id] .5fr [make] 1fr [model] 1fr [version] 1fr [delete] 0.25fr;
   width: 62%;
@@ -385,6 +389,7 @@ label {
   font-family: "Muli";
   display: flex;
   justify-content: flex-start;
+  flex-direction: column;
   align-items: center;
   text-align: left;
   width: auto;
@@ -433,17 +438,17 @@ input.single-record-input {
   //     rgba(255, 68, 20, 0.35),
   //     rgba(75, 75, 255, 0.75));
   // background: rgba(0,0,0,0.5);
-  z-index: 11;
-  background: none;
+  z-index: 1;
+  background: black;
   border: none;
   padding: 0;
   margin: 0;
-  width: auto;
+  width: calc(100% - 0.5rem);
   display: flex;
-  justify-content: center;
-  position: absolute;
-  top: .25rem;
-  right: .25rem;
+  justify-content: space-around;
+  // position: absolute;
+  bottom: -1rem;
+  left: .25rem;
 
   & .icon-wrapper {
     border: 1px solid rgba(0, 0, 0, 0);
