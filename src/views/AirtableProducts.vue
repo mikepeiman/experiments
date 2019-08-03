@@ -29,7 +29,7 @@
       <svgicon :class="icon.name" :fill="true" :name="icon.name" width="26" height="26" :color="icon.colors"></svgicon>
     </div>
   </div> -->
-    <div id="confirmation-dialogue" class="confirmation-dialogue collapsed">
+    <div id="confirmation-dialogue" class="confirmation-dialogue hide">
       <div class="confirmation-update">Accept</div>
       <div class="confirmation-cancel">Cancel</div>
   </div>
@@ -183,13 +183,30 @@ export default {
 
       console.log("updateRecord target parent: ");
       console.log(e.target.parentElement);
-      let row = e.target.parentElement.parentElement
-      row.classList.add('expand')
+      // let row = e.target.parentElement.parentElement
+      // row.classList.add('expand')
+      
+      let div = document.createElement('div')
+      let accept = document.createElement('div')
+      let cancel = document.createElement('div')
+      div.setAttribute('class','confirmation-dialogue hide')
+      div.setAttribute('id','confirmation-dialogue')
+      accept.setAttribute('class', 'confirmation-update')
+      cancel.setAttribute('class', 'confirmation-cancel')
+      div.append(...[accept, cancel])
+      console.log(`new div: ${div}`)
+      console.log(div)
 
+    let div2 = `<div id="confirmation-dialogue" class="confirmation-dialogue hide">
+      <div class="confirmation-update">Accept</div>
+      <div class="confirmation-cancel">Cancel</div>
+  </div>`
+      console.log(`new div2: ${div2}`)
+      console.log(div2)
 
       let dialogue = document.querySelector('#confirmation-dialogue')
-      dialogue.classList.toggle('collapsed')
-      e.target.parentElement.insertBefore(dialogue, e.target.nextSibling)
+      dialogue.classList.toggle('hide')
+      e.target.parentElement.insertBefore(div, e.target.nextSibling)
       console.log('updateRecord dialogue element is: ')
       console.log(dialogue)
       this.recordToUpdate = e.target.id;
@@ -202,7 +219,7 @@ export default {
       let row = e.target.parentElement.parentElement
       row.classList.remove('expand')
       let dialogue = document.querySelector('#confirmation-dialogue')
-      dialogue.classList.add('collapsed')
+      dialogue.classList.add('hide')
     },
     closeDialogue(e) {
       let dialogue = document.querySelector('#confirmation-dialogue')
@@ -228,8 +245,6 @@ export default {
 <style lang="scss" scoped>
 $main-blue: rgba(50, 200, 255, 0.5);
 
-
-.update-dialogue.hide,
 .record-row.hide,
 .single-record-detail.hide {
   display: none;
@@ -436,7 +451,8 @@ input.single-record-input {
   }
 }
 
-.confirmation-dialogue.collapsed {
+.confirmation-dialogue.hide {
+  display: none;
   z-index: 1;
   background: black;
   border: none;
@@ -450,10 +466,9 @@ input.single-record-input {
   // position: absolute;
   bottom: 0;
   left: .25rem;
-  // transition: all .25s;
+  transition: all .25s;
 }
-.confirmation-dialogue,
-.update-dialogue {
+.confirmation-dialogue {
   // background-image: linear-gradient(-30deg,
   //     rgba(255, 68, 20, 0.35),
   //     rgba(75, 75, 255, 0.75));
