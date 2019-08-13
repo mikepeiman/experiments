@@ -1,35 +1,39 @@
 <template>
-  <div class="block-container">
-    <svg id="svgLines" width="100%" height="100%" viewBox="-256 -256 512 512">
-      <g class="radial-lines"></g>
-    </svg>
-  </div>
+<div class="block-container">
+  <svg id="svgLines" width="100%" height="100%" viewBox="-256 -256 512 512">
+    <g class="radial-lines"></g>
+  </svg>
+</div>
 </template>
 
 <script>
 import Color from "color";
+import {
+  css
+} from 'emotion';
 
 export default {
   name: "RadialLines",
-  props: [
-    "numLines",
-    "startColor",
-    "radiusStart",
-    "lineLength",
-    "strokeWidth",
-    "H",
-    "S",
-    "L",
-    "A",
-    "renderSvg"
-  ],
+  props: {
+    numLines: Number,
+    startColor: String,
+    radiusStart: {
+      type: Number,
+      default: 50
+    },
+    lineLength: Number,
+    strokeWidth: Number,
+    H: Number,
+    S: Number,
+    L: Number,
+    A: Number,
+    renderSvg: Boolean
+  },
   data() {
     return {
       render: this.renderSvg,
       tempColor: "",
       colorsArray: [],
-      radiusStart: 50,
-      radiusEnd: 100
     };
   },
   watch: {
@@ -169,8 +173,7 @@ export default {
       this.makeRadiatingLines(
         parseInt(this.numLines),
         this.radiusStart,
-        this.radiusEnd,
-        {
+        this.radiusEnd, {
           startColor: this.startColor,
           H: parseInt(this.H),
           S: parseInt(this.S),
@@ -299,8 +302,7 @@ p {
   padding: 0 0 0 1em;
 }
 
-.block-container:hover {
-}
+.block-container:hover {}
 
 .block-container:hover .caption {
   transform: translateY(0%);
@@ -356,16 +358,16 @@ svg {
 // }
 
 .block-container:hover .radial-lines {
-    transform: rotate(720deg) scale(1.2);
+  transform: rotate(720deg) scale(1.2);
   opacity: 1;
 }
 
 input {
-    border: none;
-    padding: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,.25);
-    color: white;
-    margin-bottom: .25rem;
+  border: none;
+  padding: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, .25);
+  color: white;
+  margin-bottom: .25rem;
 }
 </style>

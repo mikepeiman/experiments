@@ -1,0 +1,55 @@
+#color-main {
+  background-image: linear-gradient(
+    to right,
+    #1F2F69,
+    #1F2F69 33%,
+    #3652B8 33%,
+    #3652B8 66%,
+    #7C90D8 66%
+  );
+  width: 40vw;
+  height: 3rem;
+}
+
+#color-secondary {
+  background-image: linear-gradient(
+    to right,
+    #7A3024,
+    #7A3024 33%,
+    #C6513E 33%,
+    #C6513E 66%,
+    #DD988D 66%
+  );
+  width: 40vw;
+  height: 3rem;
+}
+
+#color-tertiary {
+  background-image: linear-gradient(
+    to right,
+    #446E21,
+    #446E21 33%,
+    #75BC39 33%,
+    #75BC39 66%,
+    #AAD982 66%
+  );
+  width: 40vw;
+  height: 3rem;
+}
+
+#color-accent {
+  background-image: linear-gradient(
+    to right,
+    #651F69,
+    #651F69 33%,
+    #B136B8 33%,
+    #B136B8 66%,
+    #D37CD8 66%
+  );
+  width: 40vw;
+  height: 3rem;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Blinker|Cinzel|Comfortaa|Dosis|EB+Garamond|Libre+Franklin|Maven+Pro|Montserrat|Muli|Nunito+Sans|Patua+One|Prompt|Questrial|Quicksand|Righteous|Rubik|Ubuntu&display=swap');
+
+<link href="https://fonts.googleapis.com/css?family=Blinker|Cinzel|Comfortaa|Dosis|EB+Garamond|Libre+Franklin|Maven+Pro|Montserrat|Muli|Nunito+Sans|Patua+One|Prompt|Questrial|Quicksand|Righteous|Rubik|Ubuntu&display=swap" rel="stylesheet">
